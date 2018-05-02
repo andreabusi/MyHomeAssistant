@@ -23,7 +23,7 @@
   action:
     service: notify.home_telegram
     data:
-      message: 'È disponibile un aggiornamento per Home Assistant!'
+      message: 'È disponibile un aggiornamento ({{ states.updater.updater.state }}) per Home Assistant!'
 
 - alias: 'HA: startup notification'
   hide_entity: true
