@@ -1,0 +1,101 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: !secret home_elevation
+  unit_system: metric
+  time_zone: Europe/Rome
+
+  # Customization file
+  customize: !include customize.yaml
+
+  #customize_global:
+  #  home_recycling.*:
+  #    custom_ui_state_card: state-card-recycling
+
+# Show links to resources in log and frontend
+introduction:
+
+# Enables the frontend
+frontend:
+#  extra_html_url:
+#    - /local/custom_ui/state-card-recycling.html
+
+# Enables configuration UI
+config:
+
+http:
+  api_password: !secret http_password
+  trusted_networks:
+    - 127.0.0.1
+    - ::1
+    - 192.168.1.0/24
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+updater:
+  include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Weather prediction
+sensor:
+  - platform: yr
+
+# Text to speech
+tts:
+  - platform: google
+
+# Cloud
+cloud:
+
+# Enable iOS App
+ios:
+
+# Gestione spazzatura
+home_recycling:
+  calendar: /home/homeassistant/.homeassistant/custom_components/home_recycling_calendar.json
+
+# configurazione bot Telegram
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_key
+    allowed_chat_ids:
+      - !secret telegram_chat_andrea 
+      - !secret telegram_chat_erica
+      - !secret telegram_chat_home
+
+# Notifiche
+notify:
+  - name: andrea_telegram
+    platform: telegram
+    chat_id: !secret telegram_chat_andrea
+  - name: home_telegram
+    platform: telegram
+    chat_id: !secret telegram_chat_home
+
+media_player:
+  - platform: plex
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

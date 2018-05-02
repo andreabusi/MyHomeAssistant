@@ -1,0 +1,10 @@
+*
+!*.yaml
+!scenes
+!.gitignore
+!custom_components
+!*.py
+!*.json
+secrets.yaml
+known_devices.yaml
+entity_registry.yaml

@@ -1,0 +1,83 @@
+# Gestione spazzatura
+- alias: 'Home recycling: notify tomorrow pickup'
+  trigger:
+  - at: '20:00'
+    platform: time
+  condition: []
+  action:
+  - service: home_recycling.notification
+
+- alias: 'Home recycling: set tomorrow pickup states'
+  trigger:
+  - at: '07:00'
+    platform: time
+  condition: []
+  action:
+  - service: home_recycling.collections_state
+
+# HomeAssistant notifications
+- alias: 'HA: update available notification'
+  trigger:
+    platform: state
+    entity_id: updater.updater
+  action:
+    service: notify.home_telegram
+    data:
+      message: 'È disponibile un aggiornamento per Home Assistant!'
+
+- alias: 'HA: startup notification'
+  hide_entity: true
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    service: notify.home_telegram
+    data:
+      message: 'Home Assistant è stato riavviato, ora è di nuovo funzionante!'
+
+# JarvisBOT: comandi Telegram a cui Jarvis può rispondere
+- id: 'jarvisbot.ping'
+  alias: 'JarvisBOT: reply pong to ping'
+  hide_entity: true
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/ping'
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'Pong!'
+
+- id: 'jarvisbot.temperature'
+  alias: 'JarvisBOT: current home temperature'
+  hide_entity: true
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/temperature'
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'Non so ancora dirti la temperatura, ma ci sto lavorando'
+
+- id: 'jarvisbot.hello'
+  alias: 'JarvisBOT: say hello'
+  hide_entity: true
+  trigger:
+    - platform: event
+      event_type: telegram_text
+      event_data:
+        text: 'Jarvis'
+    - platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/hello'
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'Ciao {{ trigger.event.data.from_first }}!'
