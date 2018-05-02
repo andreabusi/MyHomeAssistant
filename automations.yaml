@@ -1,22 +1,27 @@
 # Gestione spazzatura
-- alias: 'Home recycling: notify tomorrow pickup'
+- id: home_recycling.notify
+  alias: 'Home recycling: notify tomorrow pickup'
   trigger:
-  - at: '20:00'
     platform: time
+    at: '20:00'
   condition: []
   action:
-  - service: home_recycling.notification
+    service: home_recycling.notification
 
-- alias: 'Home recycling: set tomorrow pickup states'
+- id: home_recycling.set_states
+  alias: 'Home recycling: set tomorrow pickup states'
   trigger:
-  - at: '07:00'
-    platform: time
+    - platform: time
+      at: '07:00'
+    - platform: homeassistant
+      event: start
   condition: []
   action:
-  - service: home_recycling.collections_state
+    service: home_recycling.collections_state
 
 # HomeAssistant notifications
-- alias: 'HA: update available notification'
+- id: home_assistant.update_available
+  alias: 'HA: update available notification'
   trigger:
     platform: state
     entity_id: updater.updater
@@ -25,7 +30,8 @@
     data:
       message: 'È disponibile un aggiornamento ({{ states.updater.updater.state }}) per Home Assistant!'
 
-- alias: 'HA: startup notification'
+- id: home_assistant.startup
+  alias: 'HA: startup notification'
   hide_entity: true
   trigger:
     platform: homeassistant
@@ -45,10 +51,10 @@
     event_data:
       command: '/ping'
   action:
-    - service: telegram_bot.send_message
-      data_template:
-        target: '{{ trigger.event.data.chat_id }}'
-        message: 'Pong!'
+    service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.chat_id }}'
+      message: 'Pong!'
 
 - id: 'jarvisbot.temperature'
   alias: 'JarvisBOT: current home temperature'
@@ -59,10 +65,10 @@
     event_data:
       command: '/temperature'
   action:
-    - service: telegram_bot.send_message
-      data_template:
-        target: '{{ trigger.event.data.chat_id }}'
-        message: 'Non so ancora dirti la temperatura, ma ci sto lavorando'
+    service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.chat_id }}'
+      message: 'Non so ancora dirti la temperatura, ma ci sto lavorando'
 
 - id: 'jarvisbot.hello'
   alias: 'JarvisBOT: say hello'
@@ -77,7 +83,7 @@
       event_data:
         command: '/hello'
   action:
-    - service: telegram_bot.send_message
-      data_template:
-        target: '{{ trigger.event.data.chat_id }}'
-        message: 'Ciao {{ trigger.event.data.from_first }}!'
+    service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.chat_id }}'
+      message: 'Ciao {{ trigger.event.data.from_first }}!'
