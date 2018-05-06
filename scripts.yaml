@@ -1,0 +1,12 @@
+'1525636958388':
+  alias: 'Sonoff: Sonoff #1 turn on'
+  sequence:
+  - data:
+      event: jarvis_sonoff01_turnon
+    service: ifttt.trigger
+'1525637001253':
+  alias: 'Sonoff: Sonoff #1 turn off'
+  sequence:
+  - data:
+      event: jarvis_sonoff01_turnoff
+    service: ifttt.trigger
