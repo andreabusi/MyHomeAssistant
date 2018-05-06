@@ -96,6 +96,10 @@ notify:
 media_player:
   - platform: plex
 
+# IFTTT
+ifttt:
+  key: !secret ifttt_key
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
