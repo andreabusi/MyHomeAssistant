@@ -3,8 +3,12 @@
 !scenes
 !.gitignore
 !custom_components
+!www
+!www/*
+!www/icons/*
 !*.py
 !*.json
+!*.png
 secrets.yaml
 known_devices.yaml
 entity_registry.yaml
