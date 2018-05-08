@@ -1,3 +1,13 @@
-home_recycling.empty:
-  friendly_name: Domani niente spazzatura!
-  icon: mdi:thumb-up
+# I sensori della spazzatura li nascondiamo, verrano visualizzati in un gruppo apposito (se attivi)
+binary_sensor.home_recycling_secco:
+  entity_picture: /local/icons/waste_trash.png
+binary_sensor.home_recycling_organico:
+  entity_picture: /local/icons/waste_organic.png # OK
+binary_sensor.home_recycling_carta:
+  entity_picture: /local/icons/waste_paper.png # OK
+binary_sensor.home_recycling_vetro:
+  entity_picture: /local/icons/waste_glass.png # OK
+binary_sensor.home_recycling_plastica:
+  entity_picture: /local/icons/waste_plastic.png # OK
+binary_sensor.home_recycling_barattolame:
+  entity_picture: /local/icons/waste_can.png # OK

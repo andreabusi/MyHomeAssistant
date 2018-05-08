@@ -11,17 +11,9 @@ homeassistant:
   # Customization file
   customize: !include customize.yaml
 
-  #customize_global:
-  #  home_recycling.*:
-  #    custom_ui_state_card: state-card-recycling
 
 # Show links to resources in log and frontend
-introduction:
-
-# Enables the frontend
-frontend:
-#  extra_html_url:
-#    - /local/custom_ui/state-card-recycling.html
+#introduction:
 
 # Enables configuration UI
 config:
@@ -60,6 +52,32 @@ sun:
 # Weather prediction
 sensor:
   - platform: yr
+
+binary_sensor:
+  - platform: template
+    sensors:
+      home_recycling_empty:
+        friendly_name: 'Domani niente spazzatura!'
+        icon_template: mdi:thumb-up
+        value_template: "{{ is_state('home_recycling.empty', 'yes') }}"
+      home_recycling_secco:
+        friendly_name: 'Secco'
+        value_template: "{{ is_state('home_recycling.secco', 'yes') }}"
+      home_recycling_organico:
+        friendly_name: 'Umido'
+        value_template: "{{ is_state('home_recycling.organico', 'yes') }}"
+      home_recycling_carta:
+        friendly_name: 'Carta'
+        value_template: "{{ is_state('home_recycling.carta', 'yes') }}"
+      home_recycling_vetro:
+        friendly_name: 'Vetro'
+        value_template: "{{ is_state('home_recycling.vetro', 'yes') }}"
+      home_recycling_plastica:
+        friendly_name: 'Plastica'
+        value_template: "{{ is_state('home_recycling.plastica', 'yes') }}"
+      home_recycling_barattolame:
+        friendly_name: 'Barattolame'
+        value_template: "{{ is_state('home_recycling.barattolame', 'yes') }}"
 
 # Text to speech
 tts:

@@ -4,9 +4,11 @@ Calendario della raccolta differenziata
 import json
 import time
 import logging
+import homeassistant.components.group as group
 
 # The domain of your component. Should be equal to the filename of the component.
 DOMAIN = "home_recycling"
+SENSOR_PREFIX = "binary_sensor." + DOMAIN + "_"
 SERVICE_NOTIFICATION = "notification"
 SERVICE_COLLECTION = "collections_state"
 
@@ -57,7 +59,7 @@ def setup(hass, config):
     
     hass.services.register(DOMAIN, SERVICE_NOTIFICATION, notification)
 
-    # Servizio di salvataggio della raccolta del giorno dopo
+    # Servizio di salvataggio degli stati della raccolta di domani
     def set_collections_state(call):
         # remove previous state
         all_collections = get_all_collections()
@@ -67,13 +69,12 @@ def setup(hass, config):
         # check for tomorrow waste collections
         tomorrow = time.localtime(time.time() + 24*3600)
         collections = get_waste_collection(tomorrow)
+        binary_sensors = []
         for collection in collections:
-            hass.states.set(DOMAIN + "." + collection, "yes")
+            hass.states.set(DOMAIN + "." + collection, "yes", attributes = { "hidden": True })
+            binary_sensors.append(SENSOR_PREFIX + collection)
 
-        if len(collections) == 0:
-            hass.states.set(DOMAIN + ".empty", "yes")
-        else:
-            hass.states.set(DOMAIN + ".empty", "no")
+        create_group(hass, binary_sensors)
 
     hass.services.register(DOMAIN, SERVICE_COLLECTION, set_collections_state)
 
@@ -99,3 +100,8 @@ def get_waste_collection(date):
 def get_all_collections():
     json_calendar = json.load(open(CALENDAR))
     return json_calendar.keys()
+
+def create_group(hass, entitiy_ids):
+    if len(entitiy_ids) == 0:
+        entitiy_ids.append(SENSOR_PREFIX + "empty")
+    group.set_group(hass, 'home_recycling_group', name='Raccolta differenziata', entity_ids=entitiy_ids)
