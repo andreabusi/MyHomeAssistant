@@ -93,6 +93,11 @@ ios:
 home_recycling:
   calendar: /home/homeassistant/.homeassistant/custom_components/home_recycling_calendar.json
 
+# Downloader MagPi
+magpi_downloader:
+  config_file: /home/homeassistant/.homeassistant/custom_components/magpi_downloader_config.json
+  output_path: /home/homeassistant/magpi
+
 # configurazione bot Telegram
 telegram_bot:
   - platform: polling

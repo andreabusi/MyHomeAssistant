@@ -19,6 +19,16 @@
   action:
     service: home_recycling.collections_state
 
+# Download MagPi issues
+- id: magpi_downloader.check_and_download
+  alias: 'MagPi: download new MagPi issues (if available)'
+  trigger:
+    platform: time
+    at: '08:00'
+  condition: []
+  action:
+    service: magpi_downloader.downloader
+
 # HomeAssistant notifications
 - id: home_assistant.update_available
   alias: 'HA: update available notification'
