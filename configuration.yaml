@@ -87,7 +87,7 @@ tts:
 cloud:
 
 # Enable iOS App
-ios:
+#ios:
 
 # Gestione spazzatura
 home_recycling:
