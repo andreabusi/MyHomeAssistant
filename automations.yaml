@@ -78,7 +78,21 @@
     service: telegram_bot.send_message
     data_template:
       target: '{{ trigger.event.data.chat_id }}'
-      message: 'Non so ancora dirti la temperatura, ma ci sto lavorando'
+      message: 'La temperatura corrente è di {{ states.sensor.dht_sensor_temperature.state_with_unit }}'
+
+- id: 'jarvisbot.camera_picture'
+  alias: 'JarvisBOT: send current camera picture'
+  hide_entity: true
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/camera'
+  action:
+    service: telegram_bot.send_photo
+    data:
+      url: http://192.168.1.100:8123/api/camera_proxy/camera.soggiorno
+      caption: 'Situazione attuale del soggiorno'
 
 - id: 'jarvisbot.hello'
   alias: 'JarvisBOT: say hello'
