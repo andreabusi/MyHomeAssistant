@@ -52,6 +52,12 @@ sun:
 # Weather prediction
 sensor:
   - platform: yr
+  - platform: dht
+    sensor: DHT11
+    pin: 15
+    monitored_conditions:
+      - temperature
+      - humidity
 
 binary_sensor:
   - platform: template
@@ -118,6 +124,12 @@ notify:
 
 media_player:
   - platform: plex
+
+camera:
+  - platform: yi
+    name: Soggiorno
+    host: '192.168.1.96'
+    password: !secret yi_camera_password
 
 # IFTTT
 ifttt:
