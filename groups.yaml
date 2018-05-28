@@ -1,0 +1,41 @@
+default_view:
+  name: Casa
+  icon: mdi:home
+  view: yes
+  entities:
+    - sun.sun
+    - group.luci
+    - group.home_recycling_group
+    - group.televisori
+    - group.salotto
+
+salotto:
+  name: Salotto
+  view: no
+  entities:
+    - sensor.dht_sensor_temperature
+    - sensor.dht_sensor_humidity
+    - camera.soggiorno
+
+luci:
+  name: Luci
+  view: no
+  entities:
+    - light.salotto
+
+televisori:
+  name: Televisori
+  view: no
+  entities:
+    - media_player.tv_cucina
+    - media_player.samsung_ue40ku6400
+
+automazione:
+  name: Automazione
+  icon: mdi:home-automation
+  view: yes
+  entities:
+    - group.home_recycling_group
+    - script.sonoff_01_turnon
+    - script.sonoff_01_turnoff
+
