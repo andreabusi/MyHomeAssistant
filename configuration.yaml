@@ -124,6 +124,11 @@ notify:
 
 media_player:
   - platform: plex
+  - platform: samsungtv
+    name: TV Salotto
+    host: 192.168.1.97
+    mac: !secret mac_address_tv_samsung
+    port: 8001
 
 camera:
   - platform: yi
