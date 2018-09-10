@@ -4,6 +4,7 @@ default_view:
   view: yes
   entities:
     - sun.sun
+    - sensor.ssl_cert_expiry
     - group.luci
     - group.home_recycling_group
     - group.televisori

@@ -26,6 +26,8 @@ http:
     - ::1
     - 192.168.1.0/24
   base_url: !secret http_public_url
+  ssl_key: !secret http_ssl_key
+  ssl_certificate: !secret http_ssl_certificate
 
 # Checks for available updates
 updater:
@@ -58,6 +60,11 @@ sensor:
     monitored_conditions:
       - temperature
       - humidity
+  - platform: command_line
+    name: ssl_cert_expiry
+    unit_of_measurement: days
+    scan_intervanl: 10800
+    command: "ssl-cert-check -b -c /etc/letsencrypt/live/homebubi.duckdns.org/cert.pem | awk '{ print $NF }'"
 
 binary_sensor:
   - platform: template

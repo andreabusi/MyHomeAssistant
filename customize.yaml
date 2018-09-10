@@ -11,3 +11,6 @@ binary_sensor.home_recycling_plastica:
   entity_picture: /local/icons/waste_plastic.png # OK
 binary_sensor.home_recycling_barattolame:
   entity_picture: /local/icons/waste_can.png # OK
+sensor.ssl_cert_expiry:
+  friendly_name: SSL Certificate Expiration
+
