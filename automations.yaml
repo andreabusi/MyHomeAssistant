@@ -47,7 +47,7 @@
     platform: homeassistant
     event: start
   action:
-    service: notify.home_telegram
+    service: notify.andrea_telegram
     data:
       message: 'Home Assistant è stato riavviato, ora è di nuovo funzionante!'
 
@@ -111,3 +111,13 @@
     data_template:
       target: '{{ trigger.event.data.chat_id }}'
       message: 'Ciao {{ trigger.event.data.from_first }}!'
+
+#SSL Certificate renew
+- id: 'sslcert_renew'
+  alias: 'SSL Certificate: Auto Renew SSL'
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.ssl_cert_expiry
+    below: 29
+  action:
+    service: shell_command.renew_ssl
