@@ -121,3 +121,14 @@
     below: 29
   action:
     service: shell_command.renew_ssl
+
+- id: 'sslcert_notification'
+  alias: 'SSL Certificate: expiration notification'
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.ssl_cert_expiry
+    below: 21
+  action:
+    service: notify.andrea_telegram
+    data:
+      message: 'Il certificato SSL scadrà fra 21 giorni e non è ancora stato rinnovato in automatico!'
