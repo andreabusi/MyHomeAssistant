@@ -13,4 +13,5 @@ binary_sensor.home_recycling_barattolame:
   entity_picture: /local/icons/waste_can.png # OK
 sensor.ssl_cert_expiry:
   friendly_name: SSL Certificate Expiration
-
+binary_sensor.sonoff_1:
+  friendly_name: SONOFF 1

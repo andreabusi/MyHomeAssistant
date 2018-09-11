@@ -5,6 +5,7 @@ default_view:
   entities:
     - sun.sun
     - sensor.ssl_cert_expiry
+    - binary_sensor.amplituner
     - group.luci
     - group.home_recycling_group
     - group.televisori
@@ -23,6 +24,7 @@ luci:
   view: no
   entities:
     - light.salotto
+    - binary_sensor.sonoff_1
 
 televisori:
   name: Televisori
@@ -40,4 +42,5 @@ automazione:
     - group.home_recycling_group
     - script.sonoff_01_turnon
     - script.sonoff_01_turnoff
+    - automation.sslcert_renew
 

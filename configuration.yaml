@@ -66,9 +66,18 @@ sensor:
     scan_intervanl: 10800
     command: "ssl-cert-check -b -c /etc/letsencrypt/live/homebubi.duckdns.org/cert.pem | awk '{ print $NF }'"
 
+input_boolean:
+  sonoff_1:
+    name: Sonoff #1
+    initial: off
+
 binary_sensor:
   - platform: template
     sensors:
+      sonoff_1:
+        device_class: light
+        value_template: "{{ states.input_boolean.sonoff_1.state == 'on' }}"
+        entity_id: input_boolean.sonoff_1
       home_recycling_empty:
         friendly_name: 'Domani niente spazzatura!'
         icon_template: mdi:thumb-up
