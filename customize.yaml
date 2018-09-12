@@ -14,4 +14,7 @@ binary_sensor.home_recycling_barattolame:
 sensor.ssl_cert_expiry:
   friendly_name: SSL Certificate Expiration
 binary_sensor.sonoff_1:
-  friendly_name: SONOFF 1
+  friendly_name: Albero di Natale
+  icon: mdi:pine-tree
+  templates:
+    rgb_color: "if (state === 'on') return [200, 100, 30]; else return [10, 20, 30];"
