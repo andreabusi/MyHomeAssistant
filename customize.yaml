@@ -1,22 +1,26 @@
-# I sensori della spazzatura li nascondiamo, verrano visualizzati in un gruppo apposito (se attivi)
+#Home recycling sensors
 binary_sensor.home_recycling_secco:
   entity_picture: /local/icons/waste_trash.png
 binary_sensor.home_recycling_organico:
-  entity_picture: /local/icons/waste_organic.png # OK
+  entity_picture: /local/icons/waste_organic.png
 binary_sensor.home_recycling_carta:
-  entity_picture: /local/icons/waste_paper.png # OK
+  entity_picture: /local/icons/waste_paper.png
 binary_sensor.home_recycling_vetro:
-  entity_picture: /local/icons/waste_glass.png # OK
+  entity_picture: /local/icons/waste_glass.png
 binary_sensor.home_recycling_plastica:
-  entity_picture: /local/icons/waste_plastic.png # OK
+  entity_picture: /local/icons/waste_plastic.png
 binary_sensor.home_recycling_barattolame:
-  entity_picture: /local/icons/waste_can.png # OK
+  entity_picture: /local/icons/waste_can.png
+
+# Monitoring sensors
 sensor.ssl_cert_expiry:
   friendly_name: SSL Certificate Expiration
 binary_sensor.port_forwarding_https:
   friendly_name: Port forwarding (HTTPS)
 binary_sensor.port_forwarding_http:
   friendly_name: Port forwarding (HTTP)
+
+# Other sensors
 binary_sensor.sonoff_1:
   friendly_name: Albero di Natale
   icon: mdi:pine-tree
