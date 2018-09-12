@@ -65,6 +65,15 @@ sensor:
     unit_of_measurement: days
     scan_intervanl: 10800
     command: "ssl-cert-check -b -c /etc/letsencrypt/live/homebubi.duckdns.org/cert.pem | awk '{ print $NF }'"
+  - platform: systemmonitor
+    resources:
+      - type: since_last_boot
+      - type: memory_use_percent
+      - type: disk_use_percent
+      - type: load_5m
+      - type: network_out
+      - type: network_in
+      - type: processor_use
 
 input_boolean:
   sonoff_1:

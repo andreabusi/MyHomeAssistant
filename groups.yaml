@@ -4,7 +4,6 @@ default_view:
   view: yes
   entities:
     - sun.sun
-    - sensor.ssl_cert_expiry
     - group.luci
     - group.home_recycling_group
     - group.televisori
@@ -42,3 +41,23 @@ automazione:
     - script.sonoff_01_turnon
     - script.sonoff_01_turnoff
 
+jarvispi:
+  name: JarvisPI
+  icon: mdi:desktop-classic
+  view: yes
+  entities:
+    - sensor.ssl_cert_expiry
+    - group.monitoring
+
+monitoring:
+  name: Raspberry Status
+  view: no
+  entities: 
+    - sensor.memory_use_percent
+    - sensor.disk_use_percent
+    - sensor.load_5m
+    - sensor.network_in
+    - sensor.network_out
+    - sensor.processor_use
+    - sensor.since_last_boot
+ 
