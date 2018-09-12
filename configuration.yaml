@@ -63,7 +63,7 @@ sensor:
   - platform: command_line
     name: ssl_cert_expiry
     unit_of_measurement: days
-    scan_intervanl: 10800
+    scan_interval: 10800
     command: "ssl-cert-check -b -c /etc/letsencrypt/live/homebubi.duckdns.org/cert.pem | awk '{ print $NF }'"
   - platform: systemmonitor
     resources:
