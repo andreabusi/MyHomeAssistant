@@ -109,6 +109,12 @@ binary_sensor:
       home_recycling_barattolame:
         friendly_name: 'Barattolame'
         value_template: "{{ is_state('home_recycling.barattolame', 'yes') }}"
+  - platform: command_line
+    name: port_forwording_https
+    command: 'nmap -p 443 homebubi.duckdns.org | grep open &> /dev/null && echo success || echo fail'
+    payload_on: 'success'
+    payload_off: 'fail'
+    scan_interval: 3600
 
 # Text to speech
 tts:
