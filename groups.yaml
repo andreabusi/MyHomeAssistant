@@ -48,6 +48,7 @@ jarvispi:
   entities:
     - sensor.ssl_cert_expiry
     - binary_sensor.port_forwarding_https
+    - binary_sensor.port_forwarding_http
     - group.monitoring
 
 monitoring:

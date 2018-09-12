@@ -115,6 +115,12 @@ binary_sensor:
     payload_on: 'success'
     payload_off: 'fail'
     scan_interval: 3600
+  - platform: command_line
+    name: port_forwarding_http
+    command: 'nmap -p 10080 homebubi.duckdns.org | grep open &> /dev/null && echo success || echo fail'
+    payload_on: 'success'
+    payload_off: 'fail'
+    scan_interval: 3600
 
 # Text to speech
 tts:

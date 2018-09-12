@@ -15,6 +15,8 @@ sensor.ssl_cert_expiry:
   friendly_name: SSL Certificate Expiration
 binary_sensor.port_forwarding_https:
   friendly_name: Port forwarding (HTTPS)
+binary_sensor.port_forwarding_http:
+  friendly_name: Port forwarding (HTTP)
 binary_sensor.sonoff_1:
   friendly_name: Albero di Natale
   icon: mdi:pine-tree
