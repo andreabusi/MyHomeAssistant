@@ -132,3 +132,26 @@
     service: notify.andrea_telegram
     data:
       message: 'Il certificato SSL scadrà fra 21 giorni e non è ancora stato rinnovato in automatico!'
+
+#Port forwarding
+- id: 'portforwarding_http_notification'
+  alias: 'Port forwarding: HTTP not working'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.port_forwarding_http
+    to: 'off'
+  action:
+    service: notify.andrea_telegram
+    data:
+      message: 'Il port forwarding verso la porta HTTP non è più funzionante!'
+
+- id: 'portforwarding_https_notification'
+  alias: 'Port forwarding: HTTPS not working'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.port_forwarding_https
+    to: 'off'
+  action:
+    service: notify.andrea_telegram
+    data:
+      message: 'Il port forwarding verso la porta HTTPS non è più funzionante!'
