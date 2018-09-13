@@ -73,7 +73,7 @@ sensor:
 
 input_boolean:
   sonoff_1:
-    name: Sonoff #1
+    name: Sonoff 1
     initial: off
 
 binary_sensor:
