@@ -69,10 +69,6 @@ sensor:
     resources:
       - type: since_last_boot
       - type: memory_use_percent
-      - type: disk_use_percent
-      - type: load_5m
-      - type: network_out
-      - type: network_in
       - type: processor_use
 
 input_boolean:
