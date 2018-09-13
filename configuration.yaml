@@ -57,6 +57,7 @@ sensor:
   - platform: dht
     sensor: DHT11
     pin: 15
+    scan_interval: 900
     monitored_conditions:
       - temperature
       - humidity
