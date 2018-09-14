@@ -22,7 +22,7 @@ luci:
   view: no
   entities:
     - light.salotto
-    - binary_sensor.sonoff_1
+    - switch.sonoff_1
 
 televisori:
   name: Televisori

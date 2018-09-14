@@ -21,7 +21,7 @@ binary_sensor.port_forwarding_http:
   friendly_name: Port forwarding (HTTP)
 
 # Other sensors
-binary_sensor.sonoff_1:
+switch.sonoff_1:
   friendly_name: Albero di Natale
   icon: mdi:pine-tree
   templates:
