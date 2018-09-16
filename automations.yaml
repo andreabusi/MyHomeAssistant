@@ -155,3 +155,25 @@
     service: notify.andrea_telegram
     data:
       message: 'Il port forwarding verso la porta HTTPS non è più funzionante!'
+
+#Update Christmass Tree from Sonoff
+- id: 'sonoff_1_christmass_tree_on'
+  alias: 'Sonoff 1: When is turned on, update Christmass Tree status'
+  trigger:
+    platform: state
+    entity_id: input_boolean.sonoff_1
+    to: 'on'
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.christmas_tree
+
+- id: 'sonoff_1_christmass_tree_off'
+  alias: 'Sonoff 1: When is turned off, update Christmass Tree status'
+  trigger:
+    platform: state
+    entity_id: input_boolean.sonoff_1
+    to: 'off'
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.christmas_tree
+

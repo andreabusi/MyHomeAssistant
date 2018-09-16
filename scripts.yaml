@@ -1,3 +1,4 @@
+# Turn on/off Sonoff via IFTTTT
 sonoff_01_turnon:
   alias: 'Sonoff: Sonoff #1 turn on'
   sequence:
@@ -11,3 +12,48 @@ sonoff_01_turnoff:
   - data:
       event: jarvis_sonoff01_turnoff
     service: ifttt.trigger
+
+# Turn the Christmas Tree on using Google Home (via IFTTT)
+christmastree_googlehome_on:
+  alias: 'Turn the Christmas Tree on from Google Home'
+  sequence:
+    - service: ifttt.trigger
+      data:
+        event: jarvis_sonoff01_turnon
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.christmas_tree
+    - service: script.turn_on
+      entity_id: script.play_jingle_bells
+
+# Turn on/off the Christmas Tree and update the related input_boolean
+christmastree_on:
+  alias: 'Turn the Christmas Tree on'
+  sequence:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.christmas_tree
+    - service: script.turn_on
+      entity_id: script.sonoff_01_turnon
+
+christmastree_off:
+  alias: 'Turn the Christmas Tree off'
+  sequence:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.christmas_tree
+    - service: script.turn_on
+      entity_id: script.sonoff_01_turnoff
+
+# Play Jingle Bells on Google Home
+play_jingle_bells:
+  alias: 'Play Jingle Bells'
+  sequence:
+    - service: media_player.turn_on
+      entity_id: media_player.soggiorno
+    - service:  media_player.volume_set
+      entity_id: media_player.living_room_home
+      data:
+        volume_level: 1
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.soggiorno
+        media_content_id: !secret www_music_jinglebells
+        media_content_type: audio/mp3
