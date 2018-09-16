@@ -16,6 +16,7 @@ salotto:
     - sensor.dht_sensor_temperature
     - sensor.dht_sensor_humidity
     - camera.soggiorno
+    - media_player.soggiorno
 
 luci:
   name: Luci
