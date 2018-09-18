@@ -51,6 +51,7 @@ jarvispi:
     - binary_sensor.port_forwarding_https
     - binary_sensor.port_forwarding_http
     - group.monitoring
+    - group.home_assistant
 
 monitoring:
   name: Raspberry Status
@@ -59,4 +60,12 @@ monitoring:
     - sensor.memory_use_percent
     - sensor.processor_use
     - sensor.since_last_boot
+
+home_assistant:
+  name: Home Assistant
+  view: no
+  entities:
+    - sensor.ha_upstream_version
+    - sensor.ha_installed_version
+
  

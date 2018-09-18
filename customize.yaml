@@ -26,3 +26,9 @@ switch.sonoff_1:
   icon: mdi:pine-tree
   templates:
     rgb_color: "if (state === 'on') return [200, 100, 30]; else return [10, 20, 30];"
+
+# Home Assistant sensors
+sensor.ha_installed_version:
+  friendly_name: 'HA installed version'
+sensor.ha_upstream_version:
+  friendly_name: 'HA last version'

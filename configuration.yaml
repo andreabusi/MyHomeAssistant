@@ -71,6 +71,15 @@ sensor:
       - type: since_last_boot
       - type: memory_use_percent
       - type: processor_use
+  - platform: rest
+    resource: https://pypi.python.org/pypi/homeassistant/json
+    name: ha_upstream_version
+    value_template: '{{ value_json.info.version }}'
+    scan_interval: 3600
+  - platform: command_line
+    name: ha_installed_version
+    command: "cat /home/homeassistant/.homeassistant/.HA_VERSION"
+    scan_interval: 3600
 
 switch:
   - platform: template
