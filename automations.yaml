@@ -34,19 +34,17 @@
   alias: 'HA: update available notification'
   trigger:
     - platform: state
-      entity_id: sensor.ha_available_version
+      entity_id: sensor.ha_upstream_version
   condition:
-    condition: and
-    conditions:
-      - condition: template
-        value_template: "{{ trigger.to_state.state != 'unknown' }}"
-      - condition: template
-        value_template: "{{ trigger.to_state.state != 'unavailable' }}"
-      - condition: template
-        value_template: '{{ trigger.to_state.state != states.sensor.ha_installed_version.state }}'
+    - condition: template
+      value_template: "{{ trigger.to_state.state != 'unknown' }}"
+    - condition: template
+      value_template: "{{ trigger.to_state.state != 'unavailable' }}"
+    - condition: template
+      value_template: '{{ trigger.to_state.state != states.sensor.ha_installed_version.state }}'
   action:
     service: notify.home_telegram
-    data:
+    data_template:
       message: "È disponibile l'aggiornamento {{ trigger.to_state.state }} per Home Assistant!"
 
 - id: home_assistant.startup
