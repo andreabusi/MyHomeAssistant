@@ -53,6 +53,7 @@ jarvispi:
     - binary_sensor.port_forwarding_http
     - group.monitoring
     - group.home_assistant
+    - group.router
 
 monitoring:
   name: Raspberry Status
@@ -69,4 +70,9 @@ home_assistant:
     - sensor.ha_upstream_version
     - sensor.ha_installed_version
 
- 
+router:
+  name: Router
+  view: no
+  entities:
+    - sensor.modem_tim_kbytesec_received
+    - sensor.modem_tim_kbytesec_sent 
