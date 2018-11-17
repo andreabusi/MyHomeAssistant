@@ -55,6 +55,7 @@ def download_new_issue(issue_number):
         with open(output_path, 'wb') as outfile:
             outfile.write(response.content)
     except Exception as e:
+        _LOGGER.error("Error during download: %s" % e)
         return False
 
     return True
