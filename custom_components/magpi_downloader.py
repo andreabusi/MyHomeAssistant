@@ -2,7 +2,7 @@
 Download automatico dei nuovi numeri di MagPi
 """
 import json
-import urllib.request
+import requests
 import logging
 
 # The domain of your component. Should be equal to the filename of the component.
@@ -51,7 +51,9 @@ def download_new_issue(issue_number):
         file_name = create_filename(issue_number)
         file_url = "%s/%s" % (MAGPI_ISSUES_URL, file_name)
         output_path = "%s/%s" % (OUTPUT_PATH, file_name)
-        urllib.request.urlretrieve(file_url, output_path)
+        response = requests.get(file_url)
+        with open(output_path, 'wb') as outfile:
+            outfile.write(response.content)
     except Exception as e:
         return False
 
