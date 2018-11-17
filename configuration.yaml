@@ -51,6 +51,12 @@ map:
 # Track the sun
 sun:
 
+# Enable logger and ignore events lower than critical for specified components
+logger:
+  default: warning
+  logs:
+    homeassistant.components.media_player.plex: critical
+
 # Weather prediction
 sensor:
   - platform: yr
