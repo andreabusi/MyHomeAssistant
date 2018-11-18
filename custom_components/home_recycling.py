@@ -42,7 +42,6 @@ def setup(hass, config):
 
     # Servizio di notifica per la raccolta del giorno dopo
     def notification(call):
-        title = "Spazzatura"
         message = None
 
         tomorrow = time.localtime(time.time() + 24*3600)
