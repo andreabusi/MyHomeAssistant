@@ -51,7 +51,8 @@ def setup(hass, config):
         else:
             message = "Spazzatura in ritiro domani:"
             for collection in collections:
-                message += "\n ❗️" + collection
+                icon = get_icon_for_collection(collection)
+                message += "\n%s %s️" % (icon, collection)
         
         service_data = { 'message': message }
         hass.services.call('notify', 'home_telegram', service_data, False)
@@ -80,6 +81,7 @@ def setup(hass, config):
     # Return boolean to indicate that initialization was successfully.
     return True
 
+
 def get_waste_collection(date):
     month = time.strftime("%m", date) 
     day = time.strftime("%d", date)
@@ -96,11 +98,24 @@ def get_waste_collection(date):
 
     return todayRaccolte
 
+
 def get_all_collections():
     json_calendar = json.load(open(CALENDAR))
     return json_calendar.keys()
+
 
 def create_group(hass, entitiy_ids):
     if len(entitiy_ids) == 0:
         entitiy_ids.append(SENSOR_PREFIX + "empty")
     group.set_group(hass, 'home_recycling_group', name='Raccolta differenziata', entity_ids=entitiy_ids)
+
+
+def get_icon_for_collection(collection):
+    switcher = {
+        "secco" : "🗑",
+        "organico" : "🦴",
+        "plastica" : "💈",
+        "barattolame" : "🥫",
+        "carta" : "📃"
+    }
+    return switcher[collection]
