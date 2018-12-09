@@ -52,8 +52,11 @@ def download_new_issue(issue_number):
         file_url = "%s/%s" % (MAGPI_ISSUES_URL, file_name)
         output_path = "%s/%s" % (OUTPUT_PATH, file_name)
         response = requests.get(file_url)
-        with open(output_path, 'wb') as outfile:
-            outfile.write(response.content)
+        if response.status_code == requests.codes.ok:
+            with open(output_path, 'wb') as outfile:
+                outfile.write(response.content)
+        else:
+            return False
     except Exception as e:
         _LOGGER.error("Error during download: %s" % e)
         return False
