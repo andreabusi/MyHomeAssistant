@@ -62,7 +62,7 @@ def download_new_issue(issue_number):
 
 
 def send_notification(hass, issue_number):
-    message = "Il nuovo numero di MagPi (issue #%s) è stato scaricato!" % issue_number
+    message = "Il nuovo numero di MagPi #%s è stato scaricato!" % issue_number
     service_data = { 'message': message }
     hass.services.call('notify', 'home_telegram', service_data, False)
 
