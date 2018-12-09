@@ -22,6 +22,16 @@ christmastree_googlehome_on:
         event: jarvis_sonoff01_turnon
     - service: input_boolean.turn_on
       entity_id: input_boolean.christmas_tree
+
+# Turn the Christmas Tree on and play Jingle Bells using Google Home (via IFTTT)
+christmasspirit_googlehome_on:
+  alias: 'Turn the Christmas Tree on from Google Home'
+  sequence:
+    - service: ifttt.trigger
+      data:
+        event: jarvis_sonoff01_turnon
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.christmas_tree
     - service: script.turn_on
       entity_id: script.play_jingle_bells
 
