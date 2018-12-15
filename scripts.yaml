@@ -13,7 +13,7 @@ sonoff_01_turnoff:
       event: jarvis_sonoff01_turnoff
     service: ifttt.trigger
 
-# Turn the Christmas Tree on using Google Home (via IFTTT)
+# Turn the Christmas Tree on/off using Google Home (via IFTTT)
 christmastree_googlehome_on:
   alias: 'Turn the Christmas Tree on from Google Home'
   sequence:
@@ -21,6 +21,15 @@ christmastree_googlehome_on:
       data:
         event: jarvis_sonoff01_turnon
     - service: input_boolean.turn_on
+      entity_id: input_boolean.christmas_tree
+
+christmastree_googlehome_off:
+  alias: 'Turn the Christmas Tree off from Google Home'
+  sequence:
+    - service: ifttt.trigger
+      data:
+        event: jarvis_sonoff01_turnoff
+    - service: input_boolean.turn_off
       entity_id: input_boolean.christmas_tree
 
 # Turn the Christmas Tree on and play Jingle Bells using Google Home (via IFTTT)
