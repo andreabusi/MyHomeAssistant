@@ -6,7 +6,6 @@ default_view:
     - sun.sun
     - group.luci
     - group.home_recycling_group
-    - group.televisori
     - group.salotto
 
 salotto:
@@ -16,7 +15,6 @@ salotto:
     - sensor.dht_sensor_temperature
     - sensor.dht_sensor_humidity
     - camera.soggiorno
-    - media_player.soggiorno
 
 luci:
   name: Luci
@@ -25,6 +23,14 @@ luci:
     - light.salotto
     - light.tradfri_bulb_e27_ws_opal_980lm
     - switch.sonoff_1
+
+media:
+  name: Media
+  icon: mdi:play-network
+  view: yes
+  entities:
+    - group.televisori
+    - media_player.soggiorno
 
 televisori:
   name: Televisori
