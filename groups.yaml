@@ -7,6 +7,7 @@ default_view:
     - group.luci
     - group.home_recycling_group
     - group.salotto
+    - group.pulizia
 
 salotto:
   name: Salotto
@@ -23,6 +24,12 @@ luci:
     - light.salotto
     - light.tradfri_bulb_e27_ws_opal_980lm
     - switch.sonoff_1
+
+pulizia:
+  name: Pulizia
+  view: no
+  entities:
+    - vacuum.mi_roborock
 
 media:
   name: Media

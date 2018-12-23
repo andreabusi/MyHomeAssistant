@@ -190,6 +190,12 @@ camera:
     host: '192.168.1.96'
     password: !secret yi_camera_password
 
+vacuum:
+  - platform: xiaomi_miio
+    name: Mi Roborock
+    host: 192.168.1.95
+    token: !secret mi_vacuum_token
+
 # IFTTT
 ifttt:
   key: !secret ifttt_key
