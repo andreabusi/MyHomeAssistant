@@ -1,16 +1,10 @@
-#Home recycling sensors
-binary_sensor.home_recycling_secco:
-  entity_picture: /local/icons/waste_trash.png
-binary_sensor.home_recycling_organico:
-  entity_picture: /local/icons/waste_organic.png
-binary_sensor.home_recycling_carta:
-  entity_picture: /local/icons/waste_paper.png
-binary_sensor.home_recycling_vetro:
-  entity_picture: /local/icons/waste_glass.png
-binary_sensor.home_recycling_plastica:
-  entity_picture: /local/icons/waste_plastic.png
-binary_sensor.home_recycling_barattolame:
-  entity_picture: /local/icons/waste_can.png
+# Home recycling
+sensor.home_recycling_date:
+  friendly_name: Data ritiro
+  icon_template: mdi:calendar
+sensor.home_recycling_types:
+  friendly_name: In ritiro
+  icon_template: mdi:delete
 
 # Monitoring sensors
 sensor.ssl_cert_expiry:
