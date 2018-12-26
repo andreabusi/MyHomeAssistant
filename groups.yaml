@@ -8,6 +8,7 @@ default_view:
     - group.home_recycling_group
     - group.salotto
     - group.pulizia
+    - group.spazzatura
 
 salotto:
   name: Salotto
@@ -24,6 +25,13 @@ luci:
     - light.salotto
     - light.tradfri_bulb_e27_ws_opal_980lm
     - switch.sonoff_1
+
+spazzatura:
+  name: Spazzatura
+  view: no
+  entities:
+    - sensor.home_recycling_date
+    - sensor.home_recycling_types
 
 pulizia:
   name: Pulizia
