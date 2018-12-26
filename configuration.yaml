@@ -57,32 +57,31 @@ logger:
   logs:
     homeassistant.components.media_player.plex: critical
 
-# Weather prediction
 sensor:
-  - platform: yr
-  - platform: dht
+  - platform: yr                # weather forecast
+  - platform: dht               # temperature and humidity sensor
     sensor: DHT11
     pin: 15
     scan_interval: 900
     monitored_conditions:
       - temperature
       - humidity
-  - platform: command_line
+  - platform: command_line      # SSL cert expiration date
     name: ssl_cert_expiry
     unit_of_measurement: days
     scan_interval: 10800
     command: "ssl-cert-check -b -c /etc/letsencrypt/live/homebubi.duckdns.org/cert.pem | awk '{ print $NF }'"
-  - platform: systemmonitor
+  - platform: systemmonitor     # RaspberryPi system monitoring
     resources:
       - type: last_boot
       - type: memory_use_percent
       - type: processor_use
-  - platform: rest
+  - platform: rest              # HomeAssistant upstream version
     resource: https://pypi.python.org/pypi/homeassistant/json
     name: ha_upstream_version
     value_template: '{{ value_json.info.version }}'
     scan_interval: 3600
-  - platform: command_line
+  - platform: command_line      # HomeAssistant installed version
     name: ha_installed_version
     command: "cat /home/homeassistant/.homeassistant/.HA_VERSION"
     scan_interval: 3600
