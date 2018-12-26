@@ -26,12 +26,9 @@ def setup(hass, config):
     global CALENDAR
 
     # Validate that all required config options are given.
-    #if not validate_config(config, {DOMAIN: [CONF_CALENDAR]}, _LOGGER):
-    #    return False
-
     CALENDAR = config[DOMAIN][CONF_CALENDAR]
 
-    # ToDo: check file exists
+    # check if file exists
     if CALENDAR is None:
         _LOGGER.error("Calendar file does not exist")
 
