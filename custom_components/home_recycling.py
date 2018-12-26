@@ -99,6 +99,7 @@ def get_icon_for_collection(collection):
         "organico" : "🦴",
         "plastica" : "💈",
         "barattolame" : "🥫",
-        "carta" : "📃"
+        "carta" : "📃",
+        "vetro" : "🍾"
     }
     return switcher[collection]
