@@ -1,10 +1,10 @@
 # Home recycling
 sensor.home_recycling_date:
   friendly_name: Data ritiro
-  icon_template: mdi:calendar
+  icon: mdi:calendar
 sensor.home_recycling_types:
   friendly_name: In ritiro
-  icon_template: mdi:delete
+  icon: mdi:delete
 
 # Monitoring sensors
 sensor.ssl_cert_expiry:
