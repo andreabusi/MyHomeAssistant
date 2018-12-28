@@ -140,9 +140,9 @@
     data:
       message: 'Il certificato SSL scadrà fra 21 giorni e non è ancora stato rinnovato in automatico!'
 
-#Update Christmass Tree from Sonoff
-- id: 'sonoff_1_christmass_tree_on'
-  alias: 'Sonoff 1: When is turned on, update Christmass Tree status'
+#Update Christmas Tree from Sonoff
+- id: 'sonoff_1_christmas_tree_on'
+  alias: 'Sonoff 1: When is turned on, update Christmas Tree status'
   trigger:
     platform: state
     entity_id: input_boolean.sonoff_1
@@ -151,8 +151,8 @@
     service: input_boolean.turn_on
     entity_id: input_boolean.christmas_tree
 
-- id: 'sonoff_1_christmass_tree_off'
-  alias: 'Sonoff 1: When is turned off, update Christmass Tree status'
+- id: 'sonoff_1_christmas_tree_off'
+  alias: 'Sonoff 1: When is turned off, update Christmas Tree status'
   trigger:
     platform: state
     entity_id: input_boolean.sonoff_1
