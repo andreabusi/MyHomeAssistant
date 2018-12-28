@@ -5,7 +5,6 @@ default_view:
   entities:
     - sun.sun
     - group.luci
-    - group.home_recycling_group
     - group.salotto
     - group.pulizia
     - group.spazzatura
@@ -60,7 +59,6 @@ automazione:
   icon: mdi:home-automation
   view: yes
   entities:
-    - group.home_recycling_group
     - script.sonoff_01_turnon
     - script.sonoff_01_turnoff
 
