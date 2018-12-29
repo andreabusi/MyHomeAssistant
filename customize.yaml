@@ -30,3 +30,7 @@ sensor.ha_installed_version:
   friendly_name: 'HA installed version'
 sensor.ha_upstream_version:
   friendly_name: 'HA last version'
+
+# Vacuum
+vacuum.mi_roborock:
+  friendly_name: Mi Roborock

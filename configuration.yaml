@@ -179,7 +179,7 @@ camera:
 
 vacuum:
   - platform: xiaomi_miio
-    name: Mi Roborock
+    name: mi_roborock
     host: 192.168.1.95
     token: !secret mi_vacuum_token
 
