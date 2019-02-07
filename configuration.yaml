@@ -18,6 +18,9 @@ homeassistant:
 # Enables configuration UI
 config:
 
+# Enable System Health component
+system_health:
+
 # Public access to HA
 http:
   api_password: !secret http_password
