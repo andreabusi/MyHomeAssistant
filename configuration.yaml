@@ -164,7 +164,6 @@ notify:
     chat_id: !secret telegram_chat_home
 
 media_player:
-  - platform: plex
   - platform: samsungtv
     name: TV Salotto
     host: 192.168.1.97
