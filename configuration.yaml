@@ -12,9 +12,6 @@ homeassistant:
   customize: !include customize.yaml
 
 
-# Show links to resources in log and frontend
-#introduction:
-
 # Enables configuration UI
 config:
 
