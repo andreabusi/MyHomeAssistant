@@ -1,18 +1,18 @@
 # Gestione spazzatura
 - id: home_recycling.notify
-  alias: 'Home recycling: notify tomorrow pickup'
+  alias: 'HR: Notify'
   trigger:
-    platform: time
-    at: '20:00'
+    - platform: time
+      at: '20:00:00'
   condition: []
   action:
     service: home_recycling.notification
 
 - id: home_recycling.set_states
-  alias: 'Home recycling: set tomorrow pickup states'
+  alias: 'HR: set state'
   trigger:
     - platform: time
-      at: '07:00'
+      at: '07:00:00'
     - platform: homeassistant
       event: start
   condition: []
@@ -21,17 +21,17 @@
 
 # Download MagPi issues
 - id: magpi_downloader.check_and_download
-  alias: 'MagPi: download new MagPi issues (if available)'
+  alias: 'MagPi: download'
   trigger:
-    platform: time
-    at: '08:00'
+    - platform: time
+      at: '08:00:00'
   condition: []
   action:
     service: magpi_downloader.downloader
 
 # HomeAssistant notifications
 - id: home_assistant.update_available
-  alias: 'HA: update available notification'
+  alias: 'HA: update available'
   trigger:
     - platform: state
       entity_id: sensor.ha_upstream_version
@@ -51,58 +51,58 @@
   alias: 'HA: startup notification'
   hide_entity: true
   trigger:
-    platform: homeassistant
-    event: start
+    - platform: homeassistant
+      event: start
   action:
-    service: notify.andrea_telegram
-    data:
-      message: 'Home Assistant è stato riavviato, ora è di nuovo funzionante!'
+    - service: notify.andrea_telegram
+      data:
+        message: 'Home Assistant è stato riavviato, ora è di nuovo funzionante!'
 
 # JarvisBOT: comandi Telegram a cui Jarvis può rispondere
 - id: 'jarvisbot.ping'
-  alias: 'JarvisBOT: reply pong to ping'
+  alias: 'JarvisBOT: /ping'
   hide_entity: true
   trigger:
-    platform: event
-    event_type: telegram_command
-    event_data:
-      command: '/ping'
+    - platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/ping'
   action:
-    service: telegram_bot.send_message
-    data_template:
-      target: '{{ trigger.event.data.chat_id }}'
-      message: 'Pong!'
+    - service: telegram_bot.send_message
+      data_template:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'Pong!'
 
 - id: 'jarvisbot.temperature'
-  alias: 'JarvisBOT: current home temperature'
+  alias: 'JarvisBOT: /temperature'
   hide_entity: true
   trigger:
-    platform: event
-    event_type: telegram_command
-    event_data:
-      command: '/temperature'
+    - platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/temperature'
   action:
-    service: telegram_bot.send_message
-    data_template:
-      target: '{{ trigger.event.data.chat_id }}'
-      message: 'La temperatura corrente è di {{ states.sensor.dht_sensor_temperature.state_with_unit }}'
+    - service: telegram_bot.send_message
+      data_template:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'La temperatura corrente è di {{ states.sensor.dht_sensor_temperature.state_with_unit }}'
 
 - id: 'jarvisbot.camera_picture'
-  alias: 'JarvisBOT: send current camera picture'
+  alias: 'JarvisBOT: /camera'
   hide_entity: true
   trigger:
-    platform: event
-    event_type: telegram_command
-    event_data:
-      command: '/camera'
+    - platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/camera'
   action:
-    service: telegram_bot.send_photo
-    data:
-      url: http://192.168.1.100:8123/api/camera_proxy/camera.soggiorno
-      caption: 'Situazione attuale del soggiorno'
+    - service: telegram_bot.send_photo
+      data:
+        url: http://192.168.1.100:8123/api/camera_proxy/camera.soggiorno
+        caption: 'Situazione attuale del soggiorno'
 
 - id: 'jarvisbot.hello'
-  alias: 'JarvisBOT: say hello'
+  alias: 'JarvisBOT: /hello'
   hide_entity: true
   trigger:
     - platform: event
@@ -114,59 +114,59 @@
       event_data:
         command: '/hello'
   action:
-    service: telegram_bot.send_message
-    data_template:
-      target: '{{ trigger.event.data.chat_id }}'
-      message: 'Ciao {{ trigger.event.data.from_first }}!'
+    - service: telegram_bot.send_message
+      data_template:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'Ciao {{ trigger.event.data.from_first }}!'
 
 #SSL Certificate renew
 - id: 'sslcert_renew'
-  alias: 'SSL Certificate: Auto Renew SSL'
+  alias: 'SSL cert: renew'
   trigger:
-    platform: numeric_state
-    entity_id: sensor.ssl_cert_expiry
-    below: 29
+    - platform: numeric_state
+      entity_id: sensor.ssl_cert_expiry
+      below: 29
   action:
-    service: shell_command.renew_ssl
+    - service: shell_command.renew_ssl
 
 - id: 'sslcert_notification'
-  alias: 'SSL Certificate: expiration notification'
+  alias: 'SSL cert: expire'
   trigger:
-    platform: numeric_state
-    entity_id: sensor.ssl_cert_expiry
-    below: 21
+    - platform: numeric_state
+      entity_id: sensor.ssl_cert_expiry
+      below: 21
   action:
-    service: notify.andrea_telegram
-    data:
-      message: 'Il certificato SSL scadrà fra 21 giorni e non è ancora stato rinnovato in automatico!'
+    - service: notify.andrea_telegram
+      data:
+        message: 'Il certificato SSL scadrà fra 21 giorni e non è ancora stato rinnovato in automatico!'
 
 #Update Christmas Tree from Sonoff
 - id: 'sonoff_1_christmas_tree_on'
-  alias: 'Sonoff 1: When is turned on, update Christmas Tree status'
+  alias: 'Sonoff 1: tree on'
   trigger:
-    platform: state
-    entity_id: input_boolean.sonoff_1
-    to: 'on'
+    - platform: state
+      entity_id: input_boolean.sonoff_1
+      to: 'on'
   action:
     service: input_boolean.turn_on
     entity_id: input_boolean.christmas_tree
 
 - id: 'sonoff_1_christmas_tree_off'
-  alias: 'Sonoff 1: When is turned off, update Christmas Tree status'
+  alias: 'Sonoff 1: tree off'
   trigger:
-    platform: state
-    entity_id: input_boolean.sonoff_1
-    to: 'off'
+    - platform: state
+      entity_id: input_boolean.sonoff_1
+      to: 'off'
   action:
-    service: input_boolean.turn_off
-    entity_id: input_boolean.christmas_tree
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.christmas_tree
 
 - id: 'christmas_tree_auto_turonoff'
   alias: 'Christmas Tree: turn off at 01:00 am'
   trigger:
-    platform: time
-    at: '01:00'
+    - platform: time
+      at: '01:00:00'
   condition: []
   action:
-    service: script.turn_on
-    entity_id: script.christmastree_googlehome_off
+    - service: script.turn_on
+      entity_id: script.christmastree_googlehome_off
