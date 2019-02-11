@@ -57,6 +57,10 @@ logger:
   logs:
     homeassistant.components.media_player.plex: critical
 
+# Enable and use FFMPEG installed on system
+ffmpeg:
+  ffmpeg_bin: /usr/bin/ffmpeg
+
 sensor:
   - platform: yr                # weather forecast
   - platform: dht               # temperature and humidity sensor
