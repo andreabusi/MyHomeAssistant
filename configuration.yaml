@@ -155,8 +155,8 @@ notify:
 media_player:
   - platform: samsungtv
     name: TV Salotto
-    host: 192.168.1.97
-    mac: !secret mac_address_tv_samsung
+    host: !secret ip_tv_salotto
+    mac: !secret mac_tv_samsung
     port: 8001
   - platform: plex
 
@@ -168,13 +168,13 @@ cast:
 camera:
   - platform: yi
     name: Soggiorno
-    host: '192.168.1.96'
+    host: !secret ip_mi_camera
     password: !secret yi_camera_password
 
 vacuum:
   - platform: xiaomi_miio
     name: mi_roborock
-    host: 192.168.1.95
+    host: !secret ip_xiaomi_robot
     token: !secret mi_vacuum_token
 
 # IFTTT
