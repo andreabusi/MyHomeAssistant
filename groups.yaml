@@ -67,8 +67,6 @@ jarvispi:
   icon: mdi:desktop-classic
   view: yes
   entities:
-    - binary_sensor.port_forwarding_https
-    - binary_sensor.port_forwarding_http
     - group.monitoring
     - group.home_assistant
     - group.router

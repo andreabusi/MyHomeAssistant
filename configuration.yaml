@@ -108,16 +108,6 @@ input_boolean:
     name: Christmas Tree
     initial: off
 
-binary_sensor:
-  - platform: command_line
-    name: port_forwarding_https
-    command: nmap -oG - -T4 -p 443 -v homebubi.duckdns.org | grep open > /dev/null 2>&1 && echo "ON" || echo "OFF"
-    scan_interval: 600
-  - platform: command_line
-    name: port_forwarding_http
-    command: nmap -oG - -T4 -p 10080 -v homebubi.duckdns.org | grep open > /dev/null 2>&1 && echo "ON" || echo "OFF"
-    scan_interval: 600
-
 # Text to speech
 tts:
   - platform: google
