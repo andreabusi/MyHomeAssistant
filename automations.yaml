@@ -140,7 +140,7 @@
     - service: input_boolean.turn_off
       entity_id: input_boolean.christmas_tree
 
-- id: 'christmas_tree_auto_turonoff'
+- id: 'christmas_tree_auto_turnoff'
   alias: 'Christmas Tree: turn off at 01:00 am'
   trigger:
     - platform: time
