@@ -52,7 +52,6 @@ televisori:
   entities:
     - media_player.tv_cucina
     - media_player.tv_salotto
-    - media_player.samsung_ue40ku6400
 
 automazione:
   name: Automazione

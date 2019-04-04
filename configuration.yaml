@@ -125,9 +125,6 @@ tts:
 # Cloud
 cloud:
 
-# Enable iOS App
-#ios:
-
 # Gestione spazzatura
 home_recycling:
   calendar: /config/custom_components/home_recycling_calendar.json
