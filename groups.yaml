@@ -21,8 +21,9 @@ luci:
   name: Luci
   view: no
   entities:
-    - switch.sonoff_1
+    #- switch.sonoff_1 # Christmass Tree
     - light.tradfri_bulb
+    - input_boolean.sonoff_1
 
 spazzatura:
   name: Spazzatura
