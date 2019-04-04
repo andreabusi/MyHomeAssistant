@@ -20,14 +20,7 @@ system_health:
 
 # Public access to HA
 http:
-  api_password: !secret http_password
-  trusted_networks:
-    - 127.0.0.1
-    - ::1
-    - 192.168.1.0/24
   base_url: !secret http_public_url
-  ssl_key: !secret http_ssl_key
-  ssl_certificate: !secret http_ssl_certificate
 
 # Checks for available updates
 updater:
@@ -70,11 +63,6 @@ sensor:
     monitored_conditions:
       - temperature
       - humidity
-  - platform: command_line      # SSL cert expiration date
-    name: ssl_cert_expiry
-    unit_of_measurement: days
-    scan_interval: 10800
-    command: "ssl-cert-check -b -c /etc/letsencrypt/live/homebubi.duckdns.org/cert.pem | awk '{ print $NF }'"
   - platform: systemmonitor     # RaspberryPi system monitoring
     resources:
       - type: last_boot
@@ -87,7 +75,7 @@ sensor:
     scan_interval: 3600
   - platform: command_line      # HomeAssistant installed version
     name: ha_installed_version
-    command: "cat /home/homeassistant/.homeassistant/.HA_VERSION"
+    command: "cat /config/.HA_VERSION"
     scan_interval: 3600
   - platform: template          # Home Recyling (date and types)
     sensors:
@@ -142,12 +130,12 @@ cloud:
 
 # Gestione spazzatura
 home_recycling:
-  calendar: /home/homeassistant/.homeassistant/custom_components/home_recycling_calendar.json
+  calendar: /config/custom_components/home_recycling_calendar.json
 
 # Downloader MagPi
 magpi_downloader:
-  config_file: /home/homeassistant/.homeassistant/custom_components/magpi_downloader_config.json
-  output_path: /home/homeassistant/magpi
+  config_file: /config/custom_components/magpi_downloader_config.json
+  output_path: /magpi
 
 # configurazione bot Telegram
 telegram_bot:
@@ -173,6 +161,12 @@ media_player:
     host: 192.168.1.97
     mac: !secret mac_address_tv_samsung
     port: 8001
+  - platform: plex
+
+cast:
+  media_player:
+    - host: !secret ip_chromecast_cucina
+    - host: !secret ip_google_home
 
 camera:
   - platform: yi
@@ -190,9 +184,6 @@ vacuum:
 ifttt:
   key: !secret ifttt_key
 
-# Shell commands
-shell_command:
-  renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges http-01
 
 group: !include groups.yaml
 automation: !include automations.yaml

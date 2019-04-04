@@ -7,8 +7,6 @@ sensor.home_recycling_types:
   icon: mdi:delete
 
 # Monitoring sensors
-sensor.ssl_cert_expiry:
-  friendly_name: SSL Certificate Expiration
 binary_sensor.port_forwarding_https:
   friendly_name: Port forwarding (HTTPS)
 binary_sensor.port_forwarding_http:

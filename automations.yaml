@@ -98,7 +98,7 @@
   action:
     - service: telegram_bot.send_photo
       data:
-        url: http://192.168.1.100:8123/api/camera_proxy/camera.soggiorno
+        url: http://127.0.0.1/api/camera_proxy/camera.soggiorno
         caption: 'Situazione attuale del soggiorno'
 
 - id: 'jarvisbot.hello'
@@ -118,27 +118,6 @@
       data_template:
         target: '{{ trigger.event.data.chat_id }}'
         message: 'Ciao {{ trigger.event.data.from_first }}!'
-
-#SSL Certificate renew
-- id: 'sslcert_renew'
-  alias: 'SSL cert: renew'
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.ssl_cert_expiry
-      below: 29
-  action:
-    - service: shell_command.renew_ssl
-
-- id: 'sslcert_notification'
-  alias: 'SSL cert: expire'
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.ssl_cert_expiry
-      below: 21
-  action:
-    - service: notify.andrea_telegram
-      data:
-        message: 'Il certificato SSL scadrà fra 21 giorni e non è ancora stato rinnovato in automatico!'
 
 #Update Christmas Tree from Sonoff
 - id: 'sonoff_1_christmas_tree_on'

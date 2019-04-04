@@ -43,7 +43,8 @@ media:
   view: yes
   entities:
     - group.televisori
-    - media_player.soggiorno
+    - media_player.google_home_salotto
+    - media_player.plex
 
 televisori:
   name: Televisori
@@ -66,7 +67,6 @@ jarvispi:
   icon: mdi:desktop-classic
   view: yes
   entities:
-    - sensor.ssl_cert_expiry
     - binary_sensor.port_forwarding_https
     - binary_sensor.port_forwarding_http
     - group.monitoring
