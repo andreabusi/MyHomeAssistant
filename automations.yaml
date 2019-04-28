@@ -1,164 +1,171 @@
 # Gestione spazzatura
-- id: home_recycling.notify
-  alias: 'HR: Notify'
+- id: 'home_recycling_notify'
+  alias: Recycling, evening notification
   trigger:
-    - platform: time
-      at: '20:00:00'
+  - at: '20:00'
+    platform: time
   condition: []
   action:
-    service: home_recycling.notification
+  - service: home_recycling.notification
 
-- id: home_recycling.set_states
-  alias: 'HR: set state'
+- id: 'home_recycling_states_start'
+  alias: Recycling, set states (morning)
   trigger:
-    - platform: time
-      at: '07:00:00'
-    - platform: homeassistant
-      event: start
+  - at: '07:00'
+    platform: time  
   condition: []
   action:
-    service: home_recycling.collections_state
+  - service: home_recycling.collections_state
+
+- id: 'home_recycling_states_morning'
+  alias: Recycling, set states (startup)
+  trigger:
+  - event: start
+    platform: homeassistant
+  condition: []
+  action:
+  - service: home_recycling.collections_state
 
 # Download MagPi issues
-- id: magpi_downloader.check_and_download
-  alias: 'MagPi: download'
+- id: 'magpi_downloader_check'
+  alias: MagPi, check and download
   trigger:
-    - platform: time
-      at: '08:00:00'
+  - at: '08:00'
+    platform: time  
   condition: []
   action:
-    service: magpi_downloader.downloader
+  - service: magpi_downloader.downloader
 
 # HomeAssistant notifications
-- id: home_assistant.update_available
-  alias: 'HA: update available'
+- id: 'ha_check_update'
+  alias: HomeAssistant, check available update
   trigger:
-    - platform: state
-      entity_id: sensor.ha_upstream_version
+  - entity_id: sensor.ha_upstream_version
+    platform: state  
   condition:
-    - condition: template
-      value_template: "{{ trigger.to_state.state != 'unknown' }}"
-    - condition: template
-      value_template: "{{ trigger.to_state.state != 'unavailable' }}"
-    - condition: template
-      value_template: '{{ trigger.to_state.state != states.sensor.ha_installed_version.state }}'
+  - condition: template
+    value_template: "{{ trigger.to_state.state != 'unknown' }}"
+  - condition: template
+    value_template: "{{ trigger.to_state.state != 'unavailable' }}"
+  - condition: template
+    value_template: "{{ trigger.to_state.state != states.sensor.ha_installed_version.state }}"
   action:
-    service: notify.andrea_telegram
-    data_template:
-      message: "È disponibile l'aggiornamento {{ trigger.to_state.state }} per Home Assistant!"
-
-- id: home_assistant.startup
-  alias: 'HA: startup notification'
-  hide_entity: true
+  - data_template:
+      message: È disponibile l'aggiornamento {{ trigger.to_state.state }} per Home Assistant!
+    service: notify.andrea_tg
+    
+- id: 'ha_startup'
+  alias: HomeAssistant, started notification
   trigger:
-    - platform: homeassistant
-      event: start
+  - event: start
+    platform: homeassistant
+  condition: []
   action:
-    - service: notify.andrea_telegram
-      data:
-        message: 'Home Assistant è stato riavviato, ora è di nuovo funzionante!'
+  - data:
+      message: Home Assistant è stato riavviato, ora è di nuovo funzionante!
+    service: notify.andrea_tg
 
 # JarvisBOT: comandi Telegram a cui Jarvis può rispondere
-- id: 'jarvisbot.ping'
+- id: 'jarvisbot_ping'
   alias: 'JarvisBOT: /ping'
   hide_entity: true
   trigger:
-    - platform: event
-      event_type: telegram_command
-      event_data:
-        command: '/ping'
+  - platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/ping'
   action:
-    - service: telegram_bot.send_message
-      data_template:
-        target: '{{ trigger.event.data.chat_id }}'
-        message: 'Pong!'
+  - service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.chat_id }}'
+      message: 'Pong!'
 
-- id: 'jarvisbot.temperature'
+- id: 'jarvisbot_temperature'
   alias: 'JarvisBOT: /temperature'
   hide_entity: true
   trigger:
-    - platform: event
-      event_type: telegram_command
-      event_data:
-        command: '/temperature'
+  - platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/temperature'
   action:
-    - service: telegram_bot.send_message
-      data_template:
-        target: '{{ trigger.event.data.chat_id }}'
-        message: 'La temperatura corrente è di {{ states.sensor.dht_sensor_temperature.state_with_unit }}'
+  - service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.chat_id }}'
+      message: 'La temperatura corrente è di {{ states.sensor.dht_sensor_temperature.state_with_unit }}'
 
-- id: 'jarvisbot.camera_picture'
+- id: 'jarvisbot_camera_picture'
   alias: 'JarvisBOT: /camera'
   hide_entity: true
   trigger:
-    - platform: event
-      event_type: telegram_command
-      event_data:
-        command: '/camera'
+  - platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/camera'
   action:
-    - service: telegram_bot.send_photo
-      data:
-        url: http://127.0.0.1/api/camera_proxy/camera.soggiorno
-        caption: 'Situazione attuale del soggiorno'
+  - service: telegram_bot.send_photo
+    data:
+      url: http://127.0.0.1/api/camera_proxy/camera.soggiorno
+      caption: 'Situazione attuale del soggiorno'
 
-- id: 'jarvisbot.hello'
+- id: 'jarvisbot_hello'
   alias: 'JarvisBOT: /hello'
   hide_entity: true
   trigger:
-    - platform: event
-      event_type: telegram_text
-      event_data:
-        text: 'Jarvis'
-    - platform: event
-      event_type: telegram_command
-      event_data:
-        command: '/hello'
+  - platform: event
+    event_type: telegram_text
+    event_data:
+      text: 'Jarvis'
+  - platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/hello'
   action:
-    - service: telegram_bot.send_message
-      data_template:
-        target: '{{ trigger.event.data.chat_id }}'
-        message: 'Ciao {{ trigger.event.data.from_first }}!'
+  - service: telegram_bot.send_message
+    data_template:
+      target: '{{ trigger.event.data.chat_id }}'
+      message: 'Ciao {{ trigger.event.data.from_first }}!'
 
 #Update Christmas Tree from Sonoff
 - id: 'sonoff_1_christmas_tree_on'
   alias: 'Sonoff 1: tree on'
   trigger:
-    - platform: state
-      entity_id: input_boolean.sonoff_1
-      to: 'on'
+  - platform: state
+    entity_id: input_boolean.sonoff_1
+    to: 'on'
   action:
-    service: input_boolean.turn_on
+  - service: input_boolean.turn_on
     entity_id: input_boolean.christmas_tree
 
 - id: 'sonoff_1_christmas_tree_off'
   alias: 'Sonoff 1: tree off'
   trigger:
-    - platform: state
-      entity_id: input_boolean.sonoff_1
-      to: 'off'
+  - platform: state
+    entity_id: input_boolean.sonoff_1
+    to: 'off'
   action:
-    - service: input_boolean.turn_off
-      entity_id: input_boolean.christmas_tree
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.christmas_tree
 
 - id: 'christmas_tree_auto_turnoff'
   alias: 'Christmas Tree: turn off at 01:00 am'
   trigger:
-    - platform: time
-      at: '01:00:00'
+  - platform: time
+    at: '01:00:00'
   condition: []
   action:
-    - service: script.turn_on
-      entity_id: script.christmastree_googlehome_off
+  - service: script.turn_on
+    entity_id: script.christmastree_googlehome_off
 
 # IFTTT
 - id: 'ifttt_webhook'
-  alias: 'IFTTT: handle incoming webhooks'
+  alias: IFTTT, handle incoming webhooks
   trigger:
-    platform: event
+  - platform: event
     event_type: ifttt_webhook_received
     event_data:
       action: call_service
   action:
-    service_template: '{{ trigger.event.data.service }}'
+  - service_template: '{{ trigger.event.data.service }}'
     data_template:
       entity_id: '{{ trigger.event.data.entity_id }}'
