@@ -3,12 +3,14 @@
 !scenes
 !.gitignore
 !custom_components
+!custom_components/*
 !www
 !www/*
 !www/icons/*
 !*.py
 !*.json
 !*.png
+.DS_STORE
 secrets.yaml
 known_devices.yaml
 entity_registry.yaml
