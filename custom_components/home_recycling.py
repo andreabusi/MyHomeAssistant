@@ -51,7 +51,7 @@ def setup(hass, config):
                 message += "\n%s %s️" % (icon, collection)
         
         service_data = { 'message': message }
-        hass.services.call('notify', 'home_telegram', service_data, False)
+        hass.services.call('notify', 'home_tg', service_data, False)
     
     hass.services.register(DOMAIN, SERVICE_NOTIFICATION, notification)
 

@@ -135,10 +135,10 @@ telegram_bot:
 
 # Notifiche
 notify:
-  - name: andrea_telegram
+  - name: ANDREA_TG
     platform: telegram
     chat_id: !secret telegram_chat_andrea
-  - name: home_telegram
+  - name: HOME_TG
     platform: telegram
     chat_id: !secret telegram_chat_home
 
