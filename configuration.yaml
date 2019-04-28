@@ -108,20 +108,16 @@ input_boolean:
     name: Christmas Tree
     initial: off
 
-# Text to speech
-tts:
-  - platform: google
-
 # Cloud
 cloud:
 
 # Gestione spazzatura
 home_recycling:
-  calendar: /config/custom_components/home_recycling_calendar.json
+  calendar: /config/custom_components/home_recycling/home_recycling_calendar.json
 
 # Downloader MagPi
 magpi_downloader:
-  config_file: /config/custom_components/magpi_downloader_config.json
+  config_file: /config/custom_components/magpi_downloader/magpi_downloader_config.json
   output_path: /magpi
 
 # configurazione bot Telegram

@@ -1,0 +1,5 @@
+collections_state:
+  description: Set the tomorrow pick-up
+
+notification:
+  description: Send a Telegram notification with the tomorrow pick-up
