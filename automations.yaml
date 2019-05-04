@@ -26,6 +26,36 @@
   action:
   - service: home_recycling.collections_state
 
+# Giardinaggio
+- id: 'garden_water'
+  alias: Garden, water the plants
+  trigger:
+  - at: '20:30'
+    platform: time
+  condition:
+  - condition: time
+    weekday:
+    - mon
+    - thu
+  action:
+  - data:
+      message: È il momento di bagnare le piante aromatiche!
+    service: notify.home_tg
+
+- id: 'garden_water_saturday'
+  alias: Garden, water the plants (saturday)
+  trigger:
+  - at: '14:30'
+    platform: time
+  condition:
+  - condition: time
+    weekday:
+    - sat
+  action:
+  - data:
+      message: È il momento di bagnare le piante aromatiche!
+    service: notify.home_tg
+
 # Download MagPi issues
 - id: 'magpi_downloader_check'
   alias: MagPi, check and download
