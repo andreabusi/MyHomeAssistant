@@ -1,6 +1,7 @@
 # Gestione spazzatura
 - id: 'home_recycling_notify'
   alias: Recycling, evening notification
+  initial_state: true
   trigger:
   - at: '20:00'
     platform: time
@@ -10,6 +11,7 @@
 
 - id: 'home_recycling_states_start'
   alias: Recycling, set states (morning)
+  initial_state: true
   trigger:
   - at: '07:00'
     platform: time  
@@ -19,6 +21,7 @@
 
 - id: 'home_recycling_states_morning'
   alias: Recycling, set states (startup)
+  initial_state: true
   trigger:
   - event: start
     platform: homeassistant
@@ -29,6 +32,7 @@
 # Giardinaggio
 - id: 'garden_water'
   alias: Garden, water the plants
+  initial_state: true
   trigger:
   - at: '20:30'
     platform: time
@@ -44,6 +48,7 @@
 
 - id: 'garden_water_saturday'
   alias: Garden, water the plants (saturday)
+  initial_state: true
   trigger:
   - at: '14:30'
     platform: time
@@ -59,6 +64,7 @@
 # Download MagPi issues
 - id: 'magpi_downloader_check'
   alias: MagPi, check and download
+  initial_state: true
   trigger:
   - at: '08:00'
     platform: time  
@@ -69,6 +75,7 @@
 # HomeAssistant notifications
 - id: 'ha_check_update'
   alias: HomeAssistant, check available update
+  initial_state: true
   trigger:
   - entity_id: sensor.ha_upstream_version
     platform: state  
@@ -86,6 +93,7 @@
     
 - id: 'ha_startup'
   alias: HomeAssistant, started notification
+  initial_state: true
   trigger:
   - event: start
     platform: homeassistant
@@ -159,6 +167,7 @@
 #Update Christmas Tree from Sonoff
 - id: 'sonoff_1_christmas_tree_on'
   alias: 'Sonoff 1: tree on'
+  initial_state: true
   trigger:
   - platform: state
     entity_id: input_boolean.sonoff_1
@@ -169,6 +178,7 @@
 
 - id: 'sonoff_1_christmas_tree_off'
   alias: 'Sonoff 1: tree off'
+  initial_state: true
   trigger:
   - platform: state
     entity_id: input_boolean.sonoff_1
@@ -179,6 +189,7 @@
 
 - id: 'christmas_tree_auto_turnoff'
   alias: 'Christmas Tree: turn off at 01:00 am'
+  initial_state: true
   trigger:
   - platform: time
     at: '01:00:00'
@@ -190,6 +201,7 @@
 # IFTTT
 - id: 'ifttt_webhook'
   alias: IFTTT, handle incoming webhooks
+  initial_state: true
   trigger:
   - platform: event
     event_type: ifttt_webhook_received
