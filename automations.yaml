@@ -88,8 +88,11 @@
     value_template: "{{ trigger.to_state.state != states.sensor.ha_installed_version.state }}"
   action:
   - data_template:
-      message: È disponibile l'aggiornamento {{ trigger.to_state.state }} per Home Assistant!
-    service: notify.andrea_tg
+      title: Home Assistant
+      message: Update {{ trigger.to_state.state }} is available for Home Assistant!
+      data:
+        url: "https://github.com/home-assistant/home-assistant/releases/tag/{{ trigger.to_state.state }}"
+    service: notify.pushover
     
 - id: 'ha_startup'
   alias: HomeAssistant, started notification
@@ -100,8 +103,9 @@
   condition: []
   action:
   - data:
-      message: Home Assistant è stato riavviato, ora è di nuovo funzionante!
-    service: notify.andrea_tg
+      title: Home Assistant
+      message: Home Assistant has been restarted, now it's up and running!
+    service: notify.pushover
 
 # JarvisBOT: comandi Telegram a cui Jarvis può rispondere
 - id: 'jarvisbot_ping'
