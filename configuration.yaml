@@ -98,11 +98,11 @@ sensor:
           {% if is_state('sensor.home_recycling_bin_types', '') %}
             Niente in raccolta
           {% else %}
-            {{ states('sensor.home_recycling_bin_types') }}
+            {{ states.sensor.home_recycling_bin_types }}
           {% endif %}
       home_recycling_date:
         value_template: >-
-          {{ states('sensor.home_recycling_bin_date') }}
+          {{ states.sensor.home_recycling_bin_date.state }} 
       forecast_temperatures:
         value_template: >-
           {{ states.sensor.dark_sky_daytime_high_temperature_0d.state_with_unit }} / {{ states.sensor.dark_sky_overnight_low_temperature_0d.state_with_unit }}
