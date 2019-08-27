@@ -6,12 +6,6 @@ sensor.home_recycling_types:
   friendly_name: In ritiro
   icon: mdi:delete
 
-# Monitoring sensors
-binary_sensor.port_forwarding_https:
-  friendly_name: Port forwarding (HTTPS)
-binary_sensor.port_forwarding_http:
-  friendly_name: Port forwarding (HTTP)
-
 # Light
 light.tradfri_bulb:
   friendly_name: Luce salotto

@@ -24,8 +24,6 @@ salotto:
   name: Salotto
   view: no
   entities:
-    - sensor.dht_sensor_temperature
-    - sensor.dht_sensor_humidity
     - camera.soggiorno
 
 luci:
@@ -96,10 +94,3 @@ home_assistant:
   entities:
     - sensor.ha_upstream_version
     - sensor.ha_installed_version
-
-router:
-  name: Router
-  view: no
-  entities:
-    - sensor.modem_tim_kbytesec_received
-    - sensor.modem_tim_kbytesec_sent 
