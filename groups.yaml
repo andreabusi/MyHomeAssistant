@@ -4,10 +4,21 @@ default_view:
   view: yes
   entities:
     - sun.sun
+    - group.oggi
     - group.luci
     - group.salotto
     - group.pulizia
     - group.spazzatura
+
+oggi:
+  name: Oggi
+  view: no
+  entities:
+    - sensor.forecast_today_summary
+    - sensor.forecast_temperatures
+    - sensor.dark_sky_temperature
+    - sensor.dark_sky_humidity
+    - sensor.dark_sky_precip_probability
 
 salotto:
   name: Salotto

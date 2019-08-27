@@ -32,3 +32,17 @@ sensor.ha_upstream_version:
 # Vacuum
 vacuum.mi_roborock:
   friendly_name: Mi Roborock
+
+# Forecast and DarkSky sensors
+sensor.forecast_today_summary:
+  friendly_name: Meteo previsto
+sensor.forecast_temperatures:
+  friendly_name: Temperatura max/min
+  icon: mdi:thermometer-lines
+sensor.dark_sky_temperature:
+  friendly_name: Temperatura attuale
+sensor.dark_sky_humidity:
+  friendly_name: Umidità
+sensor.dark_sky_precip_probability:
+  friendly_name: Probabilità pioggia
+  icon: mdi:weather-rainy

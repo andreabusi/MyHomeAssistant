@@ -77,7 +77,21 @@ sensor:
     name: ha_installed_version
     command: "cat /config/.HA_VERSION"
     scan_interval: 3600
-  - platform: template          # Home Recyling (date and types)
+  - platform: darksky
+    api_key: !secret darksky_key
+    forecast:
+      - 0
+    monitored_conditions:
+      - summary
+      - icon
+      - temperature
+      - humidity
+      - temperature_high
+      - temperature_low
+      - precip_probability
+    language: it
+    scan_interval: '01:00'
+  - platform: template          
     sensors:
       home_recycling_types:
         value_template: >-
@@ -89,6 +103,36 @@ sensor:
       home_recycling_date:
         value_template: >-
           {{ states('sensor.home_recycling_bin_date') }}
+      forecast_temperatures:
+        value_template: >-
+          {{ states.sensor.dark_sky_daytime_high_temperature_0d.state_with_unit }} / {{ states.sensor.dark_sky_overnight_low_temperature_0d.state_with_unit }}
+      forecast_today_summary:
+        value_template: >-
+          {{  states.sensor.dark_sky_summary.state }}
+        icon_template: >-
+          {% if is_state("sensor.dark_sky_icon", "clear-day") %}
+            mdi:weather-sunny
+          {% elif is_state("sensor.dark_sky_icon", "clear-night") %}
+            mdi:weather-night
+          {% elif is_state("sensor.dark_sky_icon", "cloudy") %}
+            mdi:weather-cloudy   
+          {% elif is_state("sensor.dark_sky_icon", "rain") %}
+            mdi:weather-pouring        
+          {% elif is_state("sensor.dark_sky_icon", "sleet") %}
+            mdi:weather-snowy-rain
+          {% elif is_state("sensor.dark_sky_icon", "snow") %}
+            mdi:weather-snowy
+          {% elif is_state("sensor.dark_sky_icon", "wind") %}
+            mdi:weather-windy
+          {% elif is_state("sensor.dark_sky_icon", "fog") %}
+            mdi:weather-fog
+          {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") %}
+            mdi:weather-partlycloudy
+          {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") %}
+            mdi:weather-partlycloudy            
+          {% else %}
+            error
+          {% endif %}  
 
 switch:
   - platform: template
