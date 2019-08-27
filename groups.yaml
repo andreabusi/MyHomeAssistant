@@ -93,4 +93,4 @@ home_assistant:
   view: no
   entities:
     - sensor.ha_upstream_version
-    - sensor.ha_installed_version
+    - sensor.home_assistant_installed

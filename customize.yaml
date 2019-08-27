@@ -18,10 +18,11 @@ switch.sonoff_1:
     rgb_color: "if (state === 'on') return [200, 100, 30]; else return [10, 20, 30];"
 
 # Home Assistant sensors
-sensor.ha_installed_version:
-  friendly_name: 'HA installed version'
+sensor.home_assistant_installed:
+  friendly_name: Installed version
 sensor.ha_upstream_version:
-  friendly_name: 'HA last version'
+  friendly_name: Upstream version
+  icon: mdi:cloud
 
 # Vacuum
 vacuum.mi_roborock:
