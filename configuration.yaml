@@ -107,7 +107,7 @@ sensor:
           {% if is_state('sensor.home_recycling_bin_types', '') %}
             Niente in raccolta
           {% else %}
-            {{ states.sensor.home_recycling_bin_types }}
+            {{ states.sensor.home_recycling_bin_types.state }}
           {% endif %}
       home_recycling_date:
         value_template: >-
