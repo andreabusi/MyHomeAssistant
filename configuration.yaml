@@ -224,6 +224,22 @@ vacuum:
 ifttt:
   key: !secret ifttt_key
 
+# Persons and trackers
+person:
+  - name: Andrea
+    id: andrea01
+    device_trackers:
+      - device_tracker.iphone_di_andrea
+  - name: Erica
+    id: erica01
+
+device_tracker:
+  - platform: icloud
+    username: !secret appleid_andrea_user
+    password: !secret appleid_andrea_pass
+    account_name: andreabusi
+    interval_seconds: 300 # 5 minutes
+    consider_home: 600 # 10 minutes
 
 group: !include groups.yaml
 automation: !include automations.yaml

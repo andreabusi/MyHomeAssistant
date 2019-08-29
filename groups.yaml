@@ -4,6 +4,8 @@ default_view:
   view: yes
   entities:
     - sun.sun
+    - person.andrea_2
+    - person.erica
     - group.oggi
     - group.luci
     - group.salotto

@@ -41,3 +41,11 @@ sensor.dark_sky_humidity:
 sensor.dark_sky_precip_probability:
   friendly_name: Probabilità pioggia
   icon: mdi:weather-rainy
+
+# Person
+person.andrea_2:
+  friendly_name: Andrea
+  entity_picture: "/local/andrea.jpg"
+person.erica:
+  friendly_name: Erica
+  entity_picture: "/local/erica.jpg"
