@@ -68,15 +68,13 @@ sensor:
       - type: last_boot
       - type: memory_use_percent
       - type: processor_use
-  - platform: rest              # HomeAssistant upstream version
-    resource: https://pypi.python.org/pypi/homeassistant/json
+  - platform: version           # HomeAssistant upstream version
     name: ha_upstream_version
-    value_template: '{{ value_json.info.version }}'
-    scan_interval: 3600
-  - platform: command_line      # HomeAssistant installed version
+    beta: false
+    source: hassio              # we don't use docker otherwise it will returns the dev build version
+  - platform: version           # HomeAssistant installed version
     name: ha_installed_version
-    command: "cat /config/.HA_VERSION"
-    scan_interval: 3600
+    source: local               # we don't use docker otherwise it will returns the dev build version
   - platform: darksky
     api_key: !secret darksky_key
     forecast:
