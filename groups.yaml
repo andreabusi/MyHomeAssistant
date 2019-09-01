@@ -1,3 +1,4 @@
+# Home page view
 default_view:
   name: Casa
   icon: mdi:home
@@ -49,6 +50,7 @@ pulizia:
   entities:
     - vacuum.mi_roborock
 
+# Media Players View
 media:
   name: Media
   icon: mdi:play-network
@@ -65,6 +67,7 @@ televisori:
     - media_player.tv_cucina
     - media_player.tv_salotto
 
+# Automations View
 automazione:
   name: Automazione
   icon: mdi:home-automation
@@ -73,8 +76,9 @@ automazione:
     - script.sonoff_01_turnon
     - script.sonoff_01_turnoff
 
-jarvispi:
-  name: JarvisPI
+# AlfredPi View
+alfredpi:
+  name: AlfredPi
   icon: mdi:desktop-classic
   view: yes
   entities:
