@@ -8,6 +8,7 @@ default_view:
     - person.andrea_2
     - person.erica
     - group.oggi
+    - group.devices
     - group.luci
     - group.salotto
     - group.pulizia
@@ -22,6 +23,15 @@ oggi:
     - sensor.dark_sky_temperature
     - sensor.dark_sky_humidity
     - sensor.dark_sky_precip_probability
+
+devices:
+  name: Dispositivi
+  view: no
+  entities:
+    - device_tracker.iphoneandrea
+    - device_tracker.ipadandrea
+    - device_tracker.iphoneerica
+    - device_tracker.ipaderica
 
 salotto:
   name: Salotto

@@ -227,17 +227,21 @@ person:
   - name: Andrea
     id: andrea01
     device_trackers:
-      - device_tracker.iphone_di_andrea
+      - device_tracker.iphoneandrea
   - name: Erica
     id: erica01
+    device_trackers:
+      - device_tracker.iphoneerica
 
 device_tracker:
-  - platform: icloud
-    username: !secret appleid_andrea_user
-    password: !secret appleid_andrea_pass
-    account_name: andreabusi
-    interval_seconds: 300 # 5 minutes
-    consider_home: 600 # 10 minutes
+  - platform: ping
+    interval_seconds: 20
+    consider_home: 180
+    hosts:
+      iphoneandrea: !secret ip_iphoneandrea
+      ipadandrea: !secret ip_ipadandrea
+      iphoneerica: !secret ip_iphoneerica
+      ipaderica: !secret ip_ipaderica
 
 group: !include groups.yaml
 automation: !include automations.yaml

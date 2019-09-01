@@ -49,3 +49,18 @@ person.andrea_2:
 person.erica:
   friendly_name: Erica
   entity_picture: "/local/erica.jpg"
+
+# Trackers
+device_tracker.iphoneandrea:
+  friendly_name: iPhone di Andrea
+  icon: mdi:cellphone-iphone
+device_tracker.ipadandrea:
+  friendly_name: iPad di Andrea
+  icon: mdi:tablet-ipad
+device_tracker.iphoneerica:
+  friendly_name: iPhone di Erica
+  icon: mdi:cellphone-iphone
+device_tracker.ipaderica:
+  friendly_name: iPad di Erica
+  icon: mdi:tablet-ipad
+
