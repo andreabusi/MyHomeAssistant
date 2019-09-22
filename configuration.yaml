@@ -222,6 +222,11 @@ vacuum:
 ifttt:
   key: !secret ifttt_key
 
+# Sonoff custom component
+sonoff:
+  username: !secret ewelink_username
+  password: !secret ewelink_password
+
 # Persons and trackers
 person:
   - name: Andrea

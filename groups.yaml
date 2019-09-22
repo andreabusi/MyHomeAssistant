@@ -10,6 +10,7 @@ default_view:
     - group.oggi
     - group.devices
     - group.luci
+    - group.sonoff
     - group.salotto
     - group.pulizia
     - group.spazzatura
@@ -46,6 +47,14 @@ luci:
     #- switch.sonoff_1 # Christmass Tree
     - light.tradfri_bulb
     - input_boolean.sonoff_1
+
+sonoff:
+  name: Sonoff
+  view: no
+  entities:
+    - switch.sonoff_10001f9bcf
+    - switch.sonoff_10004cf9ff
+    - switch.sonoff_10004cfa12
 
 spazzatura:
   name: Spazzatura
