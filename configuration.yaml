@@ -56,13 +56,6 @@ ffmpeg:
 
 sensor:
   - platform: yr                # weather forecast
-#  - platform: dht               # temperature and humidity sensor
-#    sensor: DHT11
-#    pin: 15
-#    scan_interval: 900
-#    monitored_conditions:
-#      - temperature
-#      - humidity
   - platform: systemmonitor     # RaspberryPi system monitoring
     resources:
       - type: last_boot
