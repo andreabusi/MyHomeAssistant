@@ -1,9 +1,9 @@
 # Home recycling
 sensor.home_recycling_date:
-  friendly_name: Data ritiro
+  friendly_name: Ritiro spazzatura
   icon: mdi:calendar
 sensor.home_recycling_types:
-  friendly_name: In ritiro
+  friendly_name: Spazzatura in ritiro
   icon: mdi:delete
 
 # Xiaomi sensor

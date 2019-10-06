@@ -7,13 +7,13 @@ default_view:
     - sun.sun
     - person.andrea_2
     - person.erica
+    - group.casa
     - group.oggi
     - group.devices
     - group.luci
     - group.sonoff
     - group.salotto
     - group.pulizia
-    - group.spazzatura
 
 oggi:
   name: Oggi
@@ -56,18 +56,15 @@ sonoff:
     - switch.sonoff_10004cf9ff
     - switch.sonoff_10004cfa12
 
-spazzatura:
-  name: Spazzatura
+casa:
+  name: Casa
   view: no
   entities:
+    - sensor.xiaomi_temp_sensor_temperature
+    - sensor.xiaomi_temp_sensor_humidity
+    - vacuum.mi_roborock
     - sensor.home_recycling_date
     - sensor.home_recycling_types
-
-pulizia:
-  name: Pulizia
-  view: no
-  entities:
-    - vacuum.mi_roborock
 
 # Media Players View
 media:
