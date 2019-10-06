@@ -133,6 +133,12 @@ sensor:
           {% else %}
             error
           {% endif %}  
+  - platform: mitemp_bt         # Xiaomi temperature and humidity sensor
+    mac: !secret mac_mi_temp_sensor
+    name: xiaomi_temp_sensor
+    monitored_conditions:
+      - temperature
+      - humidity
 
 switch:
   - platform: template

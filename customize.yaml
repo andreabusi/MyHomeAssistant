@@ -6,6 +6,14 @@ sensor.home_recycling_types:
   friendly_name: In ritiro
   icon: mdi:delete
 
+# Xiaomi sensor
+sensor.xiaomi_temp_sensor_temperature:
+  friendly_name: Temperatura casa
+  icon: mdi:thermometer
+sensor.xiaomi_temp_sensor_humidity:
+  friendly_name: Umidità casa
+  icon: mdi:water-percent
+
 # Light
 light.tradfri_bulb:
   friendly_name: Luce salotto
