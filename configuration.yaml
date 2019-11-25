@@ -221,7 +221,7 @@ vacuum:
 ifttt:
   key: !secret ifttt_key
 
-# Sonoff custom component
+# Sonoff custom component: https://github.com/peterbuga/HASS-sonoff-ewelink
 sonoff:
   username: !secret ewelink_username
   password: !secret ewelink_password
