@@ -107,6 +107,27 @@
       message: Home Assistant has been restarted, now it's up and running!
     service: notify.pushover
 
+# Turn off 'Libro' sonoff after 30 minutes during the night
+- id: 'libro_turn_off'
+  alias: Turn off Libro during the night
+  trigger:
+    platform: state
+    entity_id: switch.sonoff_10004cf9ff
+    to: 'on'
+    for:
+      minutes: 20
+  condition:
+    condition: time
+    after: '00:00'
+    before: '05:00'
+  action:
+  - service: homeassistant.turn_off
+    entity_id: switch.sonoff_10004cf9ff
+  - service: notify.home_tg
+    data:
+      message: Nara ha mangiato anche stanotte
+
+  
 # JarvisBOT: comandi Telegram a cui Jarvis può rispondere
 - id: 'jarvisbot_ping'
   alias: 'JarvisBOT: /ping'
