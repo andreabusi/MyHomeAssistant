@@ -18,13 +18,6 @@ sensor.xiaomi_temp_sensor_humidity:
 light.tradfri_bulb:
   friendly_name: Luce salotto
 
-# Other sensors
-switch.sonoff_1:
-  friendly_name: Albero di Natale
-  icon: mdi:pine-tree
-  templates:
-    rgb_color: "if (state === 'on') return [200, 100, 30]; else return [10, 20, 30];"
-
 # Home Assistant sensors
 sensor.home_assistant_installed:
   friendly_name: Installed version

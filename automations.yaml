@@ -189,40 +189,6 @@
       target: '{{ trigger.event.data.chat_id }}'
       message: 'Ciao {{ trigger.event.data.from_first }}!'
 
-#Update Christmas Tree from Sonoff
-- id: 'sonoff_1_christmas_tree_on'
-  alias: 'Sonoff 1: tree on'
-  initial_state: true
-  trigger:
-  - platform: state
-    entity_id: input_boolean.sonoff_1
-    to: 'on'
-  action:
-  - service: input_boolean.turn_on
-    entity_id: input_boolean.christmas_tree
-
-- id: 'sonoff_1_christmas_tree_off'
-  alias: 'Sonoff 1: tree off'
-  initial_state: true
-  trigger:
-  - platform: state
-    entity_id: input_boolean.sonoff_1
-    to: 'off'
-  action:
-  - service: input_boolean.turn_off
-    entity_id: input_boolean.christmas_tree
-
-- id: 'christmas_tree_auto_turnoff'
-  alias: 'Christmas Tree: turn off at 01:00 am'
-  initial_state: true
-  trigger:
-  - platform: time
-    at: '01:00:00'
-  condition: []
-  action:
-  - service: script.turn_on
-    entity_id: script.christmastree_googlehome_off
-
 # IFTTT
 - id: 'ifttt_webhook'
   alias: IFTTT, handle incoming webhooks
