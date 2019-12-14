@@ -14,10 +14,6 @@ sensor.xiaomi_temp_sensor_humidity:
   friendly_name: Umidità casa
   icon: mdi:water-percent
 
-# Light
-light.tradfri_bulb:
-  friendly_name: Luce salotto
-
 # Home Assistant sensors
 sensor.home_assistant_installed:
   friendly_name: Installed version

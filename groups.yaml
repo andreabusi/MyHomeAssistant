@@ -40,16 +40,11 @@ salotto:
   entities:
     - camera.soggiorno
 
-luci:
-  name: Luci
-  view: no
-  entities:
-    - light.tradfri_bulb
-
 sonoff:
-  name: Sonoff
+  name: Luci e relè
   view: no
   entities:
+    - light.lampada_sala
     - switch.sonoff_10001f9bcf
     - switch.sonoff_10004cf9ff
     - switch.sonoff_10004cfa12

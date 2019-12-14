@@ -199,6 +199,9 @@ vacuum:
     host: !secret ip_xiaomi_robot
     token: !secret mi_vacuum_token
 
+tradfri:
+  host: !secret ip_ikea_tradfri
+
 # IFTTT
 ifttt:
   key: !secret ifttt_key
