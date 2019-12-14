@@ -127,6 +127,17 @@
     data:
       message: Nara ha mangiato anche stanotte
 
+# Turn off Christmas Tree ad 01 am
+- id: 'christmas_tree_auto_turnoff'
+  alias: 'Christmas Tree: turn off at 01:00 am'
+  initial_state: true
+  trigger:
+  - platform: time
+    at: '01:00:00'
+  condition: []
+  action:
+  - service: homeassistant.turn_off
+    entity_id: switch.sonoff_10001f9bcf
   
 # JarvisBOT: comandi Telegram a cui Jarvis può rispondere
 - id: 'jarvisbot_ping'

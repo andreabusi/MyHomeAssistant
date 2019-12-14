@@ -5,8 +5,8 @@ christmasspirit_googlehome_on:
     - service: ifttt.trigger
       data:
         event: jarvis_sonoff01_turnon
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.christmas_tree
+    - service: homeassistant.turn_on
+      entity_id: switch.sonoff_10001f9bcf
     - service: script.turn_on
       entity_id: script.play_jingle_bells
 
