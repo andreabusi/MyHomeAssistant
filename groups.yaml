@@ -76,15 +76,6 @@ televisori:
     - media_player.tv_cucina
     - media_player.tv_salotto
 
-# Automations View
-automazione:
-  name: Automazione
-  icon: mdi:home-automation
-  view: yes
-  entities:
-    - script.sonoff_01_turnon
-    - script.sonoff_01_turnoff
-
 # AlfredPi View
 alfredpi:
   name: AlfredPi
