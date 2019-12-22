@@ -65,8 +65,21 @@ media:
   icon: mdi:play-network
   view: yes
   entities:
+    - group.tv_cucina
     - media_player.google_home_salotto
     - media_player.plex
+
+tv_cucina:
+  name: TV Cucina
+  view: no
+  entities:
+    - script.tv_cucina_power_on_off
+    - script.tv_cucina_volume_up
+    - script.tv_cucina_volume_down
+    - script.tv_cucina_mute
+    - script.tv_cucina_channel_up
+    - script.tv_cucina_channel_down
+    - script.tv_cucina_change_source
 
 # AlfredPi View
 alfredpi:

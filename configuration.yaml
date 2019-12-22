@@ -217,6 +217,28 @@ remote:
     name: 'Xiaomi IR Remote'
     host: !secret ip_xiaomi_remote
     token: !secret xiaomi_remote_token
+    commands:
+      tv_cucina_power:
+        command:
+          - raw:nMwmEwlk0msxmEsms1ADKbAD7MZtOAGPAH8DDwMGA58BnwCPA08AfpyAGUzAg8AfwbfAI8CLwGfAI+YSyYQA
+      tv_cucina_volume_up:
+        command:
+          - raw:nMwmEwlk0moAhTWagBlNgB9mM2nADHgD9OQAymYGHgc+Az4BHgEeBp4N/hD+AP4HHgx+AR4BHgERMIAA
+      tv_cucina_volume_down:
+        command:
+          - raw:nE5nMwlk0mswmEsms1ADKbAD7MZtOAGPAH8DDwMGA58BnwCIAeIAjwI/Bo8AfwB/AH8HXwCPAI8AiZhAAA==
+      tv_cucina_mute:
+        command:
+          - raw:nE5nMwlk0msxmEsms1ADKbAD7MZtOAGPAH8DDwMDAMIDnwGfBcsAjwPfBF8BjwB/Aw8DnwGfAI8AiZhAAA==
+      tv_cucina_channel_up:
+        command:
+          - raw:nMwmEwlk0moAhTWagBlNgB9mM2nADHgD+Bh4GDAc+Az4BHgaeAP05ADKZgL+AP4NngEeAR4BHgEfMJZMIAA=
+      tv_cucina_channel_down:
+        command:
+          - raw:nMwmEwlk0moAhTWagBlNgB9mM2nADHgD+Bh4GDAc+Az4BHgEeDv4A/gD+AP4OvgEeAR4BHgELMIA
+      tv_cucina_change_source:
+        command:
+          - raw:nE5nMwlk0mswmEsms1ADKbAD7MZtOAGPAH8DDwMGA58BnwCPAI8AjwRvAZ8CHwGPAYwPIprMwGPA68Ac5hAA
 
 # Persons and trackers
 person:

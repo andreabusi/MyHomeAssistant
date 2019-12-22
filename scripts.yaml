@@ -21,3 +21,60 @@ play_jingle_bells:
         entity_id: media_player.google_home_salotto
         media_content_id: !secret www_music_jinglebells
         media_content_type: audio/mp3
+
+# Remote - TV Cucina
+tv_cucina_power_on_off:
+  sequence:
+    - service: remote.send_command
+      entity_id: remote.xiaomi_ir_remote
+      data:
+        command:
+          - 'tv_cucina_power'
+
+tv_cucina_volume_up:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_cucina_volume_up'
+
+tv_cucina_volume_down:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_cucina_volume_down'
+
+tv_cucina_mute:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_cucina_mute'
+
+tv_cucina_channel_up:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_cucina_channel_up'
+        
+tv_cucina_channel_down:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_cucina_channel_down'
+
+tv_cucina_change_source:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_cucina_change_source'
