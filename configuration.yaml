@@ -239,6 +239,24 @@ remote:
       tv_cucina_change_source:
         command:
           - raw:nE5nMwlk0mswmEsms1ADKbAD7MZtOAGPAH8DDwMGA58BnwCPAI8AjwRvAZ8CHwGPAYwPIprMwGPA68Ac5hAA
+      tv_sala_power:
+        command:
+          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gDnNpiAOQEZgHsBz4IXgD+AP4KRgXmAGQHHgD+AP4QfgIeAR4BHgEfMIAA==
+      tv_sala_volume_up:
+        command:
+          - raw:mk0nEwlk0msxmEsmszmEsmM3mABHgEPNQJyAH8AfwOfBC8DLwB/BC8AjwKvAH8AfwB/BR8AjwCOmEAA=
+      tv_sala_volume_down:
+        command:
+          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gDnNpiAOQEZgHsBz4IXgD+AP4HPgM+Bl4A/gD+Bx4CHgEeARUwgA
+      tv_sala_mute:
+        command:
+          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gD+Bz4IXgZeAP4IXgEeARU2AHMAMwQ/AH8AfwY/AI8AiphAA
+      tv_sala_channel_up:
+        command:
+          - raw:mk0m0wlk0mszmEsmsxmEsmM3mQBBTAAhwEYAIKbAKkAyc2ALIAfAF3AHYDngEYAy8AewF/APYDiQGPBR8EHwIPCV8M+gr/ARqYQA
+      tv_sala_channel_down:
+        command:
+          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gD+Bz4BHTaYgDkAWYHXgD+AOwF/gxeAx4EHgEeB34DPgEfMIAA==
 
 # Persons and trackers
 person:

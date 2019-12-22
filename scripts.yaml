@@ -78,3 +78,52 @@ tv_cucina_change_source:
       data:
         command:
           - 'tv_cucina_change_source'
+
+# Remote - TV Sala
+tv_sala_power_on_off:
+  sequence:
+    - service: remote.send_command
+      entity_id: remote.xiaomi_ir_remote
+      data:
+        command:
+          - 'tv_sala_power'
+
+tv_sala_volume_up:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_volume_up'
+
+tv_sala_volume_down:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_volume_down'
+
+tv_sala_mute:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_mute'
+
+tv_sala_channel_up:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_channel_up'
+        
+tv_sala_channel_down:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_channel_down'

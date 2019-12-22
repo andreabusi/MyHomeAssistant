@@ -66,6 +66,7 @@ media:
   view: yes
   entities:
     - group.tv_cucina
+    - group.tv_sala
     - media_player.google_home_salotto
     - media_player.plex
 
@@ -80,6 +81,17 @@ tv_cucina:
     - script.tv_cucina_channel_up
     - script.tv_cucina_channel_down
     - script.tv_cucina_change_source
+
+tv_sala:
+  name: TV Sala
+  view: no
+  entities:
+    - script.tv_sala_power_on_off
+    - script.tv_sala_volume_up
+    - script.tv_sala_volume_down
+    - script.tv_sala_mute
+    - script.tv_sala_channel_up
+    - script.tv_sala_channel_down
 
 # AlfredPi View
 alfredpi:
