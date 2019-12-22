@@ -65,16 +65,8 @@ media:
   icon: mdi:play-network
   view: yes
   entities:
-    - group.televisori
     - media_player.google_home_salotto
     - media_player.plex
-
-televisori:
-  name: Televisori
-  view: no
-  entities:
-    - media_player.tv_cucina
-    - media_player.tv_salotto
 
 # AlfredPi View
 alfredpi:
