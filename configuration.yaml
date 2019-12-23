@@ -54,105 +54,10 @@ logger:
 ffmpeg:
   ffmpeg_bin: /usr/bin/ffmpeg
 
-sensor:
-  - platform: yr                # weather forecast
-  - platform: systemmonitor     # RaspberryPi system monitoring
-    resources:
-      - type: last_boot
-      - type: memory_use_percent
-      - type: processor_use
-  - platform: version           # HomeAssistant upstream version
-    name: ha_upstream_version
-    beta: false
-    source: hassio              # we don't use docker otherwise it will returns the dev build version
-  - platform: version           # HomeAssistant installed version
-    name: ha_installed_version
-    source: local               # we don't use docker otherwise it will returns the dev build version
-  - platform: darksky
-    api_key: !secret darksky_key
-    forecast:
-      - 0
-    monitored_conditions:
-      - summary
-      - icon
-      - temperature
-      - humidity
-      - temperature_high
-      - temperature_low
-      - precip_probability
-    language: it
-    scan_interval: '01:00'
-  - platform: template          
-    sensors:
-      home_assistant_installed:
-        value_template: >-
-          {{ states.sensor.ha_installed_version.state }} 
-        icon_template: >-
-          {% if states.sensor.ha_installed_version.state == states.sensor.ha_upstream_version.state %}
-            mdi:cloud-check
-          {% else %}
-            mdi:cloud-upload
-          {% endif %}
-      home_recycling_types:
-        value_template: >-
-          {% if is_state('sensor.home_recycling_bin_types', '') %}
-            Niente in raccolta
-          {% else %}
-            {{ states.sensor.home_recycling_bin_types.state }}
-          {% endif %}
-      home_recycling_date:
-        value_template: >-
-          {{ states.sensor.home_recycling_bin_date.state }} 
-      forecast_temperatures:
-        value_template: >-
-          {{ states.sensor.dark_sky_daytime_high_temperature_0d.state_with_unit }} / {{ states.sensor.dark_sky_overnight_low_temperature_0d.state_with_unit }}
-      forecast_today_summary:
-        value_template: >-
-          {{  states.sensor.dark_sky_summary.state }}
-        icon_template: >-
-          {% if is_state("sensor.dark_sky_icon", "clear-day") %}
-            mdi:weather-sunny
-          {% elif is_state("sensor.dark_sky_icon", "clear-night") %}
-            mdi:weather-night
-          {% elif is_state("sensor.dark_sky_icon", "cloudy") %}
-            mdi:weather-cloudy   
-          {% elif is_state("sensor.dark_sky_icon", "rain") %}
-            mdi:weather-pouring        
-          {% elif is_state("sensor.dark_sky_icon", "sleet") %}
-            mdi:weather-snowy-rain
-          {% elif is_state("sensor.dark_sky_icon", "snow") %}
-            mdi:weather-snowy
-          {% elif is_state("sensor.dark_sky_icon", "wind") %}
-            mdi:weather-windy
-          {% elif is_state("sensor.dark_sky_icon", "fog") %}
-            mdi:weather-fog
-          {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") %}
-            mdi:weather-partlycloudy
-          {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") %}
-            mdi:weather-partlycloudy            
-          {% else %}
-            error
-          {% endif %}  
-  - platform: mitemp_bt         # Xiaomi temperature and humidity sensor
-    mac: !secret mac_mi_temp_sensor
-    name: xiaomi_temp_sensor
-    monitored_conditions:
-      - temperature
-      - humidity
-
 # Cloud
 cloud:
 
-# Gestione spazzatura
-home_recycling:
-  calendar: /config/custom_components/home_recycling/home_recycling_calendar.json
-
-# Downloader MagPi
-magpi_downloader:
-  config_file: /config/custom_components/magpi_downloader/magpi_downloader_config.json
-  output_path: /magpi
-
-# configurazione bot Telegram
+# Enable Telegram Bot
 telegram_bot:
   - platform: polling
     api_key: !secret telegram_key
@@ -161,19 +66,7 @@ telegram_bot:
       - !secret telegram_chat_erica
       - !secret telegram_chat_home
 
-# Notifiche
-notify:
-  - name: ANDREA_TG
-    platform: telegram
-    chat_id: !secret telegram_chat_andrea
-  - name: HOME_TG
-    platform: telegram
-    chat_id: !secret telegram_chat_home
-  - name: PUSHOVER
-    platform: pushover
-    api_key: !secret pushover_api_key
-    user_key: !secret pushover_user_key
-
+# Configure Media Players
 media_player:
   - platform: samsungtv
     name: TV Salotto
@@ -182,81 +75,33 @@ media_player:
     port: 8001
   - platform: plex
 
+# Enable Cast devices
 cast:
   media_player:
     - host: !secret ip_chromecast_cucina
     - host: !secret ip_google_home
 
+# Enable IP cameras
 camera:
   - platform: yi
     name: Soggiorno
     host: !secret ip_mi_camera
     password: !secret yi_camera_password
 
+# Enable Vacuum integration
 vacuum:
   - platform: xiaomi_miio
     name: mi_roborock
     host: !secret ip_xiaomi_robot
     token: !secret mi_vacuum_token
 
+# Enable IKEA Tradfri integration
 tradfri:
   host: !secret ip_ikea_tradfri
 
-# IFTTT
+# Enable IFTTT
 ifttt:
   key: !secret ifttt_key
-
-# Sonoff custom component: https://github.com/peterbuga/HASS-sonoff-ewelink
-sonoff:
-  username: !secret ewelink_username
-  password: !secret ewelink_password
-
-# IR Remote
-remote:
-  - platform: xiaomi_miio
-    name: 'Xiaomi IR Remote'
-    host: !secret ip_xiaomi_remote
-    token: !secret xiaomi_remote_token
-    commands:
-      tv_cucina_power:
-        command:
-          - raw:nMwmEwlk0msxmEsms1ADKbAD7MZtOAGPAH8DDwMGA58BnwCPA08AfpyAGUzAg8AfwbfAI8CLwGfAI+YSyYQA
-      tv_cucina_volume_up:
-        command:
-          - raw:nMwmEwlk0moAhTWagBlNgB9mM2nADHgD9OQAymYGHgc+Az4BHgEeBp4N/hD+AP4HHgx+AR4BHgERMIAA
-      tv_cucina_volume_down:
-        command:
-          - raw:nE5nMwlk0mswmEsms1ADKbAD7MZtOAGPAH8DDwMGA58BnwCIAeIAjwI/Bo8AfwB/AH8HXwCPAI8AiZhAAA==
-      tv_cucina_mute:
-        command:
-          - raw:nE5nMwlk0msxmEsms1ADKbAD7MZtOAGPAH8DDwMDAMIDnwGfBcsAjwPfBF8BjwB/Aw8DnwGfAI8AiZhAAA==
-      tv_cucina_channel_up:
-        command:
-          - raw:nMwmEwlk0moAhTWagBlNgB9mM2nADHgD+Bh4GDAc+Az4BHgaeAP05ADKZgL+AP4NngEeAR4BHgEfMJZMIAA=
-      tv_cucina_channel_down:
-        command:
-          - raw:nMwmEwlk0moAhTWagBlNgB9mM2nADHgD+Bh4GDAc+Az4BHgEeDv4A/gD+AP4OvgEeAR4BHgELMIA
-      tv_cucina_change_source:
-        command:
-          - raw:nE5nMwlk0mswmEsms1ADKbAD7MZtOAGPAH8DDwMGA58BnwCPAI8AjwRvAZ8CHwGPAYwPIprMwGPA68Ac5hAA
-      tv_sala_power:
-        command:
-          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gDnNpiAOQEZgHsBz4IXgD+AP4KRgXmAGQHHgD+AP4QfgIeAR4BHgEfMIAA==
-      tv_sala_volume_up:
-        command:
-          - raw:mk0nEwlk0msxmEsmszmEsmM3mABHgEPNQJyAH8AfwOfBC8DLwB/BC8AjwKvAH8AfwB/BR8AjwCOmEAA=
-      tv_sala_volume_down:
-        command:
-          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gDnNpiAOQEZgHsBz4IXgD+AP4HPgM+Bl4A/gD+Bx4CHgEeARUwgA
-      tv_sala_mute:
-        command:
-          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gD+Bz4IXgZeAP4IXgEeARU2AHMAMwQ/AH8AfwY/AI8AiphAA
-      tv_sala_channel_up:
-        command:
-          - raw:mk0m0wlk0mszmEsmsxmEsmM3mQBBTAAhwEYAIKbAKkAyc2ALIAfAF3AHYDngEYAy8AewF/APYDiQGPBR8EHwIPCV8M+gr/ARqYQA
-      tv_sala_channel_down:
-        command:
-          - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gD+Bz4BHTaYgDkAWYHXgD+AOwF/gxeAx4EHgEeB34DPgEfMIAA==
 
 # Persons and trackers
 person:
@@ -279,6 +124,28 @@ device_tracker:
       iphoneerica: !secret ip_iphoneerica
       ipaderica: !secret ip_ipaderica
 
+#### Custom components ####
+
+# Custom Component - Home Recycling management
+home_recycling:
+  calendar: /config/custom_components/home_recycling/home_recycling_calendar.json
+
+# Custom Component - MagPi issues downloader
+magpi_downloader:
+  config_file: /config/custom_components/magpi_downloader/magpi_downloader_config.json
+  output_path: /magpi
+
+# Custom Component - Sonoff integration (https://github.com/peterbuga/HASS-sonoff-ewelink)
+sonoff:
+  username: !secret ewelink_username
+  password: !secret ewelink_password
+
+
+#### Other files #### 
+
+sensor: !include sensors.yaml
+remote: !include remotes.yaml
+notify: !include notifications.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml

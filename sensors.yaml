@@ -1,0 +1,97 @@
+# Weather forecast
+- platform: yr
+
+# RaspberryPi system monitoring
+- platform: systemmonitor
+  resources:
+    - type: last_boot
+    - type: memory_use_percent
+    - type: processor_use
+
+# HomeAssistant upstream version
+- platform: version
+  name: ha_upstream_version
+  beta: false
+  source: hassio              # we don't use docker otherwise it will returns the dev build version
+
+# HomeAssistant installed version
+- platform: version
+  name: ha_installed_version
+  source: local               # we don't use docker otherwise it will returns the dev build version
+
+# Darksky meteo
+- platform: darksky
+  api_key: !secret darksky_key
+  forecast:
+    - 0
+  monitored_conditions:
+    - summary
+    - icon
+    - temperature
+    - humidity
+    - temperature_high
+    - temperature_low
+    - precip_probability
+  language: it
+  scan_interval: '01:00'
+
+# Template sensors
+- platform: template
+  sensors:
+    home_assistant_installed:
+      value_template: >-
+        {{ states.sensor.ha_installed_version.state }} 
+      icon_template: >-
+        {% if states.sensor.ha_installed_version.state == states.sensor.ha_upstream_version.state %}
+          mdi:cloud-check
+        {% else %}
+          mdi:cloud-upload
+        {% endif %}
+    home_recycling_types:
+      value_template: >-
+        {% if is_state('sensor.home_recycling_bin_types', '') %}
+          Niente in raccolta
+        {% else %}
+          {{ states.sensor.home_recycling_bin_types.state }}
+        {% endif %}
+    home_recycling_date:
+      value_template: >-
+        {{ states.sensor.home_recycling_bin_date.state }} 
+    forecast_temperatures:
+      value_template: >-
+        {{ states.sensor.dark_sky_daytime_high_temperature_0d.state_with_unit }} / {{ states.sensor.dark_sky_overnight_low_temperature_0d.state_with_unit }}
+    forecast_today_summary:
+      value_template: >-
+        {{  states.sensor.dark_sky_summary.state }}
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+
+# Xiaomi temperature and humidity sensor
+- platform: mitemp_bt
+  mac: !secret mac_mi_temp_sensor
+  name: xiaomi_temp_sensor
+  monitored_conditions:
+    - temperature
+    - humidity

@@ -1,0 +1,14 @@
+# Notification channels
+
+- name: ANDREA_TG
+  platform: telegram
+  chat_id: !secret telegram_chat_andrea
+
+- name: HOME_TG
+  platform: telegram
+  chat_id: !secret telegram_chat_home
+
+- name: PUSHOVER
+  platform: pushover
+  api_key: !secret pushover_api_key
+  user_key: !secret pushover_user_key
