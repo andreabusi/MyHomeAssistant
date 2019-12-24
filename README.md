@@ -1,14 +1,13 @@
 # MyHomeAssistant
 
-This repo provides my actual home-assistant configuration.
+This repo provides my actual [Home Assistant](https://www.home-assistant.io) configuration.
 
+## Screenshots
 
-## Screenshot
+Here are some screenshots of the current configuration (24/12/2019, v4.0).
 
-Here are some screenshot.
+![MyHomeAssistant - Screen 1](https://user-images.githubusercontent.com/847860/71399247-4ade1280-2623-11ea-9bd6-c393c0dcf6ba.png)
 
-![MyHomeAssistant - Screen 1](https://user-images.githubusercontent.com/847860/45537847-ba9d0500-b805-11e8-9ab9-501d8e7059de.png)
+![MyHomeAssistant - Screen 2](https://user-images.githubusercontent.com/847860/71399251-4e719980-2623-11ea-9dfd-a20a57455556.png)
 
-![MyHomeAssistant - Screen 2](https://user-images.githubusercontent.com/847860/45538392-3b103580-b807-11e8-91cd-72188239c65a.png)
-
-![MyHomeAssistant - Screen 3](https://user-images.githubusercontent.com/847860/45538399-41061680-b807-11e8-8749-c3bdbd5fd580.png)
+![MyHomeAssistant - Screen 3](https://user-images.githubusercontent.com/847860/71399254-516c8a00-2623-11ea-9fb8-849d2e04bfc6.png)
