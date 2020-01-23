@@ -107,7 +107,7 @@
       message: Home Assistant has been restarted, now it's up and running!
     service: notify.pushover
 
-# Turn off 'Libro' sonoff after 30 minutes during the night
+# Turn off 'Libro' sonoff after 20 minutes during the night
 - id: 'libro_turn_off'
   alias: Turn off Libro during the night
   trigger:
@@ -118,7 +118,7 @@
       minutes: 20
   condition:
     condition: time
-    after: '00:00'
+    after: '23:00'
     before: '05:00'
   action:
   - service: homeassistant.turn_off
