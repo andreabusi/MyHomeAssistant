@@ -1,23 +1,5 @@
-# Home page view
-default_view:
-  name: Casa
-  icon: mdi:home
-  view: yes
-  entities:
-    - sun.sun
-    - person.andrea_2
-    - person.erica
-    - group.casa
-    - group.oggi
-    - group.devices
-    - group.luci
-    - group.sonoff
-    - group.salotto
-    - group.pulizia
-
-oggi:
-  name: Oggi
-  view: no
+forecast:
+  name: Previsioni meteo
   entities:
     - sensor.forecast_today_summary
     - sensor.forecast_temperatures
@@ -27,50 +9,37 @@ oggi:
 
 devices:
   name: Dispositivi
-  view: no
   entities:
     - device_tracker.iphoneandrea
     - device_tracker.ipadandrea
     - device_tracker.iphoneerica
     - device_tracker.ipaderica
 
-salotto:
-  name: Salotto
-  view: no
-  entities:
-    - camera.soggiorno
-
 sonoff:
-  name: Luci e relè
-  view: no
+  name: Sonoff
   entities:
     - light.lampada_sala
     - switch.sonoff_10001f9bcf
     - switch.sonoff_10004cf9ff
     - switch.sonoff_10004cfa12
 
-casa:
-  name: Casa
-  view: no
+home_recycling:
+  name: Raccolta differenziata
   entities:
     - vacuum.mi_roborock
     - sensor.home_recycling_date
     - sensor.home_recycling_types
 
-# Media Players View
-media:
+media_players:
   name: Media
   icon: mdi:play-network
-  view: yes
   entities:
     - group.tv_cucina
     - group.tv_sala
-    - media_player.google_home_salotto
-    - media_player.plex
+    - media_player.echo_dot_studio
 
 tv_cucina:
   name: TV Cucina
-  view: no
   entities:
     - script.tv_cucina_power_on_off
     - script.tv_cucina_volume_up
@@ -82,7 +51,6 @@ tv_cucina:
 
 tv_sala:
   name: TV Sala
-  view: no
   entities:
     - script.tv_sala_power_on_off
     - script.tv_sala_volume_up
@@ -90,28 +58,3 @@ tv_sala:
     - script.tv_sala_mute
     - script.tv_sala_channel_up
     - script.tv_sala_channel_down
-
-# AlfredPi View
-alfredpi:
-  name: AlfredPi
-  icon: mdi:desktop-classic
-  view: yes
-  entities:
-    - group.monitoring
-    - group.home_assistant
-    - group.router
-
-monitoring:
-  name: Raspberry Status
-  view: no
-  entities: 
-    - sensor.memory_use_percent
-    - sensor.processor_use
-    - sensor.last_boot
-
-home_assistant:
-  name: Home Assistant
-  view: no
-  entities:
-    - sensor.ha_upstream_version
-    - sensor.home_assistant_installed
