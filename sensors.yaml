@@ -81,9 +81,9 @@
         {% elif is_state("sensor.dark_sky_icon", "fog") %}
           mdi:weather-fog
         {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") %}
-          mdi:weather-partlycloudy
+          mdi:weather-partly-cloudy
         {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") %}
-          mdi:weather-partlycloudy
+          mdi:weather-night-partly-cloudy
         {% else %}
           error
         {% endif %}
