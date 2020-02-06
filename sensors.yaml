@@ -50,7 +50,7 @@
     home_recycling_types:
       value_template: >-
         {% if is_state('sensor.home_recycling_bin_types', '') %}
-          Niente in raccolta
+          n.r.
         {% else %}
           {{ states.sensor.home_recycling_bin_types.state }}
         {% endif %}

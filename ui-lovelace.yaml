@@ -1,0 +1,169 @@
+title: B&B Home
+
+resources:
+  - url: /local/multiple-entity-row.js?v=2.2.1
+    type: module
+
+views:
+  - path: default_view
+    title: Overview
+    icon: 'mdi:home'
+    badges:
+      - entity: person.andrea_2
+      - entity: person.erica
+      - entity: sun.sun
+    cards:
+      - type: markdown
+        title: Lovelace
+        content: >
+          Benvenuti nella casa di Erica&Andrea!
+      - type: entities
+        title: Meteo
+        show_header_toggle: false
+        entities:
+          - sensor.forecast_today_summary
+          - entity: sensor.dark_sky_temperature
+            type: custom:multiple-entity-row
+            name: Meteo attuale
+            hide_state: true
+            primary:
+              entity: sensor.dark_sky_temperature
+              name: Temperatura
+            secondary:
+              entity: sensor.dark_sky_humidity
+              name: Umidità
+            tertiary:
+              entity: sensor.dark_sky_precip_probability
+              name: Pioggia
+          - entity: sensor.forecast_temperatures
+            type: custom:multiple-entity-row
+            name: Meteo giornata
+            hide_state: true
+            primary:
+              entity: sensor.dark_sky_daytime_high_temperature_0d
+              name: Temperatura
+            secondary:
+              entity: sensor.dark_sky_overnight_low_temperature_0d
+              name: Umidità
+      - type: vertical-stack
+        show_header_toggle: false
+        cards:
+          - type: horizontal-stack
+            show_header_toggle: false
+            cards:
+              - type: sensor
+                entity: sensor.mi_t_582d343415fe
+                name: Temperatura
+              - type: sensor
+                entity: sensor.mi_h_582d343415fe
+                name: Umidità
+          - type: entities
+            show_header_toggle: false
+            entities:
+              - entity: sensor.home_recycling_date
+                type: custom:multiple-entity-row
+                name: Raccolta differenziata
+                icon: mdi:delete-variant
+                hide_state: true
+                primary:
+                  entity: sensor.home_recycling_date
+                  name: Data
+                secondary:
+                  entity: sensor.home_recycling_types
+                  name: Raccolta
+              - vacuum.mi_roborock
+      - type: entities
+        title: Luci
+        entities:
+          - light.lampada_sala
+          - light.book_light
+      - type: entities
+        title: Comandi
+        show_header_toggle: false
+        entities:
+          - switch.sonoff_10001f9bcf
+          - switch.sonoff_10004cfa12
+          - entity: script.tv_sala_power_on_off
+            type: custom:multiple-entity-row
+            name: TV Sala
+            icon: mdi:television
+            hide_state: true
+            primary:
+              icon: mdi:power
+              service: script.turn_on
+              service_data:
+                entity_id: script.tv_sala_power_on_off
+          - entity: script.tv_cucina_power_on_off
+            type: custom:multiple-entity-row
+            name: TV Cucina
+            icon: mdi:television
+            hide_state: true
+            primary:
+              icon: mdi:power
+              service: script.turn_on
+              service_data:
+                entity_id: script.tv_sala_power_on_off
+      - type: picture-entity
+        entity: camera.soggiorno
+  - path: media
+    title: Media
+    icon: 'mdi:play-network'
+    cards:
+      - type: entities
+        title: TV Cucina
+        show_header_toggle: false
+        entities:
+          - script.tv_cucina_power_on_off
+          - script.tv_cucina_volume_up
+          - script.tv_cucina_volume_down
+          - script.tv_cucina_mute
+          - script.tv_cucina_channel_up
+          - script.tv_cucina_channel_down
+          - script.tv_cucina_change_source
+      - type: entities
+        title: TV Sala
+        show_header_toggle: false
+        entities:
+          - script.tv_sala_power_on_off
+          - script.tv_sala_volume_up
+          - script.tv_sala_volume_down
+          - script.tv_sala_mute
+          - script.tv_sala_channel_up
+          - script.tv_sala_channel_down
+      - type: media-control
+        entity: media_player.echo_dot_studio
+      - type: entities
+        title: Dispositivi
+        show_header_toggle: false
+        entities:
+          - device_tracker.iphoneandrea
+          - device_tracker.ipadandrea
+          - device_tracker.iphoneerica
+          - device_tracker.ipaderica
+  - path: network
+    title: Network and Devices
+    icon: 'mdi:desktop-classic'
+    cards:
+      - type: vertical-stack
+        title: AlfredPi Monitoring  
+        show_header_toggle: false
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.memory_use_percent
+              - type: gauge
+                entity: sensor.processor_use
+          - type: entities
+            entities:
+              - sensor.last_boot
+              - entity: sensor.ha_upstream_version
+                type: custom:multiple-entity-row
+                name: Home Assistant
+                hide_state: true
+                primary:
+                  entity: sensor.ha_upstream_version
+                  name: Upstream
+                secondary:
+                  entity: sensor.home_assistant_installed
+                  name: Installed

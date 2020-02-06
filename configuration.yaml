@@ -15,6 +15,10 @@ homeassistant:
 # Enables configuration UI
 config:
 
+# Lovelace UI
+lovelace:
+  mode: yaml
+
 # Enable System Health component
 system_health:
 
