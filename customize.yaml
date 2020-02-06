@@ -1,3 +1,7 @@
+# Lights
+light.book_light:
+  friendly_name: Lampada libro
+
 # Home recycling
 sensor.home_recycling_date:
   friendly_name: Ritiro spazzatura
