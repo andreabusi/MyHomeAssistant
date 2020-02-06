@@ -142,7 +142,6 @@
 # JarvisBOT: comandi Telegram a cui Jarvis può rispondere
 - id: 'jarvisbot_ping'
   alias: 'JarvisBOT: /ping'
-  hide_entity: true
   trigger:
   - platform: event
     event_type: telegram_command
@@ -156,7 +155,6 @@
 
 - id: 'jarvisbot_temperature'
   alias: 'JarvisBOT: /temperature'
-  hide_entity: true
   trigger:
   - platform: event
     event_type: telegram_command
@@ -170,7 +168,6 @@
 
 - id: 'jarvisbot_camera_picture'
   alias: 'JarvisBOT: /camera'
-  hide_entity: true
   trigger:
   - platform: event
     event_type: telegram_command
@@ -184,7 +181,6 @@
 
 - id: 'jarvisbot_hello'
   alias: 'JarvisBOT: /hello'
-  hide_entity: true
   trigger:
   - platform: event
     event_type: telegram_text
