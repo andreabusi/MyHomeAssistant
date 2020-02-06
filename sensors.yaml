@@ -89,9 +89,19 @@
         {% endif %}
 
 # Xiaomi temperature and humidity sensor
+# This use a custom component due to unreliability of the standard integration
 - platform: mitemp_bt
-  mac: !secret mac_mi_temp_sensor
-  name: xiaomi_temp_sensor
-  monitored_conditions:
-    - temperature
-    - humidity
+  rounding: True
+  decimals: 1
+  period: 60
+  log_spikes: False
+  use_median: False
+  active_scan: False
+  hci_interface: 0
+
+- platform: template
+  sensors:
+    mi_b_582d343415fe:
+      unit_of_measurement: "%"
+      value_template: "{{ state_attr('sensor.mi_h_582d343415fe', 'battery_level') }}"
+      device_class: battery

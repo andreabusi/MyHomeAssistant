@@ -6,14 +6,6 @@ sensor.home_recycling_types:
   friendly_name: Spazzatura in ritiro
   icon: mdi:delete
 
-# Xiaomi sensor
-sensor.xiaomi_temp_sensor_temperature:
-  friendly_name: Temperatura casa
-  icon: mdi:thermometer
-sensor.xiaomi_temp_sensor_humidity:
-  friendly_name: Umidità casa
-  icon: mdi:water-percent
-
 # Home Assistant sensors
 sensor.home_assistant_installed:
   friendly_name: Installed version
