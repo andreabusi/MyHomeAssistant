@@ -83,7 +83,6 @@ media_player:
 cast:
   media_player:
     - host: !secret ip_chromecast_cucina
-    - host: !secret ip_google_home
 
 # Enables IP cameras
 camera:
