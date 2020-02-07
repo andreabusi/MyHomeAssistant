@@ -36,7 +36,7 @@ sensor.dark_sky_precip_probability:
   icon: mdi:weather-rainy
 
 # Person
-person.andrea_2:
+person.andrea:
   friendly_name: Andrea
   entity_picture: "/local/andrea.jpg"
 person.erica:

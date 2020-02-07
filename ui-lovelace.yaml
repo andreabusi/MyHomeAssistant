@@ -9,7 +9,7 @@ views:
     title: Overview
     icon: 'mdi:home'
     badges:
-      - entity: person.andrea_2
+      - entity: person.andrea
       - entity: person.erica
       - entity: sun.sun
     cards:

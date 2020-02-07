@@ -125,6 +125,7 @@ ifttt:
 person:
   - name: Andrea
     id: andrea01
+    user_id: 601d2c477e7a4d4f897601d21e69235f
     device_trackers:
       - device_tracker.iphoneandrea
   - name: Erica
