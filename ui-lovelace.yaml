@@ -157,7 +157,7 @@ views:
           - type: entities
             entities:
               - sensor.last_boot
-              - entity: sensor.ha_upstream_version
+              - entity: sensor.home_assistant_installed
                 type: custom:multiple-entity-row
                 name: Home Assistant
                 hide_state: true
@@ -165,5 +165,5 @@ views:
                   entity: sensor.ha_upstream_version
                   name: Upstream
                 secondary:
-                  entity: sensor.home_assistant_installed
+                  entity: sensor.ha_installed_version
                   name: Installed
