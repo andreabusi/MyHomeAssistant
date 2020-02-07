@@ -15,11 +15,11 @@ homeassistant:
 # Enables configuration UI
 config:
 
-# Lovelace UI
+# Enables Lovelace UI
 lovelace:
   mode: yaml
 
-# Enable System Health component
+# Enables System Health component
 system_health:
 
 # Public access to HA
@@ -61,7 +61,7 @@ ffmpeg:
 # Cloud
 cloud:
 
-# Enable Telegram Bot
+# Enables Telegram Bot
 telegram_bot:
   - platform: polling
     api_key: !secret telegram_key
@@ -79,30 +79,31 @@ media_player:
     port: 8001
   - platform: plex
 
-# Enable Cast devices
+# Enables Cast devices
 cast:
   media_player:
     - host: !secret ip_chromecast_cucina
     - host: !secret ip_google_home
 
-# Enable IP cameras
+# Enables IP cameras
 camera:
   - platform: yi
     name: Soggiorno
     host: !secret ip_mi_camera
     password: !secret yi_camera_password
 
-# Enable Vacuum integration
+# Enables Vacuum integration
 vacuum:
   - platform: xiaomi_miio
     name: mi_roborock
     host: !secret ip_xiaomi_robot
     token: !secret mi_vacuum_token
 
-# Enable IKEA Tradfri integration
+# Enables IKEA Tradfri integration
 tradfri:
   host: !secret ip_ikea_tradfri
 
+# Lights
 light:
   - platform: template
     lights:
@@ -117,7 +118,7 @@ light:
           data:
             entity_id: switch.sonoff_10004cf9ff
 
-# Enable IFTTT
+# Enables IFTTT
 ifttt:
   key: !secret ifttt_key
 
