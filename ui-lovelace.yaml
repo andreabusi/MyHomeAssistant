@@ -78,6 +78,27 @@ views:
           - light.lampada_sala
           - light.book_light
       - type: entities
+        title: Prese
+        show_header_toggle: false
+        entities:
+          - entity: switch.gosund_presa01
+            type: custom:multiple-entity-row
+            name: Presa cameretta
+            icon: mdi:power-socket-eu
+            toggle: true
+            primary:
+              entity: sensor.gosund_presa01_energy_power
+              name: Consumo
+          - entity: switch.gosund_presa02
+            type: custom:multiple-entity-row
+            name: Lavatrice
+            icon: mdi:washing-machine
+            toggle: true
+            hide_state: true
+            primary:
+              entity: sensor.gosund_presa02_energy_power
+              name: Consumo
+      - type: entities
         title: Comandi
         show_header_toggle: false
         entities:

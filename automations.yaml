@@ -196,6 +196,18 @@
       target: '{{ trigger.event.data.chat_id }}'
       message: 'Ciao {{ trigger.event.data.from_first }}!'
 
+# Washing machine finished
+- id: 'washing_machine_finished'
+  alias: 'Washing machine finished, let Alexa announce it'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.washing_machine_status
+    to: 'off'
+  action:
+    - service: script.alexa_announce
+      data:
+        message: "Erica! La lavatrice ha finito!"
+
 # IFTTT
 - id: 'ifttt_webhook'
   alias: IFTTT, handle incoming webhooks
