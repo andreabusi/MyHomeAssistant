@@ -98,6 +98,11 @@ views:
             primary:
               entity: sensor.gosund_presa02_energy_power
               name: Consumo
+          - entity: switch.050407552462ab207ec1
+            type: custom:multiple-entity-row
+            name: Umidificatore
+            icon: mdi:water-percent
+            toggle: true
       - type: entities
         title: Comandi
         show_header_toggle: false
