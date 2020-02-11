@@ -1,3 +1,17 @@
+# Alexa, announce a generic messag on media players
+alexa_announce:
+  alias: 'Announce a message on Alexa'
+  sequence:
+    - service: notify.alexa_media
+      data_template:
+        message: "{{ message }}"
+        data:
+          type: announce
+          method: spoken
+        target: 
+          - media_player.echo_soggiorno
+          - media_player.echo_dot_studio
+
 # Turn the Christmas Tree on and play Jingle Bells using Google Home (via IFTTT)
 christmasspirit_googlehome_on:
   alias: 'Turn the Christmas Tree on from Google Home'
