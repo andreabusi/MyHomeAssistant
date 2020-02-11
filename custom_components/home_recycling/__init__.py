@@ -43,15 +43,20 @@ def setup(hass, config):
         tomorrow = time.localtime(time.time() + 24*3600)
         collections = get_waste_collection(tomorrow)
         if len(collections) == 0:
-            message = "Oggi niente spazzatura da uscire!"
-        else:
-            message = "Spazzatura in ritiro domani:"
-            for collection in collections:
-                icon = get_icon_for_collection(collection)
-                message += "\n%s %s️" % (icon, collection)
+            return
         
+        message = "Spazzatura in ritiro domani:"
+        for collection in collections:
+            icon = get_icon_for_collection(collection)
+            message += "\n%s %s️" % (icon, collection)
+
+        # Post a notification on Telegram
         service_data = { 'message': message }
         hass.services.call('notify', 'home_tg', service_data, False)
+        # Announce on Alexa
+        alexa_pickups = " e ".join(collections)
+        alexa_data = { 'message': 'Andrea, ricordati la spazzatura in ritiro domani: %s' % alexa_pickups }
+        hass.services.call('script', 'alexa_announce', alexa_data, False)
     
     hass.services.register(DOMAIN, SERVICE_NOTIFICATION, notification)
 
