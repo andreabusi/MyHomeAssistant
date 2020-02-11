@@ -60,7 +60,7 @@ views:
           - type: entities
             show_header_toggle: false
             entities:
-              - entity: sensor.home_recycling_date
+              - entity: sensor.home_recycling
                 type: custom:multiple-entity-row
                 name: Raccolta differenziata
                 icon: mdi:delete-variant

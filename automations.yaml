@@ -5,9 +5,22 @@
   trigger:
   - at: '20:00'
     platform: time
-  condition: []
+  condition:
+    condition: state
+    entity_id: sensor.home_recycling
+    state: 'on'
   action:
-  - service: home_recycling.notification
+    - service: notify.home_tg
+      data_template:
+        message: >
+          La spazzatura in ritiro domani è:{{'\n'}}
+          {%- for collection in state_attr("sensor.home_recycling", "collections_icons") -%}
+            {{- collection }}{{'\n'}}
+          {%- endfor %}
+    - service: script.alexa_announce
+      data_template:
+        message: >
+          Andrea, ricordati la spazzatura in ritiro domani: {{ state_attr("sensor.home_recycling", "collections")|join(" e ") }}
 
 - id: 'home_recycling_states_morning'
   alias: Recycling, set states (morning)

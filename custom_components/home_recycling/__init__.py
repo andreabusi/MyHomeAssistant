@@ -7,7 +7,6 @@ import logging
 
 # The domain of your component. Should be equal to the filename of the component.
 DOMAIN = "home_recycling"
-SENSOR_PREFIX = "sensor." + DOMAIN + "_"
 SERVICE_NOTIFICATION = "notification"
 SERVICE_COLLECTION = "collections_state"
 
@@ -63,12 +62,20 @@ def setup(hass, config):
     # Servizio di salvataggio degli stati della raccolta di domani
     def set_collections_state(call):
         # check for tomorrow waste collections
-        tomorrow = time.localtime(time.time() + 24*3600)
-        collections = get_waste_collection(tomorrow)
+        state = "off"
+        pickup_date = time.localtime(time.time() + 24*3600)
+        collections = get_waste_collection(pickup_date)
+        collection_icons = []
 
-        # set date and collection types 
-        hass.states.set(SENSOR_PREFIX + "bin_date", time.strftime("%d-%m-%Y", tomorrow))
-        hass.states.set(SENSOR_PREFIX + "bin_types", ", ".join(collections))
+        if len(collections) > 0:
+            state = "on"
+            for collection in collections:
+                icon = get_icon_for_collection(collection)
+                collection_icons.append("%s %s️" % (icon, collection))
+
+        SENSOR_NAME = "sensor." + DOMAIN
+        attributes = { "collections": collections, "collections_icons": collection_icons, "pickup_date": time.strftime("%d-%m-%Y", pickup_date) }
+        hass.states.set(SENSOR_NAME, state, attributes)
 
     hass.services.register(DOMAIN, SERVICE_COLLECTION, set_collections_state)
 
