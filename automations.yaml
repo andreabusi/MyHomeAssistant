@@ -9,7 +9,7 @@
   action:
   - service: home_recycling.notification
 
-- id: 'home_recycling_states_start'
+- id: 'home_recycling_states_morning'
   alias: Recycling, set states (morning)
   initial_state: true
   trigger:
@@ -19,7 +19,7 @@
   action:
   - service: home_recycling.collections_state
 
-- id: 'home_recycling_states_morning'
+- id: 'home_recycling_states_start'
   alias: Recycling, set states (startup)
   initial_state: true
   trigger:
