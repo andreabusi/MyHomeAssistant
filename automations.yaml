@@ -226,3 +226,17 @@
   - service_template: '{{ trigger.event.data.service }}'
     data_template:
       entity_id: '{{ trigger.event.data.entity_id }}'
+
+# Force enable discovery on Tasmota devices
+- id: 'mqtt_enable_discovery'
+  alias: "Enable discovery on MQTT for Tasmota devices"
+  trigger:
+    - platform: homeassistant
+      event: start
+    - platform: time
+      at: '01:00'
+  action:
+    - service: mqtt.publish
+      data:
+        topic: "tasmotas/cmnd/SetOption19"
+        payload: "1"
