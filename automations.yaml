@@ -22,22 +22,14 @@
         message: >
           Andrea, ricordati la spazzatura in ritiro domani: {{ state_attr("sensor.home_recycling", "collections")|join(" e ") }}
 
-- id: 'home_recycling_states_morning'
-  alias: Recycling, set states (morning)
+- id: 'home_recycling_set_states'
+  alias: Recycling, set states
   initial_state: true
   trigger:
-  - at: '07:00'
-    platform: time  
-  condition: []
-  action:
-  - service: home_recycling.collections_state
-
-- id: 'home_recycling_states_start'
-  alias: Recycling, set states (startup)
-  initial_state: true
-  trigger:
-  - event: start
-    platform: homeassistant
+    - platform: time
+      at: '07:00'
+    - platform: homeassistant
+      event: start
   condition: []
   action:
   - service: home_recycling.collections_state
