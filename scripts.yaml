@@ -12,6 +12,20 @@ alexa_announce:
           - media_player.echo_soggiorno
           - media_player.echo_dot_studio
 
+# Alexa, announce home recycling for tomorrow
+alexa_home_recycling:
+  alias: 'Announce home recycling on Alexa'
+  sequence:
+    - service: script.alexa_announce
+      data_template:
+        message: >
+          {% set collections = state_attr("sensor.home_recycling", "collections") %}
+            {% if collections|length == 0 %}
+              Non c'è nessuna spazzatura in ritiro domani.
+            {% else %}
+              La spazzatura in ritiro domani è {{ collections|join(" e ") }}
+          {% endif %}
+
 # Turn the Christmas Tree on and play Jingle Bells using Google Home (via IFTTT)
 christmasspirit_googlehome_on:
   alias: 'Turn the Christmas Tree on from Google Home'
