@@ -7,3 +7,4 @@ These are the custom components actually installed on HA:
 * `alexa_media`: use Alexa devices as media player. [GitHub repo](https://github.com/custom-components/alexa_media_player)
 * `sonoff`: integrate Sonoff devices. [GitHub repo](https://github.com/peterbuga/HASS-sonoff-ewelink)
 * `mitemp_bt`: custom integration for Xiamo Temparature Sensor, due to unreliability of the standard integration. [GitHub repo](https://github.com/custom-components/sensor.mitemp_bt)
+* `shelly`: adds components for Shelly smart home devices to Home Assistant. No need to use MQTT and lose the Cloud integration. [GitHub repo](https://github.com/StyraHem/ShellyForHASS)

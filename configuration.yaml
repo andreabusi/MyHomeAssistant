@@ -119,6 +119,15 @@ tuya:
   password: !secret tuya_password
   country_code: !secret tuya_country
 
+# Shelly custom integration
+shelly:
+  cloud_auth_key: !secret shelly_key
+  cloud_server: !secret shelly_server
+  devices:
+    - id: "F431B1"
+      name: "Luce giardino"
+      light_switch: true
+
 # Lights
 light:
   - platform: template

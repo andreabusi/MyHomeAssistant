@@ -77,6 +77,7 @@ views:
         entities:
           - light.lampada_sala
           - light.book_light
+          - light.shelly_shsw_1_f431b1
       - type: entities
         title: Prese
         show_header_toggle: false
