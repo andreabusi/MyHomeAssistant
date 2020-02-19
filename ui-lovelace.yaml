@@ -84,7 +84,7 @@ views:
         entities:
           - entity: switch.gosund_presa01
             type: custom:multiple-entity-row
-            name: Presa cameretta
+            name: AlfredPi
             icon: mdi:power-socket-eu
             toggle: true
             primary:
@@ -194,3 +194,7 @@ views:
                 secondary:
                   entity: sensor.ha_installed_version
                   name: Installed
+              - type: weblink
+                name: GitHub Releases
+                url: https://github.com/home-assistant/home-assistant/releases
+                icon: mdi:home-assistant
