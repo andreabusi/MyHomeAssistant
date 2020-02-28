@@ -58,3 +58,8 @@ tv_sala:
     - script.tv_sala_mute
     - script.tv_sala_channel_up
     - script.tv_sala_channel_down
+
+lights_external:
+  name: Luci esterne
+  entities:
+    - light.shelly_shsw_1_f431b1
