@@ -189,6 +189,7 @@ sonoff:
 #### Other files #### 
 
 sensor: !include sensors.yaml
+switch: !include switches.yaml
 binary_sensor: !include binary_sensors.yaml
 remote: !include remotes.yaml
 notify: !include notifications.yaml
