@@ -155,3 +155,35 @@ tv_sala_channel_down:
       data:
         command:
           - 'tv_sala_channel_down'
+
+tv_sala_home_button:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_home_button'
+
+tv_sala_center_button:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_center_button'
+
+tv_sala_right_button:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_right_button'
+
+tv_sala_left_button:
+  sequence:
+    - service: remote.send_command
+      entity_id: 'remote.xiaomi_ir_remote'
+      data:
+        command:
+          - 'tv_sala_left_button'

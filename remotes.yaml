@@ -44,3 +44,15 @@
     tv_sala_channel_down:
       command:
         - raw:mk0nEwlk0mswmEsmszmEsmM3AI8AiJqBOQA/gD+Bz4BHTaYgDkAWYHXgD+AOwF/gxeAx4EHgEeB34DPgEfMIAA==
+    tv_sala_right_button:
+      command:
+        - raw:mk0nMwlgAiTWaTCWTGbAEHNwCDmwCPAGGAGgBbgD+AOwGCgEeBV4A/gD+BxQRBzUCDwYvAp8BDwKvCW8FXwCEmEA
+    tv_sala_left_button:
+      command:
+        - raw:mk0m0wlk0mszmEsmsxmEsmM3mQBHgEPNpgAOQAZAD+APgHPgheCV4A/gYeAh4IOAx+C34A6AdeBl4GXgZXMIAA==
+    tv_sala_center_button:
+      command:
+        - raw:mk0nMwlk0mswmEsms0mEsmM2ANIAjwCFms3AH8AfwOfAI8CrwB/AH8AfwSPBi8BnwCPAIOZgBlOAEPAzMBhwByAyiYQA
+    tv_sala_home_button:
+      command:
+        - raw:mk0mswlk0mszmEsmswmEsmM3mQBBTEAhwEbmwAZAIGAP4A/gc+CFYCpAZeAOgC7gDsCFAFHgpeDb4MmAmYENgP3hDcCnEwgA
