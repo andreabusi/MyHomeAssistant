@@ -157,6 +157,11 @@ views:
           - script.tv_sala_mute
           - script.tv_sala_channel_up
           - script.tv_sala_channel_down
+      - type: entities
+        type: Automations
+        show_header_toggle: false
+        entities:
+          - script.tv_sala_open_amazon_video
       - type: media-control
         entity: media_player.echo_dot_studio
       - type: entities

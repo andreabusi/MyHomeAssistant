@@ -89,3 +89,7 @@ script.tv_sala_channel_up:
 script.tv_sala_channel_down:
   icon: mdi:arrow-down
   friendly_name: 'Canale precedente'
+script.tv_sala_open_amazon_video:
+  icon: mdi:filmstrip
+  can_cancel: false
+  friendly_name: 'Apri Amazon Video in TV Sala'

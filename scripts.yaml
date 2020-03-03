@@ -187,3 +187,28 @@ tv_sala_left_button:
       data:
         command:
           - 'tv_sala_left_button'
+
+tv_sala_open_amazon_video:
+  sequence:
+    - service: script.turn_on
+      entity_id: script.tv_sala_power_on_off
+    - delay:
+        seconds: 2
+    - service: script.turn_on
+      entity_id: script.tv_sala_home_button
+    - delay:
+        seconds: 2
+    - service: script.turn_on
+      entity_id: script.tv_sala_right_button
+    - delay:
+        milliseconds: 500
+    - service: script.turn_on
+      entity_id: script.tv_sala_right_button
+    - delay:
+        milliseconds: 500
+    - service: script.turn_on
+      entity_id: script.tv_sala_right_button
+    - delay:
+        milliseconds: 500
+    - service: script.turn_on
+      entity_id: script.tv_sala_center_button
