@@ -186,6 +186,32 @@ light:
           data:
             entity_id: switch.sonoff_10004cf9ff
 
+# Climate
+climate:
+  - platform: xiaomi_remote
+    name: condizionatore_sala
+    remote: remote.xiaomi_ir_remote
+    commands: !include climate_configuration_daikin.yaml
+    min_temp: 16
+    max_temp: 30
+    target_temp: 24
+    target_temp_step: 1
+    hvac_mode: 'off'
+    fan_mode: auto
+    customize:
+      hvac_modes:
+        - 'off'
+        - cool
+        - heat
+        - dry
+        - fan_only
+        - auto
+      fan_modes:
+        - low
+        - medium
+        - high
+        - auto
+
 # Enables IFTTT
 ifttt:
   key: !secret ifttt_key
