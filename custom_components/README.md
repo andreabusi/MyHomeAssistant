@@ -38,6 +38,14 @@ Adds components for Shelly smart home devices to Home Assistant. There is no con
 * Installed version: 0.1.7
 * Updated on: 21/04/2020
 
+### `xiaomi_remote`
+
+Manage climate using Xiaomi IR Remote component.
+
+* [GitHub repo](https://github.com/Anonym-tsk/homeassistant-climate-xiaomi-remote)
+* Installed version: n.a.
+* Updated on: 16/10/2019
+
 ## Self made
 
 ### `magpi_download`
