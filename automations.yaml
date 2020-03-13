@@ -213,6 +213,18 @@
       data:
         message: "Erica! La lavatrice ha finito!"
 
+# Dryer machine finished
+- id: 'dryer_machine_finished'
+  alias: 'Dryer machine finished, let Alexa announce it'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dryer_machine_status
+    to: 'off'
+  action:
+    - service: script.alexa_announce
+      data:
+        message: "Erica! L'asciugatrice ha finito!"
+
 # IFTTT
 - id: 'ifttt_webhook'
   alias: IFTTT, handle incoming webhooks
