@@ -120,7 +120,7 @@
     entity_id: switch.sonoff_10004cf9ff
     to: 'on'
     for:
-      minutes: 20
+      minutes: 15
   condition:
     condition: time
     after: '23:00'
