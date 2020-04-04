@@ -208,6 +208,10 @@
     platform: state
     entity_id: binary_sensor.washing_machine_status
     to: 'off'
+  condition:
+    condition: time
+    after: '06:00'
+    before: '01:00'
   action:
     - service: script.alexa_announce
       data:
@@ -220,6 +224,10 @@
     platform: state
     entity_id: binary_sensor.dryer_machine_status
     to: 'off'
+  condition:
+    condition: time
+    after: '06:00'
+    before: '01:00'
   action:
     - service: script.alexa_announce
       data:
