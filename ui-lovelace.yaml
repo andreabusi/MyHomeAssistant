@@ -13,43 +13,57 @@ views:
       - entity: person.erica
       - entity: sun.sun
     cards:
-      - type: markdown
-        title: Lovelace
-        content: >
-          Benvenuti nella casa di Erica&Andrea!
-      - type: entities
-        title: Meteo
-        show_header_toggle: false
-        entities:
-          - sensor.forecast_today_summary
-          - entity: sensor.dark_sky_temperature
-            type: custom:multiple-entity-row
-            name: Meteo attuale
-            hide_state: true
-            primary:
-              entity: sensor.dark_sky_temperature
-              name: Temperatura
-            secondary:
-              entity: sensor.dark_sky_humidity
-              name: Umidità
-            tertiary:
-              entity: sensor.dark_sky_precip_probability
-              name: Pioggia
-          - entity: sensor.forecast_temperatures
-            type: custom:multiple-entity-row
-            name: Meteo giornata
-            hide_state: true
-            primary:
-              entity: sensor.dark_sky_daytime_high_temperature_0d
-              name: Temperatura
-            secondary:
-              entity: sensor.dark_sky_overnight_low_temperature_0d
-              name: Umidità
       - type: vertical-stack
-        show_header_toggle: false
         cards:
           - type: horizontal-stack
-            show_header_toggle: false
+            title: Luci
+            cards:
+              - type: light
+                entity: light.lampada_sala
+              - type: light
+                entity: light.book_light
+              - type: light
+                entity: light.shelly_shsw_1_f431b1
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                title: Elettrodomestici
+                cards:
+                  - type: button
+                    entity: switch.tv_sala
+                    name: TV Sala
+                    icon: mdi:television
+                    tap_action:
+                      action: call-service
+                      service: script.turn_on
+                      service_data:
+                        entity_id: script.tv_sala_power_on_off
+                  - type: button
+                    entity: switch.tv_cucina
+                    name: TV Cucina
+                    icon: mdi:television
+                    tap_action:
+                      action: call-service
+                      service: script.turn_on
+                      service_data:
+                        entity_id: script.tv_cucina_power_on_off
+              - type: horizontal-stack
+                cards:
+                  - type: button
+                    entity: binary_sensor.washing_machine_status
+                    icon: mdi:washing-machine
+                    name: Lavatrice
+                    state_color: true
+                  - type: button
+                    entity: binary_sensor.dryer_machine_status
+                    icon: mdi:tumble-dryer
+                    name: Asciugatrice
+                  - type: button
+                    entity: vacuum.mi_roborock
+      - type: vertical-stack
+        title: Stato casa
+        cards:
+          - type: horizontal-stack
             cards:
               - type: sensor
                 entity: sensor.mi_t_582d343415fe
@@ -58,28 +72,48 @@ views:
                 entity: sensor.mi_h_582d343415fe
                 name: Umidità
           - type: entities
-            show_header_toggle: false
             entities:
-              - entity: sensor.home_recycling
-                type: custom:multiple-entity-row
-                name: Raccolta differenziata
+              - type: custom:multiple-entity-row
+                entity: sensor.home_recycling
+                name: Spazzatura
                 icon: mdi:delete-variant
                 hide_state: true
                 primary:
-                  entity: sensor.home_recycling_date
-                  name: Data
-                secondary:
                   entity: sensor.home_recycling_types
                   name: Raccolta
-              - vacuum.mi_roborock
+          - type: picture-entity
+            entity: camera.soggiorno
+      - type: vertical-stack
+        title: Meteo
+        cards:
+          - type: entities
+            entities:
+              - sensor.forecast_today_summary
+              - type: custom:multiple-entity-row
+                entity: sensor.dark_sky_temperature
+                name: Adesso
+                hide_state: true
+                primary:
+                  entity: sensor.dark_sky_temperature
+                  name: Temperatura
+                secondary:
+                  entity: sensor.dark_sky_humidity
+                  name: Umidità
+                tertiary:
+                  entity: sensor.dark_sky_precip_probability
+                  name: Pioggia
+              - entity: sensor.forecast_temperatures
+                type: custom:multiple-entity-row
+                name: Giornata
+                hide_state: true
+                primary:
+                  entity: sensor.dark_sky_daytime_high_temperature_0d
+                  name: Temperatura
+                secondary:
+                  entity: sensor.dark_sky_overnight_low_temperature_0d
+                  name: Umidità
       - type: entities
-        title: Luci
-        entities:
-          - light.lampada_sala
-          - light.book_light
-          - light.shelly_shsw_1_f431b1
-      - type: entities
-        title: Prese
+        title: Carichi
         show_header_toggle: false
         entities:
           - entity: switch.gosund_presa02
@@ -100,39 +134,6 @@ views:
             primary:
               entity: sensor.gosund_presa01_energy_power
               name: Consumo
-          - entity: switch.050407552462ab207ec1
-            type: custom:multiple-entity-row
-            name: Umidificatore
-            icon: mdi:water-percent
-            toggle: true
-      - type: entities
-        title: Comandi
-        show_header_toggle: false
-        entities:
-          - switch.sonoff_10001f9bcf
-          - switch.sonoff_10004cfa12
-          - entity: script.tv_sala_power_on_off
-            type: custom:multiple-entity-row
-            name: TV Sala
-            icon: mdi:television
-            hide_state: true
-            primary:
-              icon: mdi:power
-              service: script.turn_on
-              service_data:
-                entity_id: script.tv_sala_power_on_off
-          - entity: script.tv_cucina_power_on_off
-            type: custom:multiple-entity-row
-            name: TV Cucina
-            icon: mdi:television
-            hide_state: true
-            primary:
-              icon: mdi:power
-              service: script.turn_on
-              service_data:
-                entity_id: script.tv_sala_power_on_off
-      - type: picture-entity
-        entity: camera.soggiorno
   - path: media
     title: Media
     icon: 'mdi:play-network'
