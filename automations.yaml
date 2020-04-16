@@ -98,6 +98,10 @@
       message: Update {{ trigger.to_state.state }} is available for Home Assistant!
       data:
         url: "https://github.com/home-assistant/home-assistant/releases/tag/{{ trigger.to_state.state }}"
+  - service: rest_command.pushcut_notification
+    data_template:
+      name: 'HomeAssistant_UpdateAvailable'
+      payload: '{ "title": "Home Assistant {{ trigger.to_state.state }} available!", "actions": [ { "name": "\uD83D\uDCC4 View changelog", "url": "https://github.com/home-assistant/home-assistant/releases/tag/{{ trigger.to_state.state }}", "keepNotification": true } ] }'
     
 - id: 'ha_startup'
   alias: HomeAssistant, started notification
