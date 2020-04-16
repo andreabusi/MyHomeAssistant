@@ -171,6 +171,15 @@ shelly:
       name: "Luce giardino"
       light_switch: true
 
+smartir:
+
+climate:
+  - platform: smartir
+    name: AC Salotto
+    unique_id: ac_salotto
+    device_code: 3101
+    controller_data: remote.xiaomi_ir_remote
+
 # Lights
 light:
   - platform: template

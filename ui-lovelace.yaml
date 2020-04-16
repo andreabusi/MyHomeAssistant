@@ -20,6 +20,8 @@ views:
                 entity: light.book_light
               - type: light
                 entity: light.shelly_shsw_1_f431b1
+              - type: thermostat
+                entity: climate.ac_salotto
           - type: vertical-stack
             cards:
               - type: horizontal-stack
