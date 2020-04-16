@@ -175,6 +175,16 @@ light:
 ifttt:
   key: !secret ifttt_key
 
+# Define custom REST Api
+rest_command:
+  pushcut_notification:
+    url: 'https://api.pushcut.io/v1/notifications/{{ name }}'
+    method: POST
+    content_type: application/json
+    headers:
+      API-Key: !secret pushcut_api_key
+    payload: '{{ payload }}'
+
 # Persons and trackers
 person:
   - name: Andrea
