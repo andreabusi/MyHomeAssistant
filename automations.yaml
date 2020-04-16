@@ -92,12 +92,12 @@
   - condition: template
     value_template: "{{ trigger.to_state.state != states.sensor.ha_installed_version.state }}"
   action:
-  - data_template:
+  - service: notify.pushover
+    data_template:
       title: Home Assistant
       message: Update {{ trigger.to_state.state }} is available for Home Assistant!
       data:
         url: "https://github.com/home-assistant/home-assistant/releases/tag/{{ trigger.to_state.state }}"
-    service: notify.pushover
     
 - id: 'ha_startup'
   alias: HomeAssistant, started notification
