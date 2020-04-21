@@ -75,6 +75,18 @@ mqtt:
   username: !secret mqtt_username
   password: !secret mqtt_password
 
+# Enables HomeKit integration
+homekit:
+  filter:
+    include_entities:
+      - light.book_light
+      - light.shelly_shsw_1_f431b1
+  entity_config:
+    light.book_light:
+      name: Luce libro
+    light.shelly_shsw_1_f431b1:
+      name: Luce giardino
+
 # Enables Alexa integration
 alexa:
   smart_home:
