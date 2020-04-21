@@ -1,9 +1,5 @@
 title: B&B Home
 
-resources:
-  - url: /local/multiple-entity-row.js?v=2.2.1
-    type: module
-
 views:
   - path: default_view
     title: Overview
