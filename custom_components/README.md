@@ -44,6 +44,8 @@ Adds components for Shelly smart home devices to Home Assistant. There is no con
 
 Check and download the latest number of MagPi Magazine.
 
+* Updated on: 22/04/2020
+
 ### `home_recycling`
 
 Update sensors for the home recycling, based on the provided city calendar.

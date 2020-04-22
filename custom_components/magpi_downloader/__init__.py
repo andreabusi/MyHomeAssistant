@@ -4,6 +4,7 @@ Download automatico dei nuovi numeri di MagPi
 import json
 import requests
 import logging
+from bs4 import BeautifulSoup
 
 # The domain of your component. Should be equal to the filename of the component.
 DOMAIN = "magpi_downloader"
@@ -12,7 +13,7 @@ SERVICE_DOWNLOADER = "downloader"
 # Variable for storing configuration parameters
 CONFIGURATION_FILE = None
 OUTPUT_PATH = None
-MAGPI_ISSUES_URL = "https://www.raspberrypi.org/magpi-issues"
+MAGPI_ISSUES_URL = "https://magpi.raspberrypi.org/issues/%s/pdf"
 MAGPI_FILNAME = "MagPi"
 
 # Configuration keys
@@ -49,7 +50,10 @@ def setup(hass, config):
 def download_new_issue(issue_number):
     try:
         file_name = create_filename(issue_number)
-        file_url = "%s/%s" % (MAGPI_ISSUES_URL, file_name)
+        file_url = create_pdf_url(issue_number)
+        if file_url is None:
+        	_LOGGER.error("Unable to create pdf Url")
+        	return False
         output_path = "%s/%s" % (OUTPUT_PATH, file_name)
         response = requests.get(file_url)
         if response.status_code == requests.codes.ok:
@@ -72,6 +76,20 @@ def send_notification(hass, issue_number):
 
 def create_filename(issue_number):
     return "%s%s.pdf" % (MAGPI_FILNAME, issue_number)
+
+
+def create_pdf_url(issue_number):
+	base_url = MAGPI_ISSUES_URL % issue_number
+	page = requests.get(base_url)
+
+	soup = BeautifulSoup(page.content, 'html.parser')
+	tags = soup.find_all('meta', { 'http-equiv':"refresh"})
+	if len(tags) > 0:
+		tag = tags[0]
+		pdf_url = tag['content'].replace('0;url=', '')
+		return pdf_url
+	
+	return None
 
 
 def downloader(hass):
