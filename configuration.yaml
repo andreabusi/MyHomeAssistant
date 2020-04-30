@@ -124,15 +124,6 @@ telegram_bot:
       - !secret telegram_chat_erica
       - !secret telegram_chat_home
 
-# Configure Media Players
-media_player:
-  - platform: samsungtv
-    name: TV Salotto
-    host: !secret ip_tv_salotto
-    mac: !secret mac_tv_samsung
-    port: 8001
-  - platform: plex
-
 # Enables Cast devices
 cast:
   media_player:
