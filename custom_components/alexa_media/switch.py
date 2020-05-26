@@ -10,7 +10,6 @@ https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers
 import logging
 from typing import List  # noqa pylint: disable=unused-import
 
-from homeassistant.components.switch import SwitchDevice
 from homeassistant.exceptions import ConfigEntryNotReady, NoEntitySpecifiedError
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
@@ -24,6 +23,11 @@ from . import (
     hide_serial,
 )
 from .helpers import _catch_login_errors, add_devices, retry_async
+
+try:
+    from homeassistant.components.switch import SwitchEntity as SwitchDevice
+except ImportError:
+    from homeassistant.components.switch import SwitchDevice
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -54,21 +58,19 @@ async def async_setup_platform(hass, config, add_devices_callback, discovery_inf
         if key not in (
             hass.data[DATA_ALEXAMEDIA]["accounts"][account]["entities"]["switch"]
         ):
-            (
-                hass.data[DATA_ALEXAMEDIA]["accounts"][account]["entities"]["switch"][
-                    key
-                ]
-            ) = {}
+            hass.data[DATA_ALEXAMEDIA]["accounts"][account]["entities"]["switch"][
+                key
+            ] = {}
             for (switch_key, class_) in SWITCH_TYPES:
                 if (
                     switch_key == "dnd"
-                    and not account_dict["devices"]["switch"][key].get("dnd")
+                    and not account_dict["devices"]["switch"].get(key, {}).get("dnd")
                 ) or (
                     switch_key in ["shuffle", "repeat"]
                     and "MUSIC_SKILL"
-                    not in account_dict["devices"]["media_player"][key].get(
-                        "capabilities"
-                    )
+                    not in account_dict["devices"]["media_player"]
+                    .get(key, {})
+                    .get("capabilities", {})
                 ):
                     _LOGGER.debug(
                         "%s: Skipping %s for %s",

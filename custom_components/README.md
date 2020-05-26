@@ -9,8 +9,8 @@ These are the custom components actually installed on HA:
 Control Amazon Alexa devices in HomeAssistant using the unofficial Alexa API.
 
 * [GitHub repo](https://github.com/custom-components/alexa_media_player)
-* Installed version: 2.5.14
-* Updated on: 21/04/2020
+* Installed version: 2.8.2
+* Updated on: 26/05/2020
 
 ### `sonoff`
 
@@ -35,8 +35,8 @@ This custom component is an alternative for the standard build in mitemp_bt inte
 Adds components for Shelly smart home devices to Home Assistant. There is no configuration needed, it will find all devices on your LAN and add them to Home Assistant. All communication with Shelly devices is local. You can use this plugin and continue to use Shelly Cloud, MQTT and Shelly app in your mobile if you want.
 
 * [GitHub repo](https://github.com/StyraHem/ShellyForHASS)
-* Installed version: 0.1.7
-* Updated on: 21/04/2020
+* Installed version: 0.1.8
+* Updated on: 26/05/2020
 
 ## Self made
 
