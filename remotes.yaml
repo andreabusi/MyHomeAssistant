@@ -1,4 +1,8 @@
 # IR Remote
+- platform: broadlink
+  type: rm_mini3_newblackbean
+  host: !secret ip_broadlink_remote
+  mac: !secret mac_broadlink_remote
 
 - platform: xiaomi_miio
   name: 'Xiaomi IR Remote'
