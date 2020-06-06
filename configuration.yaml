@@ -7,6 +7,9 @@ homeassistant:
   elevation: !secret home_elevation
   unit_system: metric
   time_zone: Europe/Rome
+  # External access
+  internal_url: !secret http_internal_url
+  external_url: !secret http_public_url
 
   # Customization file
   customize: !include customize.yaml
@@ -30,7 +33,6 @@ system_health:
 
 # Public access to HA
 http:
-  base_url: !secret http_public_url
 
 # Checks for available updates
 updater:
