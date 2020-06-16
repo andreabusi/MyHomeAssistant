@@ -97,25 +97,17 @@ alexa:
         - light.lampada_sala
         - switch.050407552462ab207ec1
         - light.shelly_shsw_1_f431b1
-        - switch.tv_cucina
-        - switch.tv_sala
     entity_config:
       light.lampada_sala:
         name: Luce sala
         description: Lampada salotto
         display_categories: LIGHT
-      switch.050407552462ab207ec1:
-        name: Umidificatore
-        display_categories: SWITCH
       light.shelly_shsw_1_f431b1:
         name: Luce giardino
         display_categories: LIGHT
-      switch.tv_cucina:
-        name: TV cucina
-        display_categories: TV
-      switch.tv_sala:
-        name: TV sala
-        display_categories: TV
+      switch.050407552462ab207ec1:
+        name: Umidificatore
+        display_categories: SWITCH
 
 # Enables Telegram Bot
 telegram_bot:
