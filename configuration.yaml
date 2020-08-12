@@ -120,8 +120,6 @@ telegram_bot:
 
 # Enables Cast devices
 cast:
-  media_player:
-    - host: !secret ip_chromecast_cucina
 
 # Enables IP cameras
 camera:

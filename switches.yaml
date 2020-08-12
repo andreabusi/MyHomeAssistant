@@ -2,7 +2,7 @@
 - platform: template
   switches:
     tv_cucina:
-      value_template: "{{ is_state('media_player.tv_cucina', 'on') }}"
+      value_template: "{{ not is_state('media_player.tv_cucina', 'unavailable') }}"
       turn_on:
         service: script.turn_on
         data:
