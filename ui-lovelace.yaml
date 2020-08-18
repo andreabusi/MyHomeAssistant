@@ -132,7 +132,7 @@ views:
               name: Consumo
   - path: media
     title: Media
-    icon: 'mdi:play-network'
+    icon: 'mdi:television-classic'
     cards:
       - type: entities
         title: TV Cucina
@@ -155,13 +155,10 @@ views:
           - script.tv_sala_mute
           - script.tv_sala_channel_up
           - script.tv_sala_channel_down
-      - type: entities
-        title: Routine
-        show_header_toggle: false
-        entities:
-          - script.tv_sala_open_amazon_video
       - type: media-control
         entity: media_player.echo_dot_studio
+      - type: media-control
+        entity: media_player.echo_soggiorno
       - type: entities
         title: Dispositivi
         show_header_toggle: false
@@ -170,9 +167,18 @@ views:
           - device_tracker.ipadandrea
           - device_tracker.iphoneerica
           - device_tracker.ipaderica
+  - path: automations
+    title: Automations
+    icon: 'mdi:transit-connection-variant'
+    cards:
+      - type: entities
+        title: Multimedia
+        show_header_toggle: false
+        entities:
+          - script.tv_sala_open_amazon_video
   - path: network
-    title: Network and Devices
-    icon: 'mdi:desktop-classic'
+    title: Nerd Stuff
+    icon: 'mdi:raspberry-pi'
     cards:
       - type: vertical-stack
         title: AlfredPi Monitoring  
