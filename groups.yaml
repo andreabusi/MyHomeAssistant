@@ -37,6 +37,7 @@ media_players:
     - group.tv_cucina
     - group.tv_sala
     - media_player.echo_dot_studio
+    - media_player.echo_soggiorno
 
 tv_cucina:
   name: TV Cucina
