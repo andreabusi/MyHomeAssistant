@@ -55,6 +55,10 @@ views:
                     icon: mdi:tumble-dryer
                     name: Asciugatrice
                   - type: button
+                    entity: switch.050407552462ab207ec1
+                    icon: mdi:water-percent
+                    name: Deumidificatore
+                  - type: button
                     entity: vacuum.mi_roborock
       - type: vertical-stack
         title: Stato casa
