@@ -240,3 +240,13 @@ tv_sala_open_amazon_video:
         milliseconds: 500
     - service: script.turn_on
       entity_id: script.tv_sala_center_button
+
+# Goodnight automation
+goodnight_turnoff:
+  sequence:
+    - service: light.turn_off
+      entity_id: light.lampada_sala
+    - service: script.turn_on
+      entity_id: script.tv_sala_power_off
+    - service: script.turn_on
+      entity_id: script.tv_cucina_power_off

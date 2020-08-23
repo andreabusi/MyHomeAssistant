@@ -176,6 +176,11 @@ views:
         show_header_toggle: false
         entities:
           - script.tv_sala_open_amazon_video
+      - type: entities
+        title: Routines
+        show_header_toggle: false
+        entities:
+          - script.goodnight_turnoff
   - path: network
     title: Nerd Stuff
     icon: 'mdi:raspberry-pi'
