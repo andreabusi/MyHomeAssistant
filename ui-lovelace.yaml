@@ -30,10 +30,7 @@ views:
                     name: TV Sala
                     icon: mdi:television
                     tap_action:
-                      action: call-service
-                      service: script.turn_on
-                      service_data:
-                        entity_id: script.tv_sala_power_on_off
+                      action: toggle
                   - type: button
                     entity: switch.tv_cucina
                     name: TV Cucina
@@ -139,7 +136,8 @@ views:
         title: TV Cucina
         show_header_toggle: false
         entities:
-          - script.tv_cucina_power_on_off
+          - script.tv_cucina_power_on
+          - script.tv_cucina_power_off
           - script.tv_cucina_volume_up
           - script.tv_cucina_volume_down
           - script.tv_cucina_mute
@@ -150,7 +148,8 @@ views:
         title: TV Sala
         show_header_toggle: false
         entities:
-          - script.tv_sala_power_on_off
+          - script.tv_sala_power_on
+          - script.tv_sala_power_off
           - script.tv_sala_volume_up
           - script.tv_sala_volume_down
           - script.tv_sala_mute

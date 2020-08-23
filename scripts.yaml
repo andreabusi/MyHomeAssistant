@@ -122,8 +122,22 @@ tv_cucina_change_source:
           - 'tv_cucina_change_source'
 
 # Remote - TV Sala
-tv_sala_power_on_off:
+tv_sala_power_on:
   sequence:
+    - condition: state
+      entity_id: switch.tv_sala
+      state: 'off'
+    - service: remote.send_command
+      entity_id: remote.xiaomi_ir_remote
+      data:
+        command:
+          - 'tv_sala_power'
+
+tv_sala_power_off:
+  sequence:
+    - condition: state
+      entity_id: switch.tv_sala
+      state: 'on'
     - service: remote.send_command
       entity_id: remote.xiaomi_ir_remote
       data:
@@ -205,7 +219,7 @@ tv_sala_left_button:
 tv_sala_open_amazon_video:
   sequence:
     - service: script.turn_on
-      entity_id: script.tv_sala_power_on_off
+      entity_id: script.tv_sala_power_on
     - delay:
         seconds: 2
     - service: script.turn_on

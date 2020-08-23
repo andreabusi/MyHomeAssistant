@@ -20,8 +20,8 @@
       turn_on:
         service: script.turn_on
         data:
-          entity_id: script.tv_sala_power_on_off
+          entity_id: script.tv_sala_power_on
       turn_off:
         service: script.turn_on
         data:
-          entity_id: script.tv_sala_power_on_off
+          entity_id: script.tv_sala_power_off

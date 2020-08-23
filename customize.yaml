@@ -74,9 +74,12 @@ script.tv_cucina_channel_down:
 script.tv_cucina_change_source:
   icon: mdi:video-input-hdmi
   friendly_name: 'Cambia sorgente (TV/PC)'
-script.tv_sala_power_on_off:
+script.tv_sala_power_on:
   icon: mdi:power
-  friendly_name: 'Accendi/Spegni'
+  friendly_name: 'Accendi'
+script.tv_sala_power_off:
+  icon: mdi:power
+  friendly_name: 'Spegni'
 script.tv_sala_volume_up:
   icon: mdi:volume-plus
   friendly_name: 'Alza volume'

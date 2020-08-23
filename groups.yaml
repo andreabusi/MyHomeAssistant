@@ -54,7 +54,8 @@ tv_cucina:
 tv_sala:
   name: TV Sala
   entities:
-    - script.tv_sala_power_on_off
+    - script.tv_sala_power_on
+    - script.tv_sala_power_off
     - script.tv_sala_volume_up
     - script.tv_sala_volume_down
     - script.tv_sala_mute
