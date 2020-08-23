@@ -6,11 +6,11 @@
       turn_on:
         service: script.turn_on
         data:
-          entity_id: script.tv_cucina_power_on_off
+          entity_id: script.tv_cucina_power_on
       turn_off:
         service: script.turn_on
         data:
-          entity_id: script.tv_cucina_power_on_off
+          entity_id: script.tv_cucina_power_off
 
 # Simulate TV sala as switch (to expose on Alexa)
 - platform: template

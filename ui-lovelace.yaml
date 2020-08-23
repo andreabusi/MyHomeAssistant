@@ -39,10 +39,7 @@ views:
                     name: TV Cucina
                     icon: mdi:television
                     tap_action:
-                      action: call-service
-                      service: script.turn_on
-                      service_data:
-                        entity_id: script.tv_cucina_power_on_off
+                      action: toggle
               - type: horizontal-stack
                 cards:
                   - type: button

@@ -51,8 +51,22 @@ play_jingle_bells:
         media_content_type: audio/mp3
 
 # Remote - TV Cucina
-tv_cucina_power_on_off:
+tv_cucina_power_on:
   sequence:
+    - condition: state
+      entity_id: switch.tv_cucina
+      state: 'off'
+    - service: remote.send_command
+      entity_id: remote.xiaomi_ir_remote
+      data:
+        command:
+          - 'tv_cucina_power'
+
+tv_cucina_power_off:
+  sequence:
+    - condition: state
+      entity_id: switch.tv_cucina
+      state: 'on'
     - service: remote.send_command
       entity_id: remote.xiaomi_ir_remote
       data:

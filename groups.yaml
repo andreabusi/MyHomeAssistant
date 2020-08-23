@@ -42,7 +42,8 @@ media_players:
 tv_cucina:
   name: TV Cucina
   entities:
-    - script.tv_cucina_power_on_off
+    - script.tv_cucina_power_on
+    - script.tv_cucina_power_off
     - script.tv_cucina_volume_up
     - script.tv_cucina_volume_down
     - script.tv_cucina_mute

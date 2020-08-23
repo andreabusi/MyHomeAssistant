@@ -50,9 +50,12 @@ device_tracker.ipaderica:
   icon: mdi:tablet-ipad
 
 # Scripts
-script.tv_cucina_power_on_off:
+script.tv_cucina_power_on:
   icon: mdi:power
-  friendly_name: 'Accendi/Spegni'
+  friendly_name: 'Accendi'
+script.tv_cucina_power_off:
+  icon: mdi:power
+  friendly_name: 'Spegni'
 script.tv_cucina_volume_up:
   icon: mdi:volume-plus
   friendly_name: 'Alza volume'
