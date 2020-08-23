@@ -9,8 +9,8 @@ These are the custom components actually installed on HA:
 Control Amazon Alexa devices in HomeAssistant using the unofficial Alexa API.
 
 * [GitHub repo](https://github.com/custom-components/alexa_media_player)
-* Installed version: 2.10.1
-* Updated on: 12/08/2020
+* Installed version: 2.10.3
+* Updated on: 23/08/2020
 
 ### `sonoff`
 
