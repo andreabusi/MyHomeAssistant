@@ -83,11 +83,14 @@ homekit:
     include_entities:
       - light.book_light
       - light.shelly_shsw_1_f431b1
+      - switch.050407552462ab207ec1
   entity_config:
     light.book_light:
       name: Luce libro
     light.shelly_shsw_1_f431b1:
       name: Luce giardino
+    switch.050407552462ab207ec1:
+      name: Deumidificatore
 
 # Enables Alexa integration
 alexa:
@@ -95,7 +98,6 @@ alexa:
     filter:
       include_entities:
         - light.lampada_sala
-        - switch.050407552462ab207ec1
         - light.shelly_shsw_1_f431b1
     entity_config:
       light.lampada_sala:
@@ -105,9 +107,6 @@ alexa:
       light.shelly_shsw_1_f431b1:
         name: Luce giardino
         display_categories: LIGHT
-      switch.050407552462ab207ec1:
-        name: Umidificatore
-        display_categories: SWITCH
 
 # Enables Telegram Bot
 telegram_bot:
