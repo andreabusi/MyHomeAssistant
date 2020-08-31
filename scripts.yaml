@@ -246,6 +246,8 @@ goodnight_turnoff:
   sequence:
     - service: light.turn_off
       entity_id: light.lampada_sala
+    - service: light.turn_off
+      entity_id: light.book_light
     - service: script.turn_on
       entity_id: script.tv_sala_power_off
     - service: script.turn_on
