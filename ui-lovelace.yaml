@@ -106,28 +106,39 @@ views:
                 secondary:
                   entity: sensor.dark_sky_overnight_low_temperature_0d
                   name: Umidità
-      - type: entities
-        title: Carichi
-        show_header_toggle: false
-        entities:
-          - entity: switch.gosund_presa02
-            type: custom:multiple-entity-row
-            name: Lavatrice
-            icon: mdi:washing-machine
-            toggle: true
-            hide_state: true
-            primary:
-              entity: sensor.gosund_presa02_energy_power
-              name: Consumo
-          - entity: switch.gosund_presa01
-            type: custom:multiple-entity-row
-            name: Asciugatrice
-            icon: mdi:tumble-dryer
-            toggle: true
-            hide_state: true
-            primary:
-              entity: sensor.gosund_presa01_energy_power
-              name: Consumo
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Carichi
+            show_header_toggle: false
+            entities:
+              - entity: switch.gosund_presa02
+                type: custom:multiple-entity-row
+                name: Lavatrice
+                icon: mdi:washing-machine
+                toggle: true
+                hide_state: true
+                primary:
+                  entity: sensor.gosund_presa02_energy_power
+                  name: Consumo
+              - entity: switch.gosund_presa01
+                type: custom:multiple-entity-row
+                name: Asciugatrice
+                icon: mdi:tumble-dryer
+                toggle: true
+                hide_state: true
+                primary:
+                  entity: sensor.gosund_presa01_energy_power
+                  name: Consumo
+          - type: entities  
+            title: Antiallagamento
+            show_header_toggle: false
+            entities:
+              - entity: input_boolean.waterflood_taverna
+                type: custom:multiple-entity-row
+                name: Lavanderia
+                icon: mdi:pipe-leak
+                state_color: true
   - path: media
     title: Media
     icon: 'mdi:television-classic'
