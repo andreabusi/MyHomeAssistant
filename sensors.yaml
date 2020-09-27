@@ -1,6 +1,3 @@
-# Weather forecast
-- platform: yr
-
 # RaspberryPi system monitoring
 - platform: systemmonitor
   resources:
