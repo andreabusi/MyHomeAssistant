@@ -9,14 +9,14 @@ These are the custom components actually installed on HA:
 Control Amazon Alexa devices in HomeAssistant using the unofficial Alexa API.
 
 * [GitHub repo](https://github.com/custom-components/alexa_media_player)
-* Installed version: 3.0.0
-* Updated on: 22/09/2020
+* Installed version: 3.0.1
+* Updated on: 27/09/2020
 
 ### `SonoffLAN`
 
 Home Assistant custom component for control Sonoff devices with eWeLink (original) firmware over LAN and/or Cloud.
 
-* [GitHub repo](hhttps://github.com/AlexxIT/SonoffLAN)
+* [GitHub repo](https://github.com/AlexxIT/SonoffLAN)
 * Installed version: 2.3.1
 * Updated on: 22/09/2020
 
