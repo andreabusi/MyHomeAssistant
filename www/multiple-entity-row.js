@@ -1,6 +1,15 @@
 ((LitElement) => {
+    console.info(
+        '%c MULTIPLE-ENTITY-ROW %c 3.4.0 ',
+        'color: cyan; background: black; font-weight: bold;',
+        'color: darkblue; background: white; font-weight: bold;',
+    );
+
     const html = LitElement.prototype.html;
     const css = LitElement.prototype.css;
+
+    const UNAVAILABLE = 'unavailable';
+    const UNKNOWN = 'unknown';
 
     class MultipleEntityRow extends LitElement {
 
@@ -46,12 +55,17 @@
             display: block;
             color: var(--secondary-text-color);
           }
+          hui-warning {
+            width: 100%;
+          }
           state-badge {
             flex: 0 0 40px;
             cursor: pointer;
           }
+          .icon-small {
+            width: auto;
+          }
           .entity {
-            margin-right: 16px;
             text-align: center;
             cursor: pointer;
           }
@@ -59,69 +73,112 @@
             font-size: 10px;
             color: var(--secondary-text-color);
           }
-          .entity:last-of-type {
+          .entities-row {
+            flex-direction: row;
+            display: inline-flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .entities-row .entity {
+            margin-right: 16px;
+          }
+          .entities-row .entity:last-of-type {
             margin-right: 0;
           }
-          .state {
-            min-width: 45px;
+          .entities-column {
+            flex-direction: column;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-evenly;
           }
-          .toggle {
-            margin-left: 8px;
+          .entities-column .entity div {
+            display: inline-block;
+            vertical-align: middle;
           }`;
         }
 
         render() {
-            return html`
+            return this.state.stateObj ? html`
             <state-badge
                 .stateObj="${this.state.stateObj}"
-                .overrideIcon="${this.icon}"
-                @click="${this.onClick}">
+                .overrideIcon="${this._config.icon}"
+                .stateColor="${this._config.state_color}"
+                @click="${this.onRowClick}">
             </state-badge>
             <div class="flex">
-                <div class="info" @click="${this.onClick}">
+                <div class="info" @click="${this.onRowClick}">
                     ${this.state.name}
-                    <div class="secondary">
-                        ${this.state.info && `${this.state.info.name ? `${this.state.info.name} ` : ''}${this.state.info.value}`}
-                        ${this.lastChanged
-                ? html`<ha-relative-time datetime="${this.state.stateObj.last_changed}" .hass="${this._hass}"></ha-relative-time>`
-                : null}
-                    </div>
+                    <div class="secondary">${this.renderSecondaryInfo()}</div>
                 </div>
-                ${this.renderEntity(this.state.primary)}
-                ${this.renderEntity(this.state.secondary)}
-                ${this.renderEntity(this.state.tertiary)}
-                ${this.state.value ? html`
-                <div class="state entity" @click="${this.onClick}">
-                    ${this.stateHeader && html`<span>${this.stateHeader}</span>`}
-                    ${this.state.toggle
-                ? html`<div class="toggle"><ha-entity-toggle .stateObj="${this.state.stateObj}" .hass="${this._hass}"></ha-entity-toggle></div>`
-                : html`<div>${this.state.value}</div>`}
-                </div>` : null}
-            </div>`;
+                <div class="${this._config.column ? 'entities-column' : 'entities-row'}">
+                    ${this.state.entities.map(entity => this.renderEntity(entity))}
+                    ${this.state.value ? html`
+                    <div class="state entity" @click="${this.onRowClick}">
+                        ${this.stateHeader && html`<span>${this.stateHeader}</span>`}
+                        <div>${this.renderMainState()}</div>
+                    </div>` : null}
+                </div>
+            </div>` : html`
+            <hui-warning>
+                ${this._hass.localize('ui.panel.lovelace.warning.entity_not_found', 'entity', this._config.entity)}
+            </hui-warning>`;
+        }
+
+        renderMainState() {
+            if (this.state.toggle) return this.renderToggle(this.state.stateObj);
+            else if (this._config.format) return this.renderFormat(this.state.value, this._config.format);
+            else return html`${this.state.value}`;
+        }
+
+        renderSecondaryInfo() {
+            return this.lastChanged
+                ? html`<ha-relative-time datetime="${this.state.stateObj.last_changed}" .hass="${this._hass}"></ha-relative-time>`
+                : this.state.info && this.state.info.format
+                    ? this.renderFormat(this.state.info.value, this.state.info.format)
+                    : (this.state.info && `${this.state.info.name ? `${this.state.info.name} ` : ''}${this.state.info.value}`)
+        }
+
+        renderToggle(stateObj) {
+            return html`<ha-entity-toggle .stateObj="${stateObj}" .hass="${this._hass}"></ha-entity-toggle>`;
+        }
+
+        renderFormat(value, format) {
+            return [UNKNOWN, UNAVAILABLE].includes(value.toLowerCase())
+                ? html`${value}`
+                : format === 'duration'
+                    ? html`${this.secondsToDuration(value)}`
+                    : html`<hui-timestamp-display .ts=${new Date(value)} .format=${format} .hass=${this._hass}></hui-timestamp-display>`;
+        }
+
+        renderIcon(entity) {
+            return html`<state-badge class="icon-small" .stateObj="${entity.stateObj}" .overrideIcon="${entity.icon}" .stateColor="${entity.state_color}"></state-badge>`;
+        }
+
+        renderEntityValue(entity) {
+            if (entity.toggle) return this.renderToggle(entity.stateObj);
+            else if (entity.icon !== undefined) return this.renderIcon(entity);
+            else if (entity.format) return this.renderFormat(entity.value, entity.format);
+            else return html`${entity.value}`;
         }
 
         renderEntity(entity) {
             return entity ? html`
             <div class="entity" @click="${entity.onClick}">
-            ${entity.toggle
-                ? html`<span>${entity.name}</span><div><ha-entity-toggle .stateObj="${entity.stateObj}" .hass="${this._hass}"></ha-entity-toggle></div>`
-                : entity.icon
-                    ? html`<ha-icon icon="${entity.icon}"></ha-icon>`
-                    : html`<span>${entity.name}</span><div>${entity.value}</div>`}
+                <span>${entity.name}</span>
+                <div>${this.renderEntityValue(entity)}</div>
             </div>` : null;
         }
 
         setConfig(config) {
             if (!config.entity) throw new Error('Please define a main entity.');
-            this.checkEntity(config, 'primary');
-            this.checkEntity(config, 'secondary');
-            this.checkEntity(config, 'tertiary');
-            this.checkEntity(config, 'info');
+            if (config.entities) {
+                config.entities.map(entity => this.checkEntity(entity));
+            }
+            this.checkEntity(config.secondary_info);
 
-            this.icon = config.icon;
-            this.lastChanged = config.secondary_info === 'last-changed' && !config.info;
-            this.stateHeader = config.name_state !== undefined ? config.name_state : null,
-                this.onClick = () => this.fireEvent(config.entity);
+            this.lastChanged = config.secondary_info === 'last-changed';
+            this.stateHeader = config.state_header !== undefined ? config.state_header : null;
+            this.onRowClick = this.getAction(config.tap_action, config.entity);
 
             this._config = config;
         }
@@ -132,50 +189,56 @@
             if (hass && this._config) {
                 const mainStateObj = hass.states[this._config.entity];
 
-                if (!mainStateObj) throw new Error(`Entity not available: ${this._config.entity}`);
-
-                this.state = {
+                this.state = mainStateObj ? {
                     ...this.state,
 
                     stateObj: mainStateObj,
                     name: this.entityName(this._config.name, mainStateObj),
-                    value: this._config.hide_state !== true ? this.entityStateValue(mainStateObj, this._config.unit) : null,
+                    value: this._config.show_state !== false ? this.entityStateValue(mainStateObj, this._config.unit) : null,
                     toggle: this.checkToggle(this._config, mainStateObj),
 
-                    primary: this.initEntity(this._config.primary, mainStateObj),
-                    secondary: this.initEntity(this._config.secondary, mainStateObj),
-                    tertiary: this.initEntity(this._config.tertiary, mainStateObj),
-                    info: this.initEntity(this._config.info, mainStateObj),
-                }
+                    entities: this._config.entities ? this._config.entities.map(entity => this.initEntity(entity, mainStateObj)) : [],
+                    info: this.lastChanged ? null :
+                        typeof this._config.secondary_info === 'string'
+                            ? {value: this._config.secondary_info}
+                            : this.initEntity(this._config.secondary_info, mainStateObj),
+                } : {};
             }
         }
 
-        checkEntity(config, key) {
-            if (config[key] && !(config[key].entity || config[key].attribute || config[key].service)) {
-                throw new Error(`Object '${key}' requires at least one 'entity', 'attribute' or 'service'.`);
+        checkEntity(config) {
+            if (config && typeof config === 'object' && !(config.entity || config.attribute || config.icon)) {
+                throw new Error(`Entity object requires at least one 'entity', 'attribute' or 'icon'.`);
+            } else if (config && typeof config === 'string' && config === '') {
+                throw new Error('Entity ID string must not be blank.');
+            } else if (config && typeof config !== 'string' && typeof config !== 'object') {
+                throw new Error('Entity config must be a valid entity ID string or entity object.');
             }
         }
 
         checkToggle(config, stateObj) {
-            return config.toggle === true && stateObj.state && !["unknown", "unavailable"].includes(stateObj.state)
+            return config.toggle === true && stateObj.state && !['unknown', 'unavailable'].includes(stateObj.state)
         }
 
         initEntity(config, mainStateObj) {
             if (!config) return null;
 
-            const stateObj = config.entity ? (this._hass && this._hass.states[config.entity]) : mainStateObj;
+            const entity = typeof config === 'string' ? config : config.entity;
+            const stateObj = entity ? (this._hass && this._hass.states[entity]) : mainStateObj;
 
             if (!stateObj) return {value: this._hass.localize('state.default.unavailable')};
 
             return {
                 stateObj: stateObj,
-                name: this.entityName(config.name, stateObj),
+                name: entity ? this.entityName(config.name, stateObj) : (config.name || null),
                 value: config.attribute !== undefined
                     ? this.entityAttribute(stateObj, config.attribute, config.unit)
                     : this.entityStateValue(stateObj, config.unit),
                 toggle: this.checkToggle(config, stateObj),
-                icon: config.icon === true ? stateObj.attributes.icon : config.icon,
-                onClick: () => (config.service ? this.callService(config.service, config.service_data) : this.fireEvent(stateObj.entity_id))
+                icon: config.icon === true ? (stateObj.attributes.icon || null) : config.icon,
+                format: config.format || false,
+                state_color: config.state_color || false,
+                onClick: this.getAction(config.tap_action, stateObj.entity_id),
             };
         }
 
@@ -194,47 +257,101 @@
         }
 
         entityStateValue(stateObj, unit) {
-            let display;
-            const domain = stateObj.entity_id.substr(0, stateObj.entity_id.indexOf("."));
-
-            if (domain === "binary_sensor") {
-                if (stateObj.attributes.device_class) {
-                    display = this._hass.localize(`state.${domain}.${stateObj.attributes.device_class}.${stateObj.state}`);
-                }
-                if (!display) {
-                    display = this._hass.localize(`state.${domain}.default.${stateObj.state}`);
-                }
-            } else if (unit !== false && (unit || stateObj.attributes.unit_of_measurement) && !["unknown", "unavailable"].includes(stateObj.state)) {
-                display = `${stateObj.state} ${unit || stateObj.attributes.unit_of_measurement}`;
-            } else if (domain === "zwave") {
-                display = ["initializing", "dead"].includes(stateObj.state)
-                    ? this._hass.localize(`state.zwave.query_stage.${stateObj.state}`, 'query_stage', stateObj.attributes.query_stage)
-                    : this._hass.localize(`state.zwave.default.${stateObj.state}`);
-            } else {
-                display = this._hass.localize(`state.${domain}.${stateObj.state}`);
+            if (stateObj.state === UNKNOWN || stateObj.state === UNAVAILABLE) {
+                return this._hass.localize(`state.default.${stateObj.state}`);
             }
 
-            return display ||
-                this._hass.localize(`state.default.${stateObj.state}`) ||
-                this._hass.localize(`component.${domain}.state.${stateObj.state}`) ||
-                stateObj.state;
+            if (unit !== false && (unit || stateObj.attributes.unit_of_measurement)) {
+                return `${stateObj.state} ${unit || stateObj.attributes.unit_of_measurement}`;
+            }
+
+            const domain = stateObj.entity_id.substr(0, stateObj.entity_id.indexOf('.'));
+            return (
+                (stateObj.attributes.device_class
+                    && this._hass.localize(`component.${domain}.state.${stateObj.attributes.device_class}.${stateObj.state}`))
+                || this._hass.localize(`component.${domain}.state._.${stateObj.state}`)
+                || stateObj.state
+            );
         }
 
-        fireEvent(entity, options = {}) {
-            const event = new Event('hass-more-info', {
+        getAction(config, entityId) {
+            if (!config || !config.action || config.action === 'more-info') {
+                return () => this.fireEvent(this, 'hass-more-info', {entityId: (config && config.entity) || entityId});
+            }
+            if (config.action === 'none') {
+                return null;
+            }
+
+            return () => {
+                if (config.confirmation) {
+                    this.forwardHaptic('warning');
+
+                    if (!confirm(config.confirmation === true ? `Are you sure?` : config.confirmation)) {
+                        return;
+                    }
+                }
+
+                switch (config.action) {
+                    case 'call-service': {
+                        if (!config.service) {
+                            this.forwardHaptic('failure');
+                            return;
+                        }
+                        const [domain, service] = config.service.split('.');
+                        this._hass.callService(domain, service, config.service_data);
+                        this.forwardHaptic('light');
+                        break;
+                    }
+                    case 'toggle': {
+                        this._hass.callService('homeassistant', 'toggle', {entity_id: entityId});
+                        this.forwardHaptic('light');
+                        break;
+                    }
+                    case 'url': {
+                        if (config.url_path) {
+                            window.open(config.url_path);
+                        }
+                        break;
+                    }
+                    case 'navigate': {
+                        if (config.navigation_path) {
+                            history.pushState(null, '', config.navigation_path);
+                            this.fireEvent(window, 'location-changed', {replace: false});
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        fireEvent(node, type, detail = {}, options = {}) {
+            const event = new Event(type, {
                 bubbles: options.bubbles || true,
                 cancelable: options.cancelable || true,
                 composed: options.composed || true,
             });
-            event.detail = {entityId: entity};
+            event.detail = detail;
+            node.dispatchEvent(event);
+        }
+
+        forwardHaptic(type) {
+            const event = new Event('haptic', {bubbles: true, cancelable: false, composed: true});
+            event.detail = type;
             this.dispatchEvent(event);
         }
 
-        callService(service, serviceData) {
-            const serviceDetails = service.split(".");
-            this._hass.callService(serviceDetails[0], serviceDetails[1], serviceData);
+        secondsToDuration(sec) {
+            const h = Math.floor(sec / 3600);
+            const m = Math.floor((sec % 3600) / 60);
+            const s = Math.floor((sec % 3600) % 60);
+            const leftPad = (num) => (num < 10 ? `0${num}` : num);
+
+            if (h > 0) return `${h}:${leftPad(m)}:${leftPad(s)}`;
+            if (m > 0) return `${m}:${leftPad(s)}`;
+            if (s > 0) return `${s}`;
+            return null;
         }
     }
 
     customElements.define('multiple-entity-row', MultipleEntityRow);
-})(window.LitElement || Object.getPrototypeOf(customElements.get("hui-view")));
+})(window.LitElement || Object.getPrototypeOf(customElements.get('hui-masonry-view') || customElements.get('hui-view')));

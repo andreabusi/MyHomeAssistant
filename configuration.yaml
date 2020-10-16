@@ -25,7 +25,7 @@ mobile_app:
 lovelace:
   mode: yaml
   resources:
-    - url: /local/multiple-entity-row.js?v=2.2.1
+    - url: /local/multiple-entity-row.js?v=3.4.0
       type: module
 
 # Enables System Health component
