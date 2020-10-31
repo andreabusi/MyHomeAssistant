@@ -27,8 +27,8 @@ Custom integration for Xiamo Temparature Sensor, due to unreliability of the sta
 This custom component is an alternative for the standard build in mitemp_bt integration that is available in Home Assistant. Unlike the original mitemp_bt integration, which is getting its data by polling the device with a default five-minute interval, this custom component is parsing the Bluetooth Low Energy packets payload that is constantly emitted by the sensor.
 
 * [GitHub repo](https://github.com/custom-components/sensor.mitemp_bt)
-* Installed version: 0.6.5
-* Updated on: 21/04/2020
+* Installed version: 0.7.6
+* Updated on: 31/10/2020
 
 ### `shelly4hass`
 

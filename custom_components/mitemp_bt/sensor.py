@@ -12,12 +12,19 @@ from Cryptodome.Cipher import AES
 import voluptuous as vol
 
 from homeassistant.const import (
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_HUMIDITY,
+    DEVICE_CLASS_ILLUMINANCE,
+    DEVICE_CLASS_TEMPERATURE,
+    CONDUCTIVITY,
+    PERCENTAGE,
     TEMP_CELSIUS,
     ATTR_BATTERY_LEVEL,
+    STATE_OFF, 
+    STATE_ON,
 )
+
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
@@ -34,6 +41,7 @@ from .const import (
     DEFAULT_HCI_INTERFACE,
     DEFAULT_BATT_ENTITIES,
     DEFAULT_REPORT_UNKNOWN,
+    DEFAULT_WHITELIST,
     CONF_ROUNDING,
     CONF_DECIMALS,
     CONF_PERIOD,
@@ -44,12 +52,16 @@ from .const import (
     CONF_BATT_ENTITIES,
     CONF_ENCRYPTORS,
     CONF_REPORT_UNKNOWN,
+    CONF_WHITELIST,
+    CONF_SENSOR_NAMES,
     CONF_TMIN,
     CONF_TMAX,
     CONF_HMIN,
     CONF_HMAX,
     XIAOMI_TYPE_DICT,
     MMTS_DICT,
+    SW_CLASS_DICT,
+    CN_NAME_DICT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -57,6 +69,12 @@ _LOGGER = logging.getLogger(__name__)
 # regex constants for configuration schema
 MAC_REGEX = "(?i)^(?:[0-9A-F]{2}[:]){5}(?:[0-9A-F]{2})$"
 AES128KEY_REGEX = "(?i)^[A-F0-9]{32}$"
+
+SENSOR_NAMES_LIST_SCHEMA = vol.Schema(
+    {
+        cv.matches_regex(MAC_REGEX): cv.string
+    }
+)
 
 ENCRYPTORS_LIST_SCHEMA = vol.Schema(
     {
@@ -78,6 +96,10 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_BATT_ENTITIES, default=DEFAULT_BATT_ENTITIES): cv.boolean,
         vol.Optional(CONF_ENCRYPTORS, default={}): ENCRYPTORS_LIST_SCHEMA,
         vol.Optional(CONF_REPORT_UNKNOWN, default=DEFAULT_REPORT_UNKNOWN): cv.boolean,
+        vol.Optional(
+            CONF_WHITELIST, default=DEFAULT_WHITELIST
+        ): vol.Any(vol.All(cv.ensure_list, [cv.matches_regex(MAC_REGEX)]), cv.boolean),
+        vol.Optional(CONF_SENSOR_NAMES, default={}): SENSOR_NAMES_LIST_SCHEMA,
     }
 )
 
@@ -155,29 +177,33 @@ def parse_xiaomi_value(hexvalue, typecode):
     """Convert value depending on its type."""
     vlength = len(hexvalue)
     if vlength == 4:
-        if typecode == 0x0D:
+        if typecode == b'\x0D\x10':
             (temp, humi) = TH_STRUCT.unpack(hexvalue)
             return {"temperature": temp / 10, "humidity": humi / 10}
     if vlength == 2:
-        if typecode == 0x06:
+        if typecode == b'\x06\x10':
             (humi,) = H_STRUCT.unpack(hexvalue)
             return {"humidity": humi / 10}
-        if typecode == 0x04:
+        if typecode == b'\x04\x10':
             (temp,) = T_STRUCT.unpack(hexvalue)
             return {"temperature": temp / 10}
-        if typecode == 0x09:
+        if typecode == b'\x09\x10':
             (cond,) = CND_STRUCT.unpack(hexvalue)
             return {"conductivity": cond}
-        if typecode == 0x10:
+        if typecode == b'\x10\x10':
             (fmdh,) = FMDH_STRUCT.unpack(hexvalue)
             return {"formaldehyde": fmdh / 100}
     if vlength == 1:
-        if typecode == 0x0A:
+        if typecode == b'\x0A\x10':
             return {"battery": hexvalue[0]}
-        if typecode == 0x08:
+        if typecode == b'\x08\x10':
             return {"moisture": hexvalue[0]}
+        if typecode == b'\x12\x10':
+            return {"switch": hexvalue[0]}
+        if typecode == b'\x13\x10':
+            return {"consumable": hexvalue[0]}
     if vlength == 3:
-        if typecode == 0x07:
+        if typecode == b'\x07\x10':
             (illum,) = ILL_STRUCT.unpack(hexvalue + b'\x00')
             return {"illuminance": illum}
     return None
@@ -205,7 +231,7 @@ def decrypt_payload(encrypted_payload, key, nonce):
     return plaindata
 
 
-def parse_raw_message(data, aeskeyslist, report_unknown=False):
+def parse_raw_message(data, aeskeyslist,  whitelist, report_unknown=False):
     """Parse the raw data."""
     if data is None:
         return None
@@ -214,9 +240,14 @@ def parse_raw_message(data, aeskeyslist, report_unknown=False):
     if xiaomi_index == -1:
         return None
     # check for no BR/EDR + LE General discoverable mode flags
-    adv_index = data.find(b"\x02\x01\x06", 14, 17)
-    if adv_index == -1:
+    adv_index1 = data.find(b"\x02\x01\x06", 14, 17)
+    adv_index2 = data.find(b"\x15\x16\x95", 14, 17)
+    if adv_index1 == -1 and adv_index2 == -1:
         return None
+    elif adv_index1 != -1:
+        adv_index = adv_index1
+    elif adv_index2 != -1:
+        adv_index = adv_index2
     # check for BTLE msg size
     msg_length = data[2] + 3
     if msg_length != len(data):
@@ -226,6 +257,10 @@ def parse_raw_message(data, aeskeyslist, report_unknown=False):
     source_mac_reversed = data[adv_index - 7:adv_index - 1]
     if xiaomi_mac_reversed != source_mac_reversed:
         return None
+    # check for MAC presence in whitelist, if needed
+    if whitelist:
+        if xiaomi_mac_reversed not in whitelist:
+            return None
     # extract RSSI byte
     (rssi,) = struct.unpack("<b", data[msg_length - 1:msg_length])
     #strange positive RSSI workaround
@@ -309,7 +344,7 @@ def parse_raw_message(data, aeskeyslist, report_unknown=False):
     # assume that the data may have several values of different types,
     # although I did not notice this behavior with my LYWSDCGQ sensors
     while True:
-        xvalue_typecode = data[xdata_point]
+        xvalue_typecode = data[xdata_point:xdata_point + 2]
         try:
             xvalue_length = data[xdata_point + 2]
         except ValueError as error:
@@ -333,6 +368,16 @@ def parse_raw_message(data, aeskeyslist, report_unknown=False):
             break
         xdata_point = xnext_point
     return result
+
+
+def sensor_name(config, mac):
+    """Set sensor name."""
+    fmac = ':'.join(mac[i:i+2] for i in range(0, len(mac), 2))
+    if fmac in config[CONF_SENSOR_NAMES]:
+        custom_name = config[CONF_SENSOR_NAMES].get(fmac)
+        _LOGGER.debug("Name of sensor with mac adress %s is set to: %s", fmac, custom_name)
+        return custom_name
+    return mac
 
 
 class BLEScanner:
@@ -362,9 +407,9 @@ class BLEScanner:
         """Stop HCIdump thread(s)."""
         result = True
         for dumpthread in self.dumpthreads:
-            if dumpthread.isAlive():
+            if dumpthread.is_alive():
                 dumpthread.join()
-                if dumpthread.isAlive():
+                if dumpthread.is_alive():
                     result = False
                     _LOGGER.error(
                         "Waiting for the HCIdump thread to finish took too long! (>10s)"
@@ -417,6 +462,23 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         p_key = bytes.fromhex(config[CONF_ENCRYPTORS][mac].lower())
         aeskeys[p_mac] = p_key
     _LOGGER.debug("%s encryptors mac:key pairs loaded.", len(aeskeys))
+    whitelist = []
+    if isinstance(config[CONF_WHITELIST], bool):
+        if config[CONF_WHITELIST] is True:
+            for mac in config[CONF_ENCRYPTORS]:
+                whitelist.append(mac)
+            for mac in config[CONF_SENSOR_NAMES]:
+                whitelist.append(mac)
+    if isinstance(config[CONF_WHITELIST], list):
+        for mac in config[CONF_WHITELIST]:
+            whitelist.append(mac)
+        for mac in config[CONF_ENCRYPTORS]:
+            whitelist.append(mac)
+        for mac in config[CONF_SENSOR_NAMES]:
+            whitelist.append(mac)
+    for i, mac in enumerate(whitelist):
+        whitelist[i] = bytes.fromhex(reverse_mac(mac.replace(":", "")).lower())
+    _LOGGER.debug("%s whitelist item(s) loaded.", len(whitelist))
     lpacket.cntr = {}
     sleep(1)
 
@@ -431,8 +493,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         # formaldehyde decimals workaround
         if fdec > 0:
             rdecimals = fdec
-        # LYWSD03MMC "jagged" humidity workaround
-        if stype == "LYWSD03MMC":
+        # LYWSD03MMC / MHO-C401 "jagged" humidity workaround
+        if stype == "LYWSD03MMC" or stype == "MHO-C401":
             measurements = [int(item) for item in measurements_list]
         else:
             measurements = measurements_list
@@ -462,7 +524,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             getattr(entity_to_update, "_device_state_attributes")["mean"] = state_mean
             entity_to_update.schedule_update_ha_state()
             success = True
-        except AttributeError:
+        except (AttributeError, AssertionError):
             _LOGGER.debug("Sensor %s not yet ready for update", sensor_mac)
             success = True
         except ZeroDivisionError as err:
@@ -473,7 +535,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             error = err
         return success, error
 
-    def discover_ble_devices(config, aeskeyslist):
+    def discover_ble_devices(config, aeskeyslist, whitelist):
         """Discover Bluetooth LE devices."""
         nonlocal firstrun
         if firstrun:
@@ -490,6 +552,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         moist_m_data = {}
         cond_m_data = {}
         formaldehyde_m_data = {}
+        cons_m_data = {}
+        switch_m_data = {}
         batt = {}  # battery
         rssi = {}
         macs = {}  # all found macs
@@ -502,7 +566,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         scanner.start(config)  # minimum delay between HCIdumps
         report_unknown = config[CONF_REPORT_UNKNOWN]
         for msg in hcidump_raw:
-            data = parse_raw_message(msg, aeskeyslist, report_unknown)
+            data = parse_raw_message(msg, aeskeyslist, whitelist, report_unknown)
             if data and "mac" in data:
                 # ignore duplicated message
                 packet = data["packet"]
@@ -554,6 +618,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                         formaldehyde_m_data[data["mac"]] = []
                     formaldehyde_m_data[data["mac"]].append(data["formaldehyde"])
                     macs[data["mac"]] = data["mac"]
+                if "consumable" in data:
+                    cons_m_data[data["mac"]] = int(data["consumable"])
+                    macs[data["mac"]] = data["mac"]
+                if "switch" in data:
+                    switch_m_data[data["mac"]] = int(data["switch"])
+                    macs[data["mac"]] = data["mac"]
                 if "battery" in data:
                     batt[data["mac"]] = int(data["battery"])
                     macs[data["mac"]] = data["mac"]
@@ -568,7 +638,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         for mac in macs:
             # fixed entity index for every measurement type
             # according to the sensor implementation
-            t_i, h_i, m_i, c_i, i_i, f_i, b_i = MMTS_DICT[stype[mac]]
+            t_i, h_i, m_i, c_i, i_i, f_i, cn_i, sw_i, b_i = MMTS_DICT[stype[mac]]
             # if necessary, create a list of entities
             # according to the sensor implementation
             if mac in sensors_by_mac:
@@ -576,19 +646,31 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             else:
                 sensors = []
                 if t_i != 9:
-                    sensors.insert(t_i, TemperatureSensor(mac))
+                    sensors.insert(t_i, TemperatureSensor(config, mac))
                 if h_i != 9:
-                    sensors.insert(h_i, HumiditySensor(mac))
+                    sensors.insert(h_i, HumiditySensor(config, mac))
                 if m_i != 9:
-                    sensors.insert(m_i, MoistureSensor(mac))
+                    sensors.insert(m_i, MoistureSensor(config, mac))
                 if c_i != 9:
-                    sensors.insert(c_i, ConductivitySensor(mac))
+                    sensors.insert(c_i, ConductivitySensor(config, mac))
                 if i_i != 9:
-                    sensors.insert(i_i, IlluminanceSensor(mac))
+                    sensors.insert(i_i, IlluminanceSensor(config, mac))
                 if f_i != 9:
-                    sensors.insert(f_i, FormaldehydeSensor(mac))
+                    sensors.insert(f_i, FormaldehydeSensor(config, mac))
+                if cn_i != 9:
+                    sensors.insert(cn_i, ConsumableSensor(config, mac))
+                    try:
+                        setattr(sensors[cn_i], "_cn_name", CN_NAME_DICT[stype[mac]])
+                    except KeyError:
+                        pass
+                if sw_i != 9:
+                    sensors.insert(sw_i, SwitchBinarySensor(config, mac))
+                    try:
+                        setattr(sensors[sw_i], "_swclass", SW_CLASS_DICT[stype[mac]])
+                    except KeyError:
+                        pass
                 if config[CONF_BATT_ENTITIES] and (b_i != 9):
-                    sensors.insert(b_i, BatterySensor(mac))
+                    sensors.insert(b_i, BatterySensor(config, mac))
                 sensors_by_mac[mac] = sensors
                 add_entities(sensors)
             # append joint attributes
@@ -600,6 +682,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     sts.mean(rssi[mac])
                 )
                 getattr(sensor, "_device_state_attributes")["sensor type"] = stype[mac]
+                getattr(sensor, "_device_state_attributes")["mac address"] = (
+                    ':'.join(mac[i:i+2] for i in range(0, len(mac), 2))
+                    )
                 if not isinstance(sensor, BatterySensor) and mac in batt:
                     getattr(sensor, "_device_state_attributes")[
                         ATTR_BATTERY_LEVEL
@@ -611,7 +696,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     setattr(sensors[b_i], "_state", batt[mac])
                     try:
                         sensors[b_i].schedule_update_ha_state()
-                    except AttributeError:
+                    except (AttributeError, AssertionError):
                         _LOGGER.debug(
                             "Sensor %s (%s, batt.) not yet ready for update",
                             mac,
@@ -674,6 +759,36 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                         "Sensor %s (%s, formaldehyde) update error:", mac, stype[mac]
                     )
                     _LOGGER.error(error)
+            if mac in cons_m_data:
+                setattr(sensors[cn_i], "_state", cons_m_data[mac])
+                try:
+                    sensors[cn_i].schedule_update_ha_state()
+                except (AttributeError, AssertionError):
+                    _LOGGER.debug(
+                        "Sensor %s (%s, cons.) not yet ready for update",
+                        mac,
+                        stype[mac],
+                    )
+                except RuntimeError as err:
+                    _LOGGER.error(
+                        "Sensor %s (%s, cons.) update error:", mac, stype[mac]
+                    )
+                    _LOGGER.error(err)
+            if mac in switch_m_data:
+                setattr(sensors[sw_i], "_state", switch_m_data[mac])
+                try:
+                    sensors[sw_i].schedule_update_ha_state()
+                except (AttributeError, AssertionError):
+                    _LOGGER.debug(
+                        "Sensor %s (%s, switch) not yet ready for update",
+                        mac,
+                        stype[mac],
+                    )
+                except RuntimeError as err:
+                    _LOGGER.error(
+                        "Sensor %s (%s, switch) update error:", mac, stype[mac]
+                    )
+                    _LOGGER.error(err)
         _LOGGER.debug(
             "Finished. Parsed: %i hci events, %i xiaomi devices.",
             len(hcidump_raw),
@@ -686,7 +801,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         period = config[CONF_PERIOD]
         _LOGGER.debug("update_ble called")
         try:
-            discover_ble_devices(config, aeskeys)
+            discover_ble_devices(config, aeskeys, whitelist)
         except RuntimeError as error:
             _LOGGER.error("Error during Bluetooth LE scan: %s", error)
         track_point_in_utc_time(
@@ -698,338 +813,203 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     return True
 
 
-class TemperatureSensor(Entity):
+class MeasuringSensor(Entity):
+    """Base class for measuring sensor entity"""
+
+    def __init__(self, config, mac):
+        """Initialize the sensor."""
+        self._name = ""
+        self._state = None
+        self._unit_of_measurement = ""
+        self._device_class = None
+        self._device_state_attributes = {}
+        self._unique_id = ""
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._state
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement."""
+        return self._unit_of_measurement
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return self._device_class
+
+    @property
+    def device_state_attributes(self):
+        """Return the state attributes."""
+        return self._device_state_attributes
+
+    @property
+    def should_poll(self):
+        """No polling needed."""
+        return False
+
+    @property
+    def unique_id(self) -> str:
+        """Return a unique ID."""
+        return self._unique_id
+
+    @property
+    def force_update(self):
+        """Force update."""
+        return True
+
+class TemperatureSensor(MeasuringSensor):
     """Representation of a sensor."""
 
-    def __init__(self, mac):
-        """Initialize the sensor."""
-        self._state = None
-        self._battery = None
-        self._unique_id = "t_" + mac
-        self._device_state_attributes = {}
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "mi {}".format(self._unique_id)
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return TEMP_CELSIUS
-
-    @property
-    def device_class(self):
-        """Return the device class."""
-        return DEVICE_CLASS_TEMPERATURE
-
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
-
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return self._device_state_attributes
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
-    def force_update(self):
-        """Force update."""
-        return True
+    def __init__(self, config, mac):
+        "Initialize the sensor."""
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi temperature {}".format(self._sensor_name)
+        self._unique_id = "t_" + self._sensor_name
+        self._unit_of_measurement = TEMP_CELSIUS
+        self._device_class = DEVICE_CLASS_TEMPERATURE
 
 
-class HumiditySensor(Entity):
+class HumiditySensor(MeasuringSensor):
     """Representation of a Sensor."""
 
-    def __init__(self, mac):
+    def __init__(self, config, mac):
         """Initialize the sensor."""
-        self._state = None
-        self._battery = None
-        self._unique_id = "h_" + mac
-        self._device_state_attributes = {}
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "mi {}".format(self._unique_id)
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return "%"
-
-    @property
-    def device_class(self):
-        """Return the device class."""
-        return DEVICE_CLASS_HUMIDITY
-
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
-
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return self._device_state_attributes
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
-    def force_update(self):
-        """Force update."""
-        return True
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi humidity {}".format(self._sensor_name)
+        self._unique_id = "h_" + self._sensor_name
+        self._unit_of_measurement = PERCENTAGE 
+        self._device_class = DEVICE_CLASS_HUMIDITY
 
 
-class MoistureSensor(Entity):
+class MoistureSensor(MeasuringSensor):
     """Representation of a Sensor."""
 
-    def __init__(self, mac):
+    def __init__(self, config, mac):
         """Initialize the sensor."""
-        self._state = None
-        self._battery = None
-        self._unique_id = "m_" + mac
-        self._device_state_attributes = {}
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "mi {}".format(self._unique_id)
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return "%"
-
-    @property
-    def device_class(self):
-        """Return the device class."""
-        return DEVICE_CLASS_HUMIDITY
-
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
-
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return self._device_state_attributes
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
-    def force_update(self):
-        """Force update."""
-        return True
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi moisture {}".format(self._sensor_name)
+        self._unique_id = "m_" + self._sensor_name
+        self._unit_of_measurement = PERCENTAGE 
+        self._device_class = DEVICE_CLASS_HUMIDITY
 
 
-class ConductivitySensor(Entity):
+class ConductivitySensor(MeasuringSensor):
     """Representation of a Sensor."""
 
-    def __init__(self, mac):
+    def __init__(self, config, mac):
         """Initialize the sensor."""
-        self._state = None
-        self._battery = None
-        self._unique_id = "c_" + mac
-        self._device_state_attributes = {}
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "mi {}".format(self._unique_id)
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return "µS/cm"
-
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi conductivity {}".format(self._sensor_name)
+        self._unique_id = "c_" + self._sensor_name
+        self._unit_of_measurement = CONDUCTIVITY
+        self._device_class = None
+        
     @property
     def icon(self):
         """Return the icon of the sensor."""
         return "mdi:flash-circle"
 
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
 
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return self._device_state_attributes
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
-    def force_update(self):
-        """Force update."""
-        return True
-
-
-class IlluminanceSensor(Entity):
+class IlluminanceSensor(MeasuringSensor):
     """Representation of a Sensor."""
 
-    def __init__(self, mac):
+    def __init__(self, config, mac):
         """Initialize the sensor."""
-        self._state = None
-        self._battery = None
-        self._unique_id = "l_" + mac
-        self._device_state_attributes = {}
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi llluminance {}".format(self._sensor_name)
+        self._unique_id = "l_" + self._sensor_name
+        self._unit_of_measurement = "lx"
+        self._device_class = DEVICE_CLASS_ILLUMINANCE
 
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "mi {}".format(self._unique_id)
 
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return "lx"
-
-    @property
-    def icon(self):
-        """Return the icon of the sensor."""
-        return "mdi:white-balance-sunny"
-
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
-
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return self._device_state_attributes
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
-    def force_update(self):
-        """Force update."""
-        return True
-
-class FormaldehydeSensor(Entity):
+class FormaldehydeSensor(MeasuringSensor):
     """Representation of a Sensor."""
 
-    def __init__(self, mac):
+    def __init__(self, config, mac):
         """Initialize the sensor."""
-        self._state = None
-        self._battery = None
-        self._unique_id = "f_" + mac
-        self._device_state_attributes = {}
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "mi {}".format(self._unique_id)
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return "mg/m³"
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi formaldehyde {}".format(self._sensor_name)
+        self._unique_id = "f_" + self._sensor_name
+        self._unit_of_measurement = "mg/m³"
+        self._device_class = None
 
     @property
     def icon(self):
         """Return the icon of the sensor."""
         return "mdi:chemical-weapon"
 
-    @property
-    def should_poll(self):
-        """No polling needed."""
-        return False
 
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return self._device_state_attributes
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID."""
-        return self._unique_id
-
-    @property
-    def force_update(self):
-        """Force update."""
-        return True
-
-class BatterySensor(Entity):
+class BatterySensor(MeasuringSensor):
     """Representation of a Sensor."""
 
-    def __init__(self, mac):
+    def __init__(self, config, mac):
         """Initialize the sensor."""
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi battery {}".format(self._sensor_name)
+        self._unique_id = "batt__" + self._sensor_name
+        self._unit_of_measurement = PERCENTAGE
+        self._device_class = DEVICE_CLASS_BATTERY
+
+
+class ConsumableSensor(MeasuringSensor):
+    """Representation of a Sensor."""
+
+    def __init__(self, config, mac):
+        """Initialize the sensor."""
+        super().__init__(config, mac)
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi consumable {}".format(self._sensor_name)
+        self._unique_id = "cn__" + self._sensor_name
+        self._unit_of_measurement = PERCENTAGE
+        self._device_class = None
+
+    @property
+    def icon(self):
+        """Return the icon of the sensor."""
+        return "mdi:mdi-recycle-variant"
+
+
+class SwitchBinarySensor(BinarySensorEntity):
+    """Representation of a Sensor."""
+
+    def __init__(self, config, mac):
+        """Initialize the sensor."""
+        self._sensor_name = sensor_name(config, mac)
+        self._name = "mi switch {}".format(self._sensor_name)
         self._state = None
-        self._unique_id = "batt_" + mac
+        self._unique_id = "sw_" + sensor_name(config, mac)
         self._device_state_attributes = {}
+        self._device_class = None
+
+    @property
+    def is_on(self):
+        """Return true if the binary sensor is on."""
+        return bool(self._state)
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return "mi {}".format(self._unique_id)
+        return self._name
 
     @property
     def state(self):
-        """Return the state of the sensor."""
-        return self._state
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return "%"
-
-    @property
-    def device_class(self):
-        """Return the device class."""
-        return DEVICE_CLASS_BATTERY
+        """Return the state of the binary sensor."""
+        return STATE_ON if self.is_on else STATE_OFF
 
     @property
     def should_poll(self):
@@ -1045,6 +1025,11 @@ class BatterySensor(Entity):
     def unique_id(self) -> str:
         """Return a unique ID."""
         return self._unique_id
+
+    @property
+    def device_class(self):
+        """Return the device class."""
+        return self._device_class
 
     @property
     def force_update(self):
