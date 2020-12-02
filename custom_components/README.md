@@ -35,8 +35,8 @@ This custom component is an alternative for the standard build in mitemp_bt inte
 Adds components for Shelly smart home devices to Home Assistant. There is no configuration needed, it will find all devices on your LAN and add them to Home Assistant. All communication with Shelly devices is local. You can use this plugin and continue to use Shelly Cloud, MQTT and Shelly app in your mobile if you want.
 
 * [GitHub repo](https://github.com/StyraHem/ShellyForHASS)
-* Installed version: 0.2.0
-* Updated on: 27/09/2020
+* Installed version: 0.2.1
+* Updated on: 02/12/2020
 
 ## Self made
 
