@@ -84,6 +84,7 @@ homekit:
       - light.book_light
       - light.shelly_shsw_1_f431b1
       - switch.050407552462ab207ec1
+      - switch.sonoff_10001f9bcf
   entity_config:
     light.book_light:
       name: Luce libro
@@ -91,6 +92,8 @@ homekit:
       name: Luce giardino
     switch.050407552462ab207ec1:
       name: Deumidificatore
+    switch.sonoff_10001f9bcf:
+      name: Albero di Natale
 
 # Enables Alexa integration
 alexa:

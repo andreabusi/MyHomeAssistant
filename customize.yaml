@@ -2,6 +2,10 @@
 light.book_light:
   friendly_name: Lampada libro
 
+# Switch
+switch.sonoff_10001f9bcf:
+  friendly_name: Albero di Natale
+
 # Home Assistant sensors
 sensor.home_assistant_installed:
   friendly_name: Installed version
