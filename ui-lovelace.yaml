@@ -11,7 +11,7 @@ views:
     cards:
       - type: vertical-stack
         cards:
-          - type: horizontal-stack
+          - type: grid
             title: Luci
             cards:
               - type: light
@@ -20,40 +20,39 @@ views:
                 entity: light.book_light
               - type: light
                 entity: light.shelly_shsw_1_f431b1
-          - type: vertical-stack
+              - type: button
+                entity: switch.sonoff_10001f9bcf
+                icon: mdi:pine-tree
+          - type: grid
+            title: Elettrodomestici
             cards:
-              - type: horizontal-stack
-                title: Elettrodomestici
-                cards:
-                  - type: button
-                    entity: switch.tv_sala
-                    name: TV Sala
-                    icon: mdi:television
-                    tap_action:
-                      action: toggle
-                  - type: button
-                    entity: switch.tv_cucina
-                    name: TV Cucina
-                    icon: mdi:television
-                    tap_action:
-                      action: toggle
-              - type: horizontal-stack
-                cards:
-                  - type: button
-                    entity: binary_sensor.washing_machine_status
-                    icon: mdi:washing-machine
-                    name: Lavatrice
-                    state_color: true
-                  - type: button
-                    entity: binary_sensor.dryer_machine_status
-                    icon: mdi:tumble-dryer
-                    name: Asciugatrice
-                  - type: button
-                    entity: switch.050407552462ab207ec1
-                    icon: mdi:water-percent
-                    name: Deumidificatore
-                  - type: button
-                    entity: vacuum.mi_roborock
+              - type: button
+                entity: switch.tv_sala
+                name: TV Sala
+                icon: mdi:television
+                tap_action:
+                  action: toggle
+              - type: button
+                entity: switch.tv_cucina
+                name: TV Cucina
+                icon: mdi:television
+                tap_action:
+                  action: toggle
+              - type: button
+                entity: binary_sensor.washing_machine_status
+                icon: mdi:washing-machine
+                name: Lavatrice
+                state_color: true
+              - type: button
+                entity: binary_sensor.dryer_machine_status
+                icon: mdi:tumble-dryer
+                name: Asciugatrice
+              - type: button
+                entity: switch.050407552462ab207ec1
+                icon: mdi:water-percent
+                name: Deumidificatore
+              - type: button
+                entity: vacuum.mi_roborock
       - type: vertical-stack
         title: Stato casa
         cards:
