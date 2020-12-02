@@ -70,10 +70,10 @@ views:
                 entity: sensor.home_recycling
                 name: Spazzatura
                 icon: mdi:delete-variant
-                hide_state: true
-                primary:
-                  entity: sensor.home_recycling_types
-                  name: Raccolta
+                show_state: false
+                entities:
+                  - entity: sensor.home_recycling_types
+                    name: Raccolta
           - type: picture-entity
             entity: camera.soggiorno
       - type: vertical-stack
@@ -85,26 +85,23 @@ views:
               - type: custom:multiple-entity-row
                 entity: sensor.dark_sky_temperature
                 name: Adesso
-                hide_state: true
-                primary:
-                  entity: sensor.dark_sky_temperature
-                  name: Temperatura
-                secondary:
-                  entity: sensor.dark_sky_humidity
-                  name: Umidità
-                tertiary:
-                  entity: sensor.dark_sky_precip_probability
-                  name: Pioggia
+                show_state: false
+                entities:
+                  - entity: sensor.dark_sky_temperature
+                    name: Temperatura
+                  - entity: sensor.dark_sky_humidity
+                    name: Umidità
+                  - entity: sensor.dark_sky_precip_probability
+                    name: Pioggia
               - entity: sensor.forecast_temperatures
                 type: custom:multiple-entity-row
                 name: Giornata
-                hide_state: true
-                primary:
-                  entity: sensor.dark_sky_daytime_high_temperature_0d
-                  name: Temperatura
-                secondary:
-                  entity: sensor.dark_sky_overnight_low_temperature_0d
-                  name: Umidità
+                show_state: false
+                entities:
+                  - entity: sensor.dark_sky_daytime_high_temperature_0d
+                    name: Temperatura
+                  - entity: sensor.dark_sky_overnight_low_temperature_0d
+                    name: Umidità
       - type: vertical-stack
         cards:
           - type: entities
@@ -116,19 +113,19 @@ views:
                 name: Lavatrice
                 icon: mdi:washing-machine
                 toggle: true
-                hide_state: true
-                primary:
-                  entity: sensor.gosund_presa02_energy_power
-                  name: Consumo
+                show_state: false
+                entities:
+                  - entity: sensor.gosund_presa02_energy_power
+                    name: Consumo
               - entity: switch.gosund_presa01
                 type: custom:multiple-entity-row
                 name: Asciugatrice
                 icon: mdi:tumble-dryer
                 toggle: true
-                hide_state: true
-                primary:
-                  entity: sensor.gosund_presa01_energy_power
-                  name: Consumo
+                show_state: false
+                entities:
+                  - entity: sensor.gosund_presa01_energy_power
+                    name: Consumo
           - type: entities  
             title: Antiallagamento
             show_header_toggle: false
@@ -211,13 +208,12 @@ views:
               - entity: sensor.home_assistant_installed
                 type: custom:multiple-entity-row
                 name: Home Assistant
-                hide_state: true
-                primary:
-                  entity: sensor.ha_upstream_version
-                  name: Upstream
-                secondary:
-                  entity: sensor.ha_installed_version
-                  name: Installed
+                show_state: false
+                entities:
+                  - entity: sensor.ha_upstream_version
+                    name: Upstream
+                  - entity: sensor.ha_installed_version
+                    name: Installed
               - type: weblink
                 name: GitHub Releases
                 url: https://github.com/home-assistant/home-assistant/releases
