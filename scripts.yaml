@@ -241,6 +241,52 @@ tv_sala_open_amazon_video:
     - service: script.turn_on
       entity_id: script.tv_sala_center_button
 
+# Xiaomi Robot room cleaning
+vacuum_sleeping_area:
+  alias: "Clean the sleeping area"
+  sequence:
+    - service: vacuum.send_command
+      data:
+        entity_id: vacuum.mi_roborock
+        command: app_segment_clean
+        params: [16, 19, 2]
+
+vacuum_living_area:
+  alias: "Clean the living area"
+  sequence:
+    - service: vacuum.send_command
+      data:
+        entity_id: vacuum.mi_roborock
+        command: app_segment_clean
+        params: [17, 18]
+
+vacuum_living:
+  alias: "Clean living only"
+  sequence:
+    - service: vacuum.send_command
+      data:
+        entity_id: vacuum.mi_roborock
+        command: app_segment_clean
+        params: [17]
+
+vacuum_kitchen:
+  alias: "Clean kitchen only"
+  sequence:
+    - service: vacuum.send_command
+      data:
+        entity_id: vacuum.mi_roborock
+        command: app_segment_clean
+        params: [18]
+
+vacuum_bathroom:
+  alias: "Clean the bathroom"
+  sequence:
+    - service: vacuum.send_command
+      data:
+        entity_id: vacuum.mi_roborock
+        command: app_segment_clean
+        params: [1]
+
 # Goodnight automation
 goodnight_turnoff:
   sequence:

@@ -74,6 +74,26 @@ views:
                 entities:
                   - entity: sensor.home_recycling_types
                     name: Raccolta
+          - type: grid
+            cards:
+              - type: button
+                entity: script.vacuum_sleeping_area
+                name: Zona notte
+                icon: mdi:robot-vacuum
+                tap_action:
+                  action: toggle
+              - type: button
+                entity: script.vacuum_living_area
+                name: Zona giorno
+                icon: mdi:robot-vacuum
+                tap_action:
+                  action: toggle
+              - type: button
+                entity: script.vacuum_bathroom
+                name: Bagno
+                icon: mdi:robot-vacuum
+                tap_action:
+                  action: toggle
           - type: picture-entity
             entity: camera.soggiorno
       - type: vertical-stack
