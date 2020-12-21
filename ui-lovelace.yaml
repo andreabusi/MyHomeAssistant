@@ -23,6 +23,9 @@ views:
               - type: button
                 entity: switch.sonoff_10001f9bcf
                 icon: mdi:pine-tree
+              - type: button
+                entity: switch.sonoff_10004cfa12
+                icon: mdi:string-lights
           - type: grid
             title: Elettrodomestici
             cards:
