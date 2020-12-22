@@ -66,3 +66,4 @@ lights_external:
   name: Luci esterne
   entities:
     - light.shelly_shsw_1_f431b1
+    - switch.sonoff_10004cfa12
