@@ -123,14 +123,11 @@
       minutes: 15
   condition:
     condition: time
-    after: '23:00'
-    before: '05:00'
+    after: '22:00'
+    before: '06:00'
   action:
   - service: homeassistant.turn_off
     entity_id: switch.sonoff_10004cf9ff
-  - service: notify.home_tg
-    data:
-      message: Nara ha mangiato anche stanotte
 
 # Turn off Christmas Tree ad 01 am
 - id: 'christmas_tree_auto_turnoff'
