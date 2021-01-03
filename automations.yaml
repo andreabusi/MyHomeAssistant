@@ -277,3 +277,18 @@
   action:
     - service: homeassistant.turn_off
       entity_id: group.lights_external
+
+# Play an alarm message is a leak is detected in the laudry
+- id: 'waterflood_laundry_alarm'
+  alias: 'Play an alarm message on all the speakers if a leak is detected'
+  trigger:
+    platform: state
+    entity_id: input_boolean.waterflood_laundry
+    to: 'on'
+  action:
+    - service: script.alexa_announce
+      data:
+        message: "Attenzione! Attenzione! La lavanderia si sta allagando!"
+    - service: notify.home_tg
+      data:
+        message: "🚨 Possibile allagamento in lavanderia!!"

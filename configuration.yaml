@@ -201,6 +201,11 @@ device_tracker:
       iphoneerica: !secret ip_iphoneerica
       ipaderica: !secret ip_ipaderica
 
+# Helper sensors
+input_boolean:
+  waterflood_laundry:
+    name: Sensore allagamento lavanderia
+
 #### Custom components ####
 
 # Custom Component - Home Recycling management
