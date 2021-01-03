@@ -186,9 +186,11 @@ views:
           - script.tv_sala_channel_up
           - script.tv_sala_channel_down
       - type: media-control
-        entity: media_player.echo_dot_studio
+        entity: media_player.echo_dot_cameretta
       - type: media-control
         entity: media_player.echo_soggiorno
+      - type: media-control
+        entity: media_player.echo_dot_taverna
       - type: entities
         title: Dispositivi
         show_header_toggle: false

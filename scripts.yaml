@@ -10,7 +10,7 @@ alexa_announce:
           method: spoken
         target: 
           - media_player.echo_soggiorno
-          - media_player.echo_dot_studio
+          - media_player.echo_dot_cameretta
 
 # Alexa, announce home recycling for tomorrow
 alexa_home_recycling:
