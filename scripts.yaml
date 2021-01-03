@@ -11,6 +11,7 @@ alexa_announce:
         target: 
           - media_player.echo_soggiorno
           - media_player.echo_dot_cameretta
+          - media_player.echo_dot_taverna
 
 # Alexa, announce home recycling for tomorrow
 alexa_home_recycling:
