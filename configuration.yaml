@@ -150,21 +150,6 @@ shelly:
       name: "Luce giardino"
       light_switch: true
 
-# Lights
-light:
-  - platform: template
-    lights:
-      book_light: # Simulate a light for the Sonoff connected inside the Book
-        value_template: "{{ is_state('switch.sonoff_10004cf9ff', 'on') }}"
-        turn_on:
-          service: homeassistant.turn_on
-          data:
-            entity_id: switch.sonoff_10004cf9ff
-        turn_off:
-          service: homeassistant.turn_off
-          data:
-            entity_id: switch.sonoff_10004cf9ff
-
 # Enables IFTTT
 ifttt:
   key: !secret ifttt_key
@@ -225,6 +210,7 @@ sonoff:
 
 #### Other files #### 
 
+light: !include lights.yaml
 sensor: !include sensors.yaml
 switch: !include switches.yaml
 binary_sensor: !include binary_sensors.yaml
