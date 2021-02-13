@@ -20,6 +20,8 @@ views:
                 entity: light.book_light
               - type: light
                 entity: light.shelly_shsw_1_f431b1
+              - type: light
+                entity: light.lampada_studio
               - type: button
                 entity: switch.sonoff_10001f9bcf
                 icon: mdi:pine-tree

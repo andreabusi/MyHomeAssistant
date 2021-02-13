@@ -83,6 +83,7 @@ homekit:
     include_entities:
       - light.book_light
       - light.shelly_shsw_1_f431b1
+      - light.lampada_studio
       - switch.050407552462ab207ec1
       - switch.sonoff_10001f9bcf
   entity_config:
@@ -90,6 +91,8 @@ homekit:
       name: Luce libro
     light.shelly_shsw_1_f431b1:
       name: Luce giardino
+    light.lampada_studio:
+      name: Lampada studio
     switch.050407552462ab207ec1:
       name: Deumidificatore
     switch.sonoff_10001f9bcf:
@@ -102,6 +105,7 @@ alexa:
       include_entities:
         - light.lampada_sala
         - light.shelly_shsw_1_f431b1
+        - light.lampada_studio
     entity_config:
       light.lampada_sala:
         name: Luce sala
@@ -109,6 +113,9 @@ alexa:
         display_categories: LIGHT
       light.shelly_shsw_1_f431b1:
         name: Luce giardino
+        display_categories: LIGHT
+      light.lampada_studio:
+        name: Lampada studio
         display_categories: LIGHT
 
 # Enables Telegram Bot
