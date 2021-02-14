@@ -86,17 +86,6 @@
           error
         {% endif %}
 
-# Xiaomi temperature and humidity sensor
-# This use a custom component due to unreliability of the standard integration
-- platform: mitemp_bt
-  rounding: True
-  decimals: 1
-  period: 60
-  log_spikes: False
-  use_median: False
-  active_scan: False
-  hci_interface: 0
-
 - platform: template
   sensors:
     mi_b_582d343415fe:

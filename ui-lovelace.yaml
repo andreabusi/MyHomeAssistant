@@ -61,14 +61,6 @@ views:
       - type: vertical-stack
         title: Stato casa
         cards:
-          - type: horizontal-stack
-            cards:
-              - type: sensor
-                entity: sensor.mi_t_582d343415fe
-                name: Temperatura
-              - type: sensor
-                entity: sensor.mi_h_582d343415fe
-                name: Umidità
           - type: entities
             entities:
               - type: custom:multiple-entity-row

@@ -20,16 +20,6 @@ Home Assistant custom component for control Sonoff devices with eWeLink (origina
 * Installed version: 2.3.2
 * Updated on: 31/10/2020
 
-### `mitemp_bt`
-
-Custom integration for Xiamo Temparature Sensor, due to unreliability of the standard integration.
-
-This custom component is an alternative for the standard build in mitemp_bt integration that is available in Home Assistant. Unlike the original mitemp_bt integration, which is getting its data by polling the device with a default five-minute interval, this custom component is parsing the Bluetooth Low Energy packets payload that is constantly emitted by the sensor.
-
-* [GitHub repo](https://github.com/custom-components/sensor.mitemp_bt)
-* Installed version: 0.7.6
-* Updated on: 31/10/2020
-
 ### `shelly4hass`
 
 Adds components for Shelly smart home devices to Home Assistant. There is no configuration needed, it will find all devices on your LAN and add them to Home Assistant. All communication with Shelly devices is local. You can use this plugin and continue to use Shelly Cloud, MQTT and Shelly app in your mobile if you want.
