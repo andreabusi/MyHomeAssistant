@@ -239,9 +239,10 @@
     event_type: ifttt_webhook_received
     event_data:
       action: call_service
+  condition: []
   action:
-  - service_template: '{{ trigger.event.data.service }}'
-    data_template:
+  - service: '{{ trigger.event.data.service }}'
+    data:
       entity_id: '{{ trigger.event.data.entity_id }}'
 
 # Force enable discovery on Tasmota devices
