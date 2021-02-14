@@ -101,6 +101,10 @@ homekit:
 # Enables Alexa integration
 alexa:
   smart_home:
+    locale: it-IT
+    endpoint: https://api.amazonalexa.com/v3/events
+    client_id: !secret alexa_skill_clientid
+    client_secret: !secret alexa_skill_clientsecret
     filter:
       include_entities:
         - light.lampada_sala
