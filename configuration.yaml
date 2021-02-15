@@ -82,14 +82,14 @@ homekit:
   filter:
     include_entities:
       - light.book_light
-      - light.shelly_shsw_1_f431b1
+      - light.garden_light
       - light.lampada_studio
       - switch.050407552462ab207ec1
       - switch.sonoff_10001f9bcf
   entity_config:
     light.book_light:
       name: Luce libro
-    light.shelly_shsw_1_f431b1:
+    light.garden_light:
       name: Luce giardino
     light.lampada_studio:
       name: Lampada studio
@@ -108,14 +108,14 @@ alexa:
     filter:
       include_entities:
         - light.lampada_sala
-        - light.shelly_shsw_1_f431b1
+        - light.garden_light
         - light.lampada_studio
     entity_config:
       light.lampada_sala:
         name: Luce sala
         description: Lampada salotto
         display_categories: LIGHT
-      light.shelly_shsw_1_f431b1:
+      light.garden_light:
         name: Luce giardino
         display_categories: LIGHT
       light.lampada_studio:

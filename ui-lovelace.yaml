@@ -19,7 +19,7 @@ views:
               - type: light
                 entity: light.book_light
               - type: light
-                entity: light.shelly_shsw_1_f431b1
+                entity: light.garden_light
               - type: light
                 entity: light.lampada_studio
               - type: button
