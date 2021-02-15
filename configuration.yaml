@@ -152,15 +152,6 @@ vacuum:
 tradfri:
   host: !secret ip_ikea_tradfri
 
-# Shelly custom integration
-shelly:
-  cloud_auth_key: !secret shelly_key
-  cloud_server: !secret shelly_server
-  devices:
-    - id: "F431B1"
-      name: "Luce giardino"
-      light_switch: true
-
 # Enables IFTTT
 ifttt:
   key: !secret ifttt_key

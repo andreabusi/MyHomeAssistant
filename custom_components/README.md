@@ -20,14 +20,6 @@ Home Assistant custom component for control Sonoff devices with eWeLink (origina
 * Installed version: 2.3.2
 * Updated on: 31/10/2020
 
-### `shelly4hass`
-
-Adds components for Shelly smart home devices to Home Assistant. There is no configuration needed, it will find all devices on your LAN and add them to Home Assistant. All communication with Shelly devices is local. You can use this plugin and continue to use Shelly Cloud, MQTT and Shelly app in your mobile if you want.
-
-* [GitHub repo](https://github.com/StyraHem/ShellyForHASS)
-* Installed version: 0.2.1
-* Updated on: 02/12/2020
-
 ## Self made
 
 ### `magpi_download`
