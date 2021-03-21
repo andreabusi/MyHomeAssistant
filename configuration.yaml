@@ -141,13 +141,6 @@ camera:
     host: !secret ip_mi_camera
     password: !secret yi_camera_password
 
-# Enables Vacuum integration
-vacuum:
-  - platform: xiaomi_miio
-    name: mi_roborock
-    host: !secret ip_xiaomi_robot
-    token: !secret mi_vacuum_token
-
 # Enables IKEA Tradfri integration
 tradfri:
   host: !secret ip_ikea_tradfri
