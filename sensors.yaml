@@ -47,7 +47,7 @@
     home_recycling_types:
       value_template: >-
         {% set collections = state_attr("sensor.home_recycling", "collections") %}
-          {% if collections|length == 0 %}
+          {% if collections is none or collections|length == 0 %}
             n.r
           {% else %}
             {{ collections|join(", ") }}
