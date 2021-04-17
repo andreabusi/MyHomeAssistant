@@ -13,8 +13,9 @@ SERVICE_DOWNLOADER = "downloader"
 # Variable for storing configuration parameters
 CONFIGURATION_FILE = None
 OUTPUT_PATH = None
-MAGPI_ISSUES_URL = "https://magpi.raspberrypi.org/issues/%s/pdf"
-MAGPI_FILNAME = "MagPi"
+MAGPI_URL = "https://magpi.raspberrypi.org"
+MAGPI_ISSUES_URL = MAGPI_URL + "/issues/%s/pdf/download"
+MAGPI_FILENAME = "MagPi"
 
 # Configuration keys
 KEY_CONFIGURATION = 'config_file'
@@ -75,7 +76,7 @@ def send_notification(hass, issue_number):
 
 
 def create_filename(issue_number):
-    return "%s%s.pdf" % (MAGPI_FILNAME, issue_number)
+    return "%s%s.pdf" % (MAGPI_FILENAME, issue_number)
 
 
 def create_pdf_url(issue_number):
@@ -83,11 +84,12 @@ def create_pdf_url(issue_number):
 	page = requests.get(base_url)
 
 	soup = BeautifulSoup(page.content, 'html.parser')
-	tags = soup.find_all('meta', { 'http-equiv':"refresh"})
+	tags = soup.find_all('a', { 'class':"c-link"})
 	if len(tags) > 0:
+		# extract direct url from `a` tag with `c-link` class
 		tag = tags[0]
-		pdf_url = tag['content'].replace('0;url=', '')
-		return pdf_url
+		pdf_url = tag['href']
+		return MAGPI_URL + pdf_url
 	
 	return None
 

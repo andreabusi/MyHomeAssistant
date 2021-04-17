@@ -6,5 +6,5 @@
     "codeowners": [ "@bubidevs" ],
     "requirements": [],
     "iot_class": "calculated",
-    "version": "v1.0"
+    "version": "v1.0.1"
 }
