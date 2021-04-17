@@ -131,9 +131,6 @@ telegram_bot:
       - !secret telegram_chat_erica
       - !secret telegram_chat_home
 
-# Enables Cast devices
-cast:
-
 # Enables IP cameras
 camera:
   - platform: yi
