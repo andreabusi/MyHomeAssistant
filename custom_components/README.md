@@ -26,8 +26,12 @@ Home Assistant custom component for control Sonoff devices with eWeLink (origina
 
 Check and download the latest number of MagPi Magazine.
 
-* Updated on: 22/04/2020
+* Updated on: 17/04/2021
+* Installed version: 1.0.1
 
 ### `home_recycling`
 
 Update sensors for the home recycling, based on the provided city calendar.
+
+* Updated on: 17/04/2021
+* Installed version: 1.0
