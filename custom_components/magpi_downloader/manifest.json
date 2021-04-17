@@ -1,0 +1,10 @@
+{
+    "domain": "magpi_downloader",
+    "name": "Download last issue of MagPi magazine",
+    "documentation": "https://github.com/BubiDevs/MyHomeAssistant",
+    "dependencies": [],
+    "codeowners": [ "@bubidevs" ],
+    "requirements": [],
+    "iot_class": "calculated",
+    "version": "v1.0"
+}

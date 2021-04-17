@@ -1,0 +1,10 @@
+{
+    "domain": "home_recycling",
+    "name": "Manage Home Recycling calendar",
+    "documentation": "https://github.com/BubiDevs/MyHomeAssistant",
+    "dependencies": [],
+    "codeowners": [ "@bubidevs" ],
+    "requirements": [],
+    "iot_class": "calculated",
+    "version": "v1.0"
+}
