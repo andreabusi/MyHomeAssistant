@@ -8,13 +8,13 @@
 # HomeAssistant upstream version
 - platform: version
   name: ha_upstream_version
-  beta: false
-  source: hassio              # we don't use docker otherwise it will returns the dev build version
+  source: container
+  image: raspberrypi3
 
 # HomeAssistant installed version
 - platform: version
   name: ha_installed_version
-  source: local               # we don't use docker otherwise it will returns the dev build version
+  source: local
 
 # Darksky meteo
 - platform: darksky
