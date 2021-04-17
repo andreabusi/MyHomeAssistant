@@ -7,9 +7,9 @@ PSF-BFB-GL | fan_light | 34   | iFan (Sonoff iFan03)
 import logging
 
 from homeassistant.components.light import SUPPORT_BRIGHTNESS, \
-    ATTR_BRIGHTNESS, SUPPORT_COLOR, ATTR_HS_COLOR, \
-    SUPPORT_EFFECT, ATTR_EFFECT, ATTR_EFFECT_LIST, SUPPORT_COLOR_TEMP, \
-    ATTR_COLOR_TEMP, ATTR_MIN_MIREDS, ATTR_MAX_MIREDS
+    ATTR_BRIGHTNESS, SUPPORT_COLOR, ATTR_HS_COLOR, SUPPORT_EFFECT, \
+    ATTR_EFFECT, ATTR_EFFECT_LIST, SUPPORT_COLOR_TEMP, \
+    ATTR_COLOR_TEMP, ATTR_MIN_MIREDS, ATTR_MAX_MIREDS, LightEntity
 from homeassistant.util import color
 
 # noinspection PyUnresolvedReferences
@@ -50,10 +50,14 @@ async def async_setup_platform(hass, config, add_entities,
     elif channels and len(channels) >= 2:
         add_entities([EWeLinkLightGroup(registry, deviceid, channels)])
     else:
-        add_entities([EWeLinkToggle(registry, deviceid, channels)])
+        add_entities([EWeLinkLight(registry, deviceid, channels)])
 
 
-class SonoffD1(EWeLinkToggle):
+class EWeLinkLight(EWeLinkToggle, LightEntity):
+    pass
+
+
+class SonoffD1(EWeLinkLight):
     _brightness = 0
 
     def _update_handler(self, state: dict, attrs: dict):
@@ -124,7 +128,7 @@ LED_EFFECTS = [
 ]
 
 
-class SonoffLED(EWeLinkToggle):
+class SonoffLED(EWeLinkLight):
     _brightness = 0
     _hs_color = None
     _mode = 0
@@ -212,7 +216,7 @@ class SonoffLED(EWeLinkToggle):
         await self.registry.send(self.deviceid, payload)
 
 
-class SonoffB1(EWeLinkToggle):
+class SonoffB1(EWeLinkLight):
     _brightness = None
     _hs_color = None
     _temp = None
@@ -384,7 +388,7 @@ class EWeLinkLightGroup(SonoffD1):
 DIFFUSER_EFFECTS = ["Color Light", "RGB Color", "Night Light"]
 
 
-class SonoffDiffuserLight(EWeLinkToggle):
+class SonoffDiffuserLight(EWeLinkLight):
     _brightness = 0
     _hs_color = None
     _mode = 0
@@ -525,7 +529,7 @@ SONOFF103_MODE_PAYLOADS = {
 }
 
 
-class Sonoff103(EWeLinkToggle):
+class Sonoff103(EWeLinkLight):
     _brightness = None
     _mode = None
     _temp = None
@@ -564,8 +568,8 @@ class Sonoff103(EWeLinkToggle):
 
             if 'ct' in state:
                 # 0..255 => Mireds..
-                ct = state['ct']
-                self._temp = round(self._min_mireds - ct / 255.0 *
+                ct = min(255, max(0, state['ct']))
+                self._temp = round(self._max_mireds - ct / 255.0 *
                                    (self._max_mireds - self._min_mireds))
 
         self.async_write_ha_state()
@@ -589,11 +593,6 @@ class Sonoff103(EWeLinkToggle):
     def effect_list(self):
         """Return the list of supported effects."""
         return list(SONOFF103_MODES.values())
-
-    @property
-    def is_on(self):
-        """Returns if the light entity is on or not."""
-        return self._is_on
 
     @property
     def supported_features(self):
@@ -628,7 +627,8 @@ class Sonoff103(EWeLinkToggle):
         if mode == 'white':
             br = kwargs.get(ATTR_BRIGHTNESS) or self._brightness or 1
             ct = kwargs.get(ATTR_COLOR_TEMP) or self._temp or 153
-
+            # Adjust to the dynamic range of the device.
+            ct = min(self._max_mireds, max(self._min_mireds, ct))
             payload = {
                 'br': int(round((br - 1.0) * (100.0 - 1.0) / 254.0 + 1.0)),
                 'ct': int(round((self._max_mireds - ct) /
@@ -636,6 +636,9 @@ class Sonoff103(EWeLinkToggle):
             }
         else:
             payload = SONOFF103_MODE_PAYLOADS[mode]
+
+        if not self._is_on:
+            await self.registry.send(self.deviceid, {'switch': 'on'})
 
         payload = {'ltype': mode, mode: payload}
 
@@ -668,7 +671,7 @@ B05_MODE_PAYLOADS = {
 }
 
 
-class SonoffB05(EWeLinkToggle):
+class SonoffB05(EWeLinkLight):
     _brightness = None
     _hs_color = None
     _mode = None

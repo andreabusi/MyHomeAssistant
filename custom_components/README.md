@@ -17,8 +17,8 @@ Control Amazon Alexa devices in HomeAssistant using the unofficial Alexa API.
 Home Assistant custom component for control Sonoff devices with eWeLink (original) firmware over LAN and/or Cloud.
 
 * [GitHub repo](https://github.com/AlexxIT/SonoffLAN)
-* Installed version: 2.4.0
-* Updated on: 20/03/2021
+* Installed version: 2.4.3
+* Updated on: 17/04/2021
 
 ## Self made
 
