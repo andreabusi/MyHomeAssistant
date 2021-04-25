@@ -5,6 +5,10 @@ light.garden:
   friendly_name: Giardino
 light.office_lamp:
   friendly_name: Lampada studio
+light.basement_office:
+  friendly_name: Studio
+light.basement_kitchen:
+  friendly_name: Cucina (taverna)
 
 # Switch
 switch.sonoff_10001f9bcf:

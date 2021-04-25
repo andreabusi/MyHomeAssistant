@@ -20,6 +20,26 @@
         service: homeassistant.turn_off
         data:
           entity_id: switch.shelly1_f431b1
+    basement_kitchen: # Create a lights for Shelly switch (garden)
+      value_template: "{{ is_state('switch.shelly1_8caab5060cb7', 'on') }}"
+      turn_on:
+        service: homeassistant.turn_on
+        data:
+          entity_id: switch.shelly1_8caab5060cb7
+      turn_off:
+        service: homeassistant.turn_off
+        data:
+          entity_id: switch.shelly1_8caab5060cb7
+    basement_office: # Create a lights for Shelly switch (office)
+      value_template: "{{ is_state('switch.shelly1_8caab505510c', 'on') }}"
+      turn_on:
+        service: homeassistant.turn_on
+        data:
+          entity_id: switch.shelly1_8caab505510c
+      turn_off:
+        service: homeassistant.turn_off
+        data:
+          entity_id: switch.shelly1_8caab505510c
 
 # Ikea Tradfri bulb via Zigbee2MQTT
 - platform: "mqtt"

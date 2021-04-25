@@ -22,6 +22,10 @@ views:
                 entity: light.garden
               - type: light
                 entity: light.office_lamp
+              - type: light
+                entity: light.basement_kitchen
+              - type: light
+                entity: light.basement_office
               - type: button
                 entity: switch.sonoff_10001f9bcf
                 icon: mdi:pine-tree
