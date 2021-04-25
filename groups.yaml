@@ -66,5 +66,5 @@ tv_sala:
 lights_external:
   name: Luci esterne
   entities:
-    - light.garden_light
+    - light.garden
     - switch.sonoff_10004cfa12

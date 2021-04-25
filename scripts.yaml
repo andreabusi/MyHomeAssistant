@@ -56,10 +56,10 @@ libro_light_cat_feed:
   alias: 'Turn on Libro light for 10 minutes, to allow cat dinner'
   sequence:
     - service: light.turn_on
-      entity_id: light.book_light
+      entity_id: light.book_lamp
     - delay: 0:10
     - service: light.turn_off
-      entity_id: light.book_light  
+      entity_id: light.book_lamp  
 
 # Remote - TV Cucina
 tv_cucina_power_on:
@@ -304,7 +304,7 @@ goodnight_turnoff:
     - service: light.turn_off
       entity_id: light.lampada_sala
     - service: light.turn_off
-      entity_id: light.book_light
+      entity_id: light.book_lamp
     - service: script.turn_on
       entity_id: script.tv_sala_power_off
     - service: script.turn_on

@@ -77,17 +77,17 @@ mqtt:
 homekit:
   filter:
     include_entities:
-      - light.book_light
-      - light.garden_light
-      - light.lampada_studio
+      - light.book_lamp
+      - light.garden
+      - light.office_lamp
       - switch.050407552462ab207ec1
       - switch.sonoff_10001f9bcf
   entity_config:
-    light.book_light:
+    light.book_lamp:
       name: Luce libro
-    light.garden_light:
-      name: Luce giardino
-    light.lampada_studio:
+    light.garden:
+      name: Giardino
+    light.office_lamp:
       name: Lampada studio
     switch.050407552462ab207ec1:
       name: Deumidificatore
@@ -104,17 +104,17 @@ alexa:
     filter:
       include_entities:
         - light.lampada_sala
-        - light.garden_light
-        - light.lampada_studio
+        - light.garden
+        - light.office_lamp
     entity_config:
       light.lampada_sala:
         name: Luce sala
         description: Lampada salotto
         display_categories: LIGHT
-      light.garden_light:
-        name: Luce giardino
+      light.garden:
+        name: Giardino
         display_categories: LIGHT
-      light.lampada_studio:
+      light.office_lamp:
         name: Lampada studio
         display_categories: LIGHT
 

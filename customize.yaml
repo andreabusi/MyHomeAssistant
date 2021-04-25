@@ -1,8 +1,10 @@
 # Lights
-light.book_light:
+light.book_lamp:
   friendly_name: Lampada libro
-light.garden_light:
-  friendly_name: Luce giardino
+light.garden:
+  friendly_name: Giardino
+light.office_lamp:
+  friendly_name: Lampada studio
 
 # Switch
 switch.sonoff_10001f9bcf:

@@ -17,11 +17,11 @@ views:
               - type: light
                 entity: light.lampada_sala
               - type: light
-                entity: light.book_light
+                entity: light.book_lamp
               - type: light
-                entity: light.garden_light
+                entity: light.garden
               - type: light
-                entity: light.lampada_studio
+                entity: light.office_lamp
               - type: button
                 entity: switch.sonoff_10001f9bcf
                 icon: mdi:pine-tree
