@@ -273,3 +273,21 @@ views:
                   entity: binary_sensor.shelly1_f431b1_firmware_update
                   attribute: latest_stable_version
                   name: false
+              - type: custom:multiple-entity-row
+                entity: sensor.fw_update_gosund_presa01
+                name: Tasmota - Gosund presa 01
+                show_state: false
+                entities:
+                  - entity: sensor.tasmota_last_firmware
+                    name: Upstream
+                  - entity: sensor.fw_update_gosund_presa01
+                    name: Installed
+              - type: custom:multiple-entity-row
+                entity: sensor.fw_update_gosund_presa02
+                name: Tasmota - Gosund presa 02
+                show_state: false
+                entities:
+                  - entity: sensor.tasmota_last_firmware
+                    name: Upstream
+                  - entity: sensor.fw_update_gosund_presa02
+                    name: Installed

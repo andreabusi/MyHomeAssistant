@@ -32,6 +32,11 @@
   language: it
   scan_interval: '01:00'
 
+- platform: command_line
+  name: tasmota_last_firmware
+  command: "curl -s https://github.com/arendst/Tasmota/releases/latest | cut -d'\"' -f2 | rev | cut -d'/' -f1 | cut -d'v' -f1 | rev"
+  scan_interval: 86400 # once a day
+
 # Template sensors
 - platform: template
   sensors:
@@ -58,6 +63,24 @@
         {{ states.binary_sensor.shelly1_f431b1_firmware_update.state }} 
       icon_template: >-
         {% if is_state('binary_sensor.shelly1_f431b1_firmware_update', 'off') %}
+          mdi:cloud-outline
+        {% else %}
+          mdi:cloud-download
+        {% endif %}
+    fw_update_gosund_presa01:
+      value_template: >-
+        {{ state_attr("sensor.gosund_presa01_status", "Version") | replace("(tasmota)", "") }}
+      icon_template: >-
+        {% if states.sensor.fw_update_gosund_presa01.state == states.sensor.tasmota_last_firmware.state %}
+          mdi:cloud-outline
+        {% else %}
+          mdi:cloud-download
+        {% endif %}
+    fw_update_gosund_presa02:
+      value_template: >-
+        {{ state_attr("sensor.gosund_presa02_status", "Version") | replace("(tasmota)", "") }}
+      icon_template: >-
+        {% if states.sensor.fw_update_gosund_presa02.state == states.sensor.tasmota_last_firmware.state %}
           mdi:cloud-outline
         {% else %}
           mdi:cloud-download
