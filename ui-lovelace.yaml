@@ -241,3 +241,35 @@ views:
                 name: GitHub Releases
                 url: https://github.com/home-assistant/home-assistant/releases
                 icon: mdi:home-assistant
+      - type: vertical-stack
+        title: Devices firmware
+        cards:
+          - type: entities
+            entities:
+              - type: custom:multiple-entity-row
+                entity: sensor.fw_update_shelly_8caab505510c
+                name: Shelly - Luce studio
+                state_color: true
+                show_state: false
+                secondary_info:
+                  entity: binary_sensor.shelly1_8caab505510c_firmware_update
+                  attribute: latest_stable_version
+                  name: false
+              - type: custom:multiple-entity-row
+                entity: sensor.fw_update_shelly_8caab5060cb7
+                name: Shelly - Luce cucina taverna
+                state_color: true
+                show_state: false
+                secondary_info:
+                  entity: binary_sensor.shelly1_8caab5060cb7_firmware_update
+                  attribute: latest_stable_version
+                  name: false
+              - type: custom:multiple-entity-row
+                entity: sensor.fw_update_shelly_f431b1
+                name: Shelly - Giardino
+                state_color: true
+                show_state: false
+                secondary_info:
+                  entity: binary_sensor.shelly1_f431b1_firmware_update
+                  attribute: latest_stable_version
+                  name: false
