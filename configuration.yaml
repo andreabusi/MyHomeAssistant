@@ -33,6 +33,9 @@ system_health:
 
 # Public access to HA
 http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.19.0.0/24
 
 # Discover some devices automatically
 discovery:
