@@ -91,9 +91,9 @@ homekit:
       name: Giardino
     light.office_lamp:
       name: Lampada studio
-    light.office_lamp:
+    light.basement_office:
       name: Luce cucina
-    light.office_lamp:
+    light.basement_kitchen:
       name: Luce studio
     switch.050407552462ab207ec1:
       name: Deumidificatore
