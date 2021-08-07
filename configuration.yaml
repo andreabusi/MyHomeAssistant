@@ -219,7 +219,7 @@ light: !include lights.yaml
 sensor: !include sensors.yaml
 switch: !include switches.yaml
 binary_sensor: !include binary_sensors.yaml
-remote: !include remotes.yaml
+#remote: !include remotes.yaml # currently disabled
 notify: !include notifications.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
