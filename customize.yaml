@@ -21,10 +21,6 @@ sensor.ha_upstream_version:
   friendly_name: Upstream version
   icon: mdi:cloud
 
-# Vacuum
-vacuum.mi_roborock:
-  friendly_name: Mi Roborock
-
 # Forecast and DarkSky sensors
 sensor.forecast_today_summary:
   friendly_name: Meteo previsto

@@ -26,7 +26,6 @@ sonoff:
 home_recycling:
   name: Raccolta differenziata
   entities:
-    - vacuum.mi_roborock
     - sensor.home_recycling_date
     - sensor.home_recycling_types
 
