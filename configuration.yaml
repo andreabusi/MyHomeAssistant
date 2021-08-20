@@ -151,10 +151,6 @@ camera:
     host: !secret ip_mi_camera
     password: !secret yi_camera_password
 
-# Enables IKEA Tradfri integration
-tradfri:
-  host: !secret ip_ikea_tradfri
-
 # Enables IFTTT
 ifttt:
   key: !secret ifttt_key
