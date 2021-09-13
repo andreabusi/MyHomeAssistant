@@ -20,7 +20,7 @@
     - service: script.alexa_announce
       data_template:
         message: >
-          Andrea, ricordati la spazzatura in ritiro domani: {{ state_attr("sensor.home_recycling", "collections")|join(" e ") }}
+          La spazzatura in ritiro domani è {{ state_attr("sensor.home_recycling", "collections")|join(" e ") }}
 
 - id: 'home_recycling_set_states'
   alias: Recycling, set states
@@ -176,11 +176,11 @@
   condition:
     condition: time
     after: '06:00'
-    before: '01:00'
+    before: '23:00'
   action:
     - service: script.alexa_announce
       data:
-        message: "Erica! La lavatrice ha finito!"
+        message: "La lavatrice ha finito."
 
 # Dryer machine finished
 - id: 'dryer_machine_finished'
@@ -192,11 +192,11 @@
   condition:
     condition: time
     after: '06:00'
-    before: '01:00'
+    before: '23:00'
   action:
     - service: script.alexa_announce
       data:
-        message: "Erica! L'asciugatrice ha finito!"
+        message: "L'asciugatrice ha finito."
 
 # IFTTT
 - id: 'ifttt_webhook'
