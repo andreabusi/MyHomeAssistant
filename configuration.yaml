@@ -85,7 +85,7 @@ homekit:
       - light.office_lamp
       - light.basement_office
       - light.basement_kitchen
-      - switch.050407552462ab207ec1
+      - switch.deumidificatore
       - switch.sonoff_10001f9bcf
   entity_config:
     light.book_lamp:
@@ -98,7 +98,7 @@ homekit:
       name: Luce cucina
     light.basement_kitchen:
       name: Luce studio
-    switch.050407552462ab207ec1:
+    switch.deumidificatore:
       name: Deumidificatore
     switch.sonoff_10001f9bcf:
       name: Albero di Natale
