@@ -57,7 +57,7 @@ views:
                 icon: mdi:tumble-dryer
                 name: Asciugatrice
               - type: button
-                entity: switch.050407552462ab207ec1
+                entity: switch.deumidificatore
                 icon: mdi:water-percent
                 name: Deumidificatore
               - type: button
