@@ -260,7 +260,7 @@ vacuum_sleeping_area:
       data:
         entity_id: vacuum.mi_roborock
         command: app_segment_clean
-        params: [16, 19, 2]
+        params: [16, 19, 20]
 
 vacuum_living_area:
   alias: "Clean the living area"
@@ -296,7 +296,7 @@ vacuum_bathroom:
       data:
         entity_id: vacuum.mi_roborock
         command: app_segment_clean
-        params: [1]
+        params: [21]
 
 # Goodnight automation
 goodnight_turnoff:
