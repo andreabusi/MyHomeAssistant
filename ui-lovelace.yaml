@@ -65,6 +65,11 @@ views:
       - type: vertical-stack
         title: Stato casa
         cards:
+          - type: grid
+            cards:
+              - type: button
+                entity: input_boolean.do_not_disturb
+                icon: mdi:volume-off
           - type: entities
             entities:
               - type: custom:multiple-entity-row

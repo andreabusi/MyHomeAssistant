@@ -2,6 +2,10 @@
 alexa_announce:
   alias: 'Announce a message on Alexa'
   sequence:
+    - alias: "Check for non disturb mode"
+      condition: state
+      entity_id: input_boolean.do_not_disturb
+      state: 'off'
     - service: notify.alexa_media
       data_template:
         message: "{{ message }}"

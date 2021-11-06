@@ -191,6 +191,8 @@ device_tracker:
 input_boolean:
   waterflood_laundry:
     name: Sensore allagamento lavanderia
+  do_not_disturb:
+    name: Modalità non disturbare
 
 #### Custom components ####
 

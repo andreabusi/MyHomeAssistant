@@ -173,10 +173,6 @@
     platform: state
     entity_id: binary_sensor.washing_machine_status
     to: 'off'
-  condition:
-    condition: time
-    after: '06:00'
-    before: '23:00'
   action:
     - service: script.alexa_announce
       data:
@@ -189,10 +185,6 @@
     platform: state
     entity_id: binary_sensor.dryer_machine_status
     to: 'off'
-  condition:
-    condition: time
-    after: '06:00'
-    before: '23:00'
   action:
     - service: script.alexa_announce
       data:
@@ -261,3 +253,22 @@
     - service: notify.home_tg
       data:
         message: "🚨 Possibile allagamento in lavanderia!!"
+
+# Turn on/off Do Not Disturb Mode
+- id: 'do_not_disturb_off'
+  alias: 'Turn off do not disturb mode'
+  trigger:
+    - platform: time
+      at: '08:00:00'
+  action:
+    - service: homeassistant.turn_off
+      entity_id: input_boolean.do_not_disturb
+
+- id: 'do_not_disturb_on'
+  alias: 'Turn on do not disturb mode'
+  trigger:
+    - platform: time
+      at: '23:00:00'
+  action:
+    - service: homeassistant.turn_on
+      entity_id: input_boolean.do_not_disturb
