@@ -46,13 +46,13 @@ person.erica:
 # Trackers
 device_tracker.iphoneandrea:
   friendly_name: iPhone di Andrea
-  icon: mdi:cellphone-iphone
+  icon: mdi:cellphone
 device_tracker.ipadandrea:
   friendly_name: iPad di Andrea
   icon: mdi:tablet-ipad
 device_tracker.iphoneerica:
   friendly_name: iPhone di Erica
-  icon: mdi:cellphone-iphone
+  icon: mdi:cellphone
 device_tracker.ipaderica:
   friendly_name: iPad di Erica
   icon: mdi:tablet-ipad
