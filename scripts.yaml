@@ -313,3 +313,12 @@ goodnight_turnoff:
       entity_id: script.tv_sala_power_off
     - service: script.turn_on
       entity_id: script.tv_cucina_power_off
+
+# Start office workstation
+start_office_setup:
+  sequence:
+    - service: light.turn_on
+      entity_id: light.basement_office
+    - service: switch.turn_on
+      entity_id: switch.wakeonln_mbpm1
+    - service: shell_command.wakeup_mbpm1

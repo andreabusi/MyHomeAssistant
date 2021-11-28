@@ -25,3 +25,8 @@
         service: script.turn_on
         data:
           entity_id: script.tv_sala_power_off
+
+# Wake on LAN mbpm1
+- platform: wake_on_lan
+  name: wakeonl_mbpm1
+  mac: !secret mac_mbpm1_wifi

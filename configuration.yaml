@@ -195,6 +195,9 @@ input_boolean:
 
 input_text:
 
+shell_command:
+  wakeup_mbpm1: !secret wakeup_mbpm1
+
 #### Custom components ####
 
 # Custom Component - Home Recycling management
