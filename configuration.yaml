@@ -14,7 +14,6 @@ homeassistant:
   # Customization file
   customize: !include customize.yaml
 
-
 # Enables configuration UI
 config:
 
@@ -193,6 +192,8 @@ input_boolean:
     name: Sensore allagamento lavanderia
   do_not_disturb:
     name: Modalità non disturbare
+
+input_text:
 
 #### Custom components ####
 
