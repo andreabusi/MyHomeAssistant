@@ -84,6 +84,7 @@ homekit:
       - light.office_lamp
       - light.basement_office
       - light.basement_kitchen
+      - light.striscia_led_taverna
       - switch.deumidificatore
       - switch.sonoff_10001f9bcf
   entity_config:
@@ -97,6 +98,8 @@ homekit:
       name: Luce cucina
     light.basement_kitchen:
       name: Luce studio
+    light.striscia_led_taverna:
+      name: Striscia led
     switch.deumidificatore:
       name: Deumidificatore
     switch.sonoff_10001f9bcf:

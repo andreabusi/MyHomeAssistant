@@ -26,6 +26,8 @@ views:
                 entity: light.basement_kitchen
               - type: light
                 entity: light.basement_office
+              - type: light
+                entity: light.striscia_led_taverna
               - type: button
                 entity: switch.sonoff_10001f9bcf
                 icon: mdi:pine-tree
