@@ -84,6 +84,7 @@ homekit:
       - light.basement_office
       - light.basement_kitchen
       - light.striscia_led_taverna
+      - switch.gosund_presa04
       - switch.deumidificatore
       - switch.sonoff_10001f9bcf
   entity_config:
@@ -97,6 +98,8 @@ homekit:
       name: Luce studio
     light.striscia_led_taverna:
       name: Striscia led
+    switch.gosund_presa04:
+      name: Luce notte
     switch.deumidificatore:
       name: Deumidificatore
     switch.sonoff_10001f9bcf:
