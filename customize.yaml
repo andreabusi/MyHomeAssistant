@@ -9,6 +9,9 @@ light.basement_kitchen:
   friendly_name: Cucina (taverna)
 
 # Switch
+switch.gosund_presa03:
+  friendly_name: Deumidificatore
+  icon: mdi:water-percent
 switch.gosund_presa04:
   friendly_name: Luce notte
 switch.sonoff_10001f9bcf:

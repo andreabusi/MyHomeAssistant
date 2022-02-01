@@ -60,9 +60,7 @@ views:
                 icon: mdi:tumble-dryer
                 name: Asciugatrice
               - type: button
-                entity: switch.deumidificatore
-                icon: mdi:water-percent
-                name: Deumidificatore
+                entity: switch.gosund_presa03
               - type: button
                 entity: vacuum.mi_roborock
       - type: vertical-stack
