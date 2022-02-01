@@ -81,7 +81,6 @@ homekit:
     include_entities:
       - light.book_lamp
       - light.garden
-      - light.office_lamp
       - light.basement_office
       - light.basement_kitchen
       - light.striscia_led_taverna
@@ -92,8 +91,6 @@ homekit:
       name: Luce libro
     light.garden:
       name: Giardino
-    light.office_lamp:
-      name: Lampada studio
     light.basement_office:
       name: Luce cucina
     light.basement_kitchen:

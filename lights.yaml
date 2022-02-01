@@ -40,25 +40,3 @@
         service: homeassistant.turn_off
         data:
           entity_id: switch.shelly1_8caab505510c
-
-# Ikea Tradfri bulb via Zigbee2MQTT
-- platform: "mqtt"
-  unique_id: office_lamp
-  name: office_lamp
-  state_topic: "zigbee2mqtt/ikea_tradfri_bulb_001"
-  availability_topic: "zigbee2mqtt/bridge/state"
-  brightness: true
-  color_temp: true
-  xy: false
-  hs: false
-  schema: "json"
-  command_topic: "zigbee2mqtt/ikea_tradfri_bulb_001/set"
-  brightness_scale: 254
-  effect: true
-  effect_list: 
-    - "blink"
-    - "breathe"
-    - "okay"
-    - "channel_change"
-    - "finish_effect"
-    - "stop_effect"

@@ -21,8 +21,6 @@ views:
               - type: light
                 entity: light.garden
               - type: light
-                entity: light.office_lamp
-              - type: light
                 entity: light.basement_kitchen
               - type: light
                 entity: light.basement_office
