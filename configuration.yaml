@@ -115,26 +115,10 @@ alexa:
     filter:
       include_entities:
         - light.lampada_sala
-        - light.garden
-        - light.office_lamp
-        - light.basement_office
-        - light.basement_kitchen
     entity_config:
       light.lampada_sala:
         name: Luce sala
         description: Lampada salotto
-        display_categories: LIGHT
-      light.garden:
-        name: Giardino
-        display_categories: LIGHT
-      light.office_lamp:
-        name: Lampada studio
-        display_categories: LIGHT
-      light.basement_office:
-        name: Luce studio
-        display_categories: LIGHT
-      light.basement_kitchen:
-        name: Luce cucina
         display_categories: LIGHT
 
 # Enables Telegram Bot
