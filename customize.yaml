@@ -20,9 +20,6 @@ switch.sonoff_10001f9bcf:
 # Home Assistant sensors
 sensor.home_assistant_installed:
   friendly_name: Installed version
-sensor.ha_upstream_version:
-  friendly_name: Upstream version
-  icon: mdi:cloud
 
 # Forecast and DarkSky sensors
 sensor.forecast_today_summary:
