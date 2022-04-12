@@ -25,8 +25,8 @@ Home Assistant custom component for control Sonoff devices with eWeLink (origina
 The Govee integration allows you to control and monitor lights using the Govee API.
 
 * [GitHub repo](https://github.com/LaggAt/hacs-govee)
-* Installed version: 0.2.1
-* Updated on: 29/11/2021
+* Installed version: 0.2.2
+* Updated on: 12/04/2022
 
 ## Self made
 
