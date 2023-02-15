@@ -7,6 +7,7 @@ homeassistant:
   elevation: !secret home_elevation
   unit_system: metric
   time_zone: Europe/Rome
+  country: IT
   # External access
   internal_url: !secret http_internal_url
   external_url: !secret http_public_url
