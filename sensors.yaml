@@ -23,7 +23,7 @@
 
 - platform: command_line
   name: tasmota_last_firmware
-  command: "curl -s https://github.com/arendst/Tasmota/releases/latest | cut -d'\"' -f2 | rev | cut -d'/' -f1 | cut -d'v' -f1 | rev"
+  command: "curl -s 'https://api.github.com/repositories/80286288/tags' | jq -r '.[0].name' | cut -c2-"
   scan_interval: 86400 # once a day
 
 # Template sensors
