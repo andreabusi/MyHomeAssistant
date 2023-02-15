@@ -18,7 +18,6 @@ devices:
 sonoff:
   name: Sonoff
   entities:
-    - light.lampada_sala
     - switch.sonoff_10001f9bcf
     - switch.sonoff_10004cf9ff
     - switch.sonoff_10004cfa12

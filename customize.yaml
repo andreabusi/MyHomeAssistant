@@ -1,6 +1,6 @@
 # Lights
 light.book_lamp:
-  friendly_name: Lampada libro
+  friendly_name: Luce libro
 light.garden:
   friendly_name: Giardino
 light.basement_office:
@@ -12,8 +12,6 @@ light.basement_kitchen:
 switch.gosund_presa03:
   friendly_name: Deumidificatore
   icon: mdi:water-percent
-switch.gosund_presa04:
-  friendly_name: Luce notte
 switch.sonoff_10001f9bcf:
   friendly_name: Albero di Natale
 

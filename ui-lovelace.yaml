@@ -19,6 +19,8 @@ views:
               - type: light
                 entity: light.book_lamp
               - type: light
+                entity: light.baby_night
+              - type: light
                 entity: light.garden
               - type: light
                 entity: light.basement_kitchen
@@ -26,9 +28,6 @@ views:
                 entity: light.basement_office
               - type: light
                 entity: light.striscia_led_taverna
-              - type: button
-                entity: switch.gosund_presa04
-                icon: mdi:lightbulb
               - type: button
                 entity: switch.sonoff_10001f9bcf
                 icon: mdi:pine-tree

@@ -77,24 +77,24 @@ homekit:
       - light.basement_office
       - light.basement_kitchen
       - light.striscia_led_taverna
+      - light.baby_night
       - switch.gosund_presa03
-      - switch.gosund_presa04
       - switch.sonoff_10001f9bcf
   entity_config:
     light.book_lamp:
-      name: Luce libro
+      name: Libro
     light.garden:
       name: Giardino
     light.basement_office:
-      name: Luce cucina
-    light.basement_kitchen:
       name: Luce studio
+    light.basement_kitchen:
+      name: Luce cucina
     light.striscia_led_taverna:
       name: Striscia led
+    light.baby_night:
+      name: Luce notte
     switch.gosund_presa03:
       name: Deumidificatore
-    switch.gosund_presa04:
-      name: Luce notte
     switch.sonoff_10001f9bcf:
       name: Albero di Natale
 
