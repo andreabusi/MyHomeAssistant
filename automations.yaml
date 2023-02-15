@@ -203,7 +203,7 @@
         payload: "1"
 
 # Turn on/off external lights based of the sun
-- id: 'sunset_external_lights'
+- id: 'external_lights_turnon'
   alias: 'Turn on external lights after the sunset'
   trigger:
     - platform: sun
@@ -213,11 +213,11 @@
     - service: homeassistant.turn_on
       entity_id: group.lights_external
 
-- id: 'sunrise_external_lights'
-  alias: 'Turn off external lights after the sunrise'
+- id: 'external_lights_turnoff'
+  alias: 'Turn off external lights at midnight'
   trigger:
-    - platform: sun
-      event: sunrise
+    - platform: time
+      at: '00:00:00'
   action:
     - service: homeassistant.turn_off
       entity_id: group.lights_external
