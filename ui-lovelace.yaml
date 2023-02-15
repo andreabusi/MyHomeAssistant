@@ -260,8 +260,8 @@ views:
                 state_color: true
                 show_state: false
                 secondary_info:
-                  entity: binary_sensor.shelly1_8caab505510c_firmware_update
-                  attribute: latest_stable_version
+                  entity: update.shelly1_8caab505510c_firmware_update
+                  attribute: latest_version
                   name: false
               - type: custom:multiple-entity-row
                 entity: sensor.fw_update_shelly_8caab5060cb7
@@ -269,8 +269,8 @@ views:
                 state_color: true
                 show_state: false
                 secondary_info:
-                  entity: binary_sensor.shelly1_8caab5060cb7_firmware_update
-                  attribute: latest_stable_version
+                  entity: update.shelly1_8caab5060cb7_firmware_update
+                  attribute: latest_version
                   name: false
               - type: custom:multiple-entity-row
                 entity: sensor.fw_update_shelly_f431b1
@@ -278,8 +278,8 @@ views:
                 state_color: true
                 show_state: false
                 secondary_info:
-                  entity: binary_sensor.shelly1_f431b1_firmware_update
-                  attribute: latest_stable_version
+                  entity: update.shelly1_f431b1_firmware_update
+                  attribute: latest_version
                   name: false
               - type: custom:multiple-entity-row
                 entity: sensor.fw_update_gosund_presa01

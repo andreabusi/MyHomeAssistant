@@ -31,27 +31,27 @@
   sensors:
     fw_update_shelly_8caab505510c:
       value_template: >-
-        {{ states.binary_sensor.shelly1_8caab505510c_firmware_update.state }} 
+        {{ states.update.shelly1_8caab505510c_firmware_update.state }} 
       icon_template: >-
-        {% if is_state('binary_sensor.shelly1_8caab505510c_firmware_update', 'off') %}
+        {% if is_state('update.shelly1_8caab505510c_firmware_update', 'off') %}
           mdi:cloud-outline
         {% else %}
           mdi:cloud-download
         {% endif %}
     fw_update_shelly_8caab5060cb7:
       value_template: >-
-        {{ states.binary_sensor.shelly1_8caab5060cb7_firmware_update.state }} 
+        {{ states.update.shelly1_8caab5060cb7_firmware_update.state }} 
       icon_template: >-
-        {% if is_state('binary_sensor.shelly1_8caab5060cb7_firmware_update', 'off') %}
+        {% if is_state('update.shelly1_8caab5060cb7_firmware_update', 'off') %}
           mdi:cloud-outline
         {% else %}
           mdi:cloud-download
         {% endif %}
     fw_update_shelly_f431b1:
       value_template: >-
-        {{ states.binary_sensor.shelly1_f431b1_firmware_update.state }} 
+        {{ states.update.shelly1_f431b1_firmware_update.state }} 
       icon_template: >-
-        {% if is_state('binary_sensor.shelly1_f431b1_firmware_update', 'off') %}
+        {% if is_state('update.shelly1_f431b1_firmware_update', 'off') %}
           mdi:cloud-outline
         {% else %}
           mdi:cloud-download
