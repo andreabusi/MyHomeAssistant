@@ -21,11 +21,6 @@
   language: it
   scan_interval: '01:00'
 
-- platform: command_line
-  name: tasmota_last_firmware
-  command: "curl -s 'https://api.github.com/repositories/80286288/tags' | jq -r '.[0].name' | cut -c2-"
-  scan_interval: 86400 # once a day
-
 # Template sensors
 - platform: template
   sensors:

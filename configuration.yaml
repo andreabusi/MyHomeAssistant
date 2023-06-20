@@ -178,6 +178,12 @@ input_text:
 shell_command:
   wakeup_mbpm1: !secret wakeup_mbpm1
 
+command_line:
+  sensor:
+    name: tasmota_last_firmware
+    command: "curl -s 'https://api.github.com/repositories/80286288/tags' | jq -r '.[0].name' | cut -c2-"
+    scan_interval: 86400 # once a day
+
 #### Custom components ####
 
 # Custom Component - Home Recycling management
