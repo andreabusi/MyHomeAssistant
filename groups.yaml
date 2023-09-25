@@ -66,3 +66,9 @@ lights_external:
   entities:
     - light.garden
     - switch.sonoff_10004cfa12
+
+lights_basement:
+  name: Luci taverna
+  entities:
+    - light.basement_office
+    - light.basement_kitchen
