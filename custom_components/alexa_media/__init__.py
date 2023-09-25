@@ -56,10 +56,12 @@ from .const import (
     CONF_INCLUDE_DEVICES,
     CONF_OAUTH,
     CONF_OTPSECRET,
+    CONF_PUBLIC_URL,
     CONF_QUEUE_DELAY,
     DATA_ALEXAMEDIA,
     DATA_LISTENER,
     DEFAULT_EXTENDED_ENTITY_DISCOVERY,
+    DEFAULT_PUBLIC_URL,
     DEFAULT_QUEUE_DELAY,
     DEPENDENT_ALEXA_COMPONENTS,
     DOMAIN,
@@ -290,6 +292,9 @@ async def async_setup_entry(hass, config_entry):
                 CONF_QUEUE_DELAY: config_entry.options.get(
                     CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY
                 ),
+                CONF_PUBLIC_URL: config_entry.options.get(
+                    CONF_PUBLIC_URL, DEFAULT_PUBLIC_URL
+                ),
                 CONF_EXTENDED_ENTITY_DISCOVERY: config_entry.options.get(
                     CONF_EXTENDED_ENTITY_DISCOVERY, DEFAULT_EXTENDED_ENTITY_DISCOVERY
                 ),
@@ -317,6 +322,7 @@ async def async_setup_entry(hass, config_entry):
         ),
     )
     hass.data[DATA_ALEXAMEDIA]["accounts"][email]["login_obj"] = login
+    hass.data[DATA_ALEXAMEDIA]["accounts"][email]["last_push_activity"] = 0
     if not hass.data[DATA_ALEXAMEDIA]["accounts"][email]["second_account_index"]:
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, close_alexa_media)
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, complete_startup)
@@ -672,6 +678,7 @@ async def setup_alexa(hass, config_entry, login_obj: AlexaLogin):
     async def process_notifications(login_obj, raw_notifications=None):
         """Process raw notifications json."""
         if not raw_notifications:
+            await asyncio.sleep(4)
             raw_notifications = await AlexaAPI.get_notifications(login_obj)
         email: str = login_obj.email
         previous = hass.data[DATA_ALEXAMEDIA]["accounts"][email].get(
@@ -907,23 +914,36 @@ async def setup_alexa(hass, config_entry, login_obj: AlexaLogin):
             else:
                 serial = None
             if command == "PUSH_ACTIVITY":
-                #  Last_Alexa Updated
-                last_called = {
-                    "serialNumber": serial,
-                    "timestamp": json_payload["timestamp"],
-                }
-                try:
-                    await coord.async_request_refresh()
-                    if serial and serial in existing_serials:
-                        await update_last_called(login_obj, last_called)
-                    async_dispatcher_send(
-                        hass,
-                        f"{DOMAIN}_{hide_email(email)}"[0:32],
-                        {"push_activity": json_payload},
-                    )
-                except AlexapyConnectionError:
-                    # Catch case where activities doesn't report valid json
-                    pass
+                if (
+                    datetime.now().timestamp() * 1000
+                    - hass.data[DATA_ALEXAMEDIA]["accounts"][email][
+                        "last_push_activity"
+                    ]
+                    > 100
+                ):
+                    #  Last_Alexa Updated
+                    last_called = {
+                        "serialNumber": serial,
+                        "timestamp": json_payload["timestamp"],
+                    }
+                    try:
+                        await coord.async_request_refresh()
+                        if serial and serial in existing_serials:
+                            await update_last_called(login_obj, last_called)
+                        async_dispatcher_send(
+                            hass,
+                            f"{DOMAIN}_{hide_email(email)}"[0:32],
+                            {"push_activity": json_payload},
+                        )
+                    except AlexapyConnectionError:
+                        # Catch case where activities doesn't report valid json
+                        pass
+                else:
+                    # Duplicate PUSH_ACTIVITY message
+                    _LOGGER.debug("Skipped processing of double PUSH_ACTIVITY message")
+                hass.data[DATA_ALEXAMEDIA]["accounts"][email]["last_push_activity"] = (
+                    datetime.now().timestamp() * 1000
+                )
             elif command in (
                 "PUSH_AUDIO_PLAYER_STATE",
                 "PUSH_MEDIA_CHANGE",
