@@ -35,7 +35,7 @@ system_health:
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-    - 172.19.0.0/24
+    - 172.20.0.0/24
 
 # Discover some devices automatically
 discovery:
