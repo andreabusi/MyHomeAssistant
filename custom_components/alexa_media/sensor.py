@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 For more details about this platform, please refer to the documentation at
 https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers-needed/58639
 """
+
 import datetime
 import json
 import logging
@@ -24,7 +25,6 @@ from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt
 from packaging import version
-import pytz
 
 from . import (
     CONF_EMAIL,
@@ -336,6 +336,8 @@ class AirQualitySensor(SensorEntity, CoordinatorEntity):
 class AlexaMediaNotificationSensor(SensorEntity):
     """Representation of Alexa Media sensors."""
 
+    _unrecorded_attributes = frozenset({"sorted_active", "sorted_all"})
+
     def __init__(
         self,
         client,
@@ -445,11 +447,11 @@ class AlexaMediaNotificationSensor(SensorEntity):
         ):
             return value
         naive_time = dt.parse_datetime(value[1][self._sensor_property])
-        timezone = pytz.timezone(
+        timezone = dt.get_time_zone(
             self._client._timezone  # pylint: disable=protected-access
         )
         if timezone and naive_time:
-            value[1][self._sensor_property] = timezone.localize(naive_time)
+            value[1][self._sensor_property] = naive_time.replace(tzinfo=timezone)
         elif not naive_time:
             # this is typically an older alarm
             value[1][self._sensor_property] = datetime.datetime.fromtimestamp(
@@ -492,7 +494,7 @@ class AlexaMediaNotificationSensor(SensorEntity):
         r_rule_data = next_item.get("rRuleData")
         if (
             r_rule_data
-        ):  # the new recurrence pattern; https://github.com/custom-components/alexa_media_player/issues/1608
+        ):  # the new recurrence pattern; https://github.com/alandtse/alexa_media_player/issues/1608
             next_trigger_times = r_rule_data.get("nextTriggerTimes")
             weekdays = r_rule_data.get("byWeekDays")
             if next_trigger_times:
@@ -555,14 +557,21 @@ class AlexaMediaNotificationSensor(SensorEntity):
     def _handle_event(self, event):
         """Handle events.
 
-        This will update PUSH_ACTIVITY events to see if the sensor
-        should be updated.
+        This will update PUSH_ACTIVITY or NOTIFICATION_UPDATE events to see if
+        the sensor should be updated.
         """
         try:
             if not self.enabled:
                 return
         except AttributeError:
             pass
+        if "notification_update" in event:
+            if (
+                event["notification_update"]["dopplerId"]["deviceSerialNumber"]
+                == self._client.device_serial_number
+            ):
+                _LOGGER.debug("Updating sensor %s", self)
+                self.schedule_update_ha_state(True)
         if "push_activity" in event:
             if (
                 event["push_activity"]["key"]["serialNumber"]
@@ -579,9 +588,7 @@ class AlexaMediaNotificationSensor(SensorEntity):
     @property
     def should_poll(self):
         """Return the polling state."""
-        return not (
-            self.hass.data[DATA_ALEXAMEDIA]["accounts"][self._account]["websocket"]
-        )
+        return not (self.hass.data[DATA_ALEXAMEDIA]["accounts"][self._account]["http2"])
 
     def _process_state(self, value) -> Optional[datetime.datetime]:
         return dt.as_local(value[self._sensor_property]) if value else None
@@ -603,7 +610,7 @@ class AlexaMediaNotificationSensor(SensorEntity):
             self._n_dict = None
         self._process_raw_notifications()
         try:
-            self.async_write_ha_state()
+            self.schedule_update_ha_state()
         except NoEntitySpecifiedError:
             pass  # we ignore this due to a harmless startup race condition
 
@@ -663,9 +670,11 @@ class TimerSensor(AlexaMediaNotificationSensor):
             "remainingTime",
             account,
             f"next {self._type}",
-            "mdi:timer-outline"
-            if (version.parse(HA_VERSION) >= version.parse("0.113.0"))
-            else "mdi:timer",
+            (
+                "mdi:timer-outline"
+                if (version.parse(HA_VERSION) >= version.parse("0.113.0"))
+                else "mdi:timer"
+            ),
         )
 
     def _process_state(self, value) -> Optional[datetime.datetime]:

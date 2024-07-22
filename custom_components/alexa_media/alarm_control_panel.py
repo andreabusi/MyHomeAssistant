@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 For more details about this platform, please refer to the documentation at
 https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers-needed/58639
 """
+
 from asyncio import sleep
 import logging
 from typing import List, Optional
@@ -233,11 +234,11 @@ class AlexaAlarmControlPanel(AlarmControlPanel, AlexaMedia, CoordinatorEntity):
         # pylint: disable=import-outside-toplevel
         try:
             from homeassistant.components.alarm_control_panel import (
-                SUPPORT_ALARM_ARM_AWAY,
+                AlarmControlPanelEntityFeature,
             )
         except ImportError:
             return 0
-        return SUPPORT_ALARM_ARM_AWAY
+        return AlarmControlPanelEntityFeature.ARM_AWAY
 
     @property
     def assumed_state(self) -> bool:
