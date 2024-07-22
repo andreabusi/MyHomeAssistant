@@ -1,6 +1,116 @@
-# Gestione spazzatura
-- id: 'home_recycling_notify'
-  alias: Recycling, evening notification
+- id: ha_startup
+  alias: HomeAssistant, notifica servizio avviato
+  initial_state: true
+  trigger:
+  - event: start
+    platform: homeassistant
+  condition: []
+  action:
+  - service: notify.pushover
+    data:
+      title: Home Assistant
+      message: Home Assistant è stato avviato con successo!
+- id: ha_update_available
+  alias: HomeAssistant, notifica aggiornamento disponibile
+  initial_state: true
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.docker_hub_update_available
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.pushover
+    data:
+      title: Home Assistant
+      message: È disponibile la versione {{ states('sensor.docker_hub') }} di Home
+        Assistant!
+- id: external_lights_turnon
+  alias: Accendi luci esterne dopo il tramonto
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 00:00:00
+  action:
+  - service: homeassistant.turn_on
+    entity_id: group.lights_external
+- id: external_lights_turnoff
+  alias: Spegni luci esterne a mezzanotte
+  trigger:
+  - platform: time
+    at: 00:00:00
+  action:
+  - service: homeassistant.turn_off
+    entity_id: group.lights_external
+- id: mqtt_enable_discovery
+  alias: Abilita il discovery MQTT per dispositivi con fw Tasmota
+  trigger:
+  - platform: homeassistant
+    event: start
+  - platform: time
+    at: 01:00
+  action:
+  - service: mqtt.publish
+    data:
+      topic: tasmotas/cmnd/SetOption19
+      payload: '1'
+- id: washing_machine_finished
+  alias: Alexa comunica che l'asciugatrice ha terminato
+  trigger:
+    platform: state
+    entity_id: binary_sensor.washing_machine
+    to: 'off'
+  action:
+  - service: script.alexa_announce
+    data:
+      message: La lavatrice ha finito.
+- id: dryer_machine_finished
+  alias: Alexa comunica che la lavatrice ha terminato
+  trigger:
+    platform: state
+    entity_id: binary_sensor.dryer_machine
+    to: 'off'
+  action:
+  - service: script.alexa_announce
+    data:
+      message: L'asciugatrice ha finito.
+- id: do_not_disturb_off
+  alias: Disattiva la modalità non disturbare
+  trigger:
+  - platform: time
+    at: 08:00:00
+  action:
+  - service: homeassistant.turn_off
+    entity_id: input_boolean.do_not_disturb
+- id: do_not_disturb_on
+  alias: Attiva la modalità non disturbare
+  trigger:
+  - platform: time
+    at: '23:00:00'
+  action:
+  - service: homeassistant.turn_on
+    entity_id: input_boolean.do_not_disturb
+- id: christmas_tree_auto_turnoff
+  alias: Spegni albero di Natale alle 01:00
+  initial_state: true
+  trigger:
+  - platform: time
+    at: 01:00:00
+  condition: []
+  action:
+  - service: homeassistant.turn_off
+    entity_id: switch.sonoff_10001f9bcf
+- id: magpi_downloader_check
+  alias: Scarica l'ultimo numero di MagPi
+  initial_state: true
+  trigger:
+  - at: 08:00
+    platform: time
+  condition: []
+  action:
+  - service: magpi_downloader.downloader
+- id: home_recycling_notify
+  alias: Raccolta differenziata, notifica serale
   initial_state: true
   trigger:
   - at: '20:00'
@@ -10,248 +120,89 @@
     entity_id: sensor.home_recycling
     state: 'on'
   action:
-    - service: notify.home_tg
-      data_template:
-        message: >
-          La spazzatura in ritiro domani è:{{'\n'}}
-          {%- for collection in state_attr("sensor.home_recycling", "collections_icons") -%}
-            {{- collection }}{{'\n'}}
-          {%- endfor %}
-    - service: script.alexa_announce
-      data_template:
-        message: >
-          La spazzatura in ritiro domani è {{ state_attr("sensor.home_recycling", "collections")|join(" e ") }}
-
-- id: 'home_recycling_set_states'
-  alias: Recycling, set states
-  initial_state: true
-  trigger:
-    - platform: time
-      at: '07:00'
-    - platform: homeassistant
-      event: start
-  condition: []
-  action:
-  - service: home_recycling.collections_state
-
-# Download MagPi issues
-- id: 'magpi_downloader_check'
-  alias: MagPi, check and download
-  initial_state: true
-  trigger:
-  - at: '08:00'
-    platform: time  
-  condition: []
-  action:
-  - service: magpi_downloader.downloader
-
-# HomeAssistant notifications
-- id: 'ha_check_update'
-  alias: HomeAssistant, check available update
-  initial_state: true
-  trigger:
-  - entity_id: sensor.ha_upstream_version
-    platform: state  
-  condition:
-  - condition: template
-    value_template: "{{ trigger.to_state.state != 'unknown' }}"
-  - condition: template
-    value_template: "{{ trigger.to_state.state != 'unavailable' }}"
-  - condition: template
-    value_template: "{{ trigger.to_state.state != states.sensor.ha_installed_version.state }}"
-  action:
-  - service: notify.pushover
+  - service: notify.home_tg
     data_template:
-      title: Home Assistant
-      message: Update {{ trigger.to_state.state }} is available for Home Assistant!
-      data:
-        url: "https://github.com/home-assistant/home-assistant/releases/tag/{{ trigger.to_state.state }}"
-    
-- id: 'ha_startup'
-  alias: HomeAssistant, started notification
-  initial_state: true
-  trigger:
-  - event: start
-    platform: homeassistant
-  condition: []
-  action:
-  - data:
-      title: Home Assistant
-      message: Home Assistant has been restarted, now it's up and running!
-    service: notify.pushover
+      message: "La spazzatura in ritiro domani è:{{'\\n'}} {%- for collection in state_attr(\"sensor.home_recycling\",
+        \"collections_icons\") -%}\n  {{- collection }}{{'\\n'}}\n{%- endfor %}\n"
+  - service: script.alexa_announce
+    data_template:
+      message: 'La spazzatura in ritiro domani è {{ state_attr("sensor.home_recycling",
+        "collections")|join(" e ") }}
 
-# Turn off Christmas Tree ad 01 am
-- id: 'christmas_tree_auto_turnoff'
-  alias: 'Christmas Tree: turn off at 01:00 am'
+        '
+- id: home_recycling_set_states
+  alias: Raccolta differenziata, popolamento stati
   initial_state: true
   trigger:
   - platform: time
-    at: '01:00:00'
+    at: 07:00
+  - platform: homeassistant
+    event: start
   condition: []
   action:
-  - service: homeassistant.turn_off
-    entity_id: switch.sonoff_10001f9bcf
-  
-# JarvisBOT: comandi Telegram a cui Jarvis può rispondere
-- id: 'jarvisbot_ping'
-  alias: 'JarvisBOT: /ping'
+  - service: home_recycling.collections_state
+- id: '1708550800368'
+  alias: Gestisci luci taverna con bottone Ikea
+  description: ''
   trigger:
-  - platform: event
-    event_type: telegram_command
-    event_data:
-      command: '/ping'
-  action:
-  - service: telegram_bot.send_message
-    data_template:
-      target: '{{ trigger.event.data.chat_id }}'
-      message: 'Pong!'
-
-- id: 'jarvisbot_temperature'
-  alias: 'JarvisBOT: /temperature'
-  trigger:
-  - platform: event
-    event_type: telegram_command
-    event_data:
-      command: '/temperature'
-  action:
-  - service: telegram_bot.send_message
-    data_template:
-      target: '{{ trigger.event.data.chat_id }}'
-      message: 'La temperatura corrente è di {{ states.sensor.dht_sensor_temperature.state_with_unit }}'
-
-- id: 'jarvisbot_camera_picture'
-  alias: 'JarvisBOT: /camera'
-  trigger:
-  - platform: event
-    event_type: telegram_command
-    event_data:
-      command: '/camera'
-  action:
-  - service: telegram_bot.send_photo
-    data:
-      url: http://127.0.0.1/api/camera_proxy/camera.soggiorno
-      caption: 'Situazione attuale del soggiorno'
-
-- id: 'jarvisbot_hello'
-  alias: 'JarvisBOT: /hello'
-  trigger:
-  - platform: event
-    event_type: telegram_text
-    event_data:
-      text: 'Jarvis'
-  - platform: event
-    event_type: telegram_command
-    event_data:
-      command: '/hello'
-  action:
-  - service: telegram_bot.send_message
-    data_template:
-      target: '{{ trigger.event.data.chat_id }}'
-      message: 'Ciao {{ trigger.event.data.from_first }}!'
-
-# Washing machine finished
-- id: 'washing_machine_finished'
-  alias: 'Washing machine finished, let Alexa announce it'
-  trigger:
-    platform: state
-    entity_id: binary_sensor.washing_machine_status
-    to: 'off'
-  action:
-    - service: script.alexa_announce
-      data:
-        message: "La lavatrice ha finito."
-
-# Dryer machine finished
-- id: 'dryer_machine_finished'
-  alias: 'Dryer machine finished, let Alexa announce it'
-  trigger:
-    platform: state
-    entity_id: binary_sensor.dryer_machine_status
-    to: 'off'
-  action:
-    - service: script.alexa_announce
-      data:
-        message: "L'asciugatrice ha finito."
-
-# IFTTT
-- id: 'ifttt_webhook'
-  alias: IFTTT, handle incoming webhooks
-  initial_state: true
-  trigger:
-  - platform: event
-    event_type: ifttt_webhook_received
-    event_data:
-      action: call_service
+  - platform: device
+    domain: mqtt
+    device_id: 16cbd8bc6ea2fb612a2cce8906b08ff6
+    type: action
+    subtype: 'on'
   condition: []
   action:
-  - service: '{{ trigger.event.data.service }}'
-    data:
-      entity_id: '{{ trigger.event.data.entity_id }}'
-
-# Force enable discovery on Tasmota devices
-- id: 'mqtt_enable_discovery'
-  alias: "Enable discovery on MQTT for Tasmota devices"
+  - service: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.basement_office
+  mode: single
+- id: '1708633047656'
+  alias: Accendi taverna automaticamente
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.0x84fd27fffea4c4d6_occupancy
+      light_target:
+        device_id: b84ccae1e95ab6a73e02cf1a72687d38
+- id: '1709057496134'
+  alias: Accendi luce taverna con sensore di movimento
+  description: ''
   trigger:
-    - platform: homeassistant
-      event: start
-    - platform: time
-      at: '01:00'
-  action:
-    - service: mqtt.publish
-      data:
-        topic: "tasmotas/cmnd/SetOption19"
-        payload: "1"
-
-# Turn on/off external lights based of the sun
-- id: 'external_lights_turnon'
-  alias: 'Turn on external lights after the sunset'
-  trigger:
-    - platform: sun
-      event: sunset
-      offset: "00:00:00"
-  action:
-    - service: homeassistant.turn_on
-      entity_id: group.lights_external
-
-- id: 'external_lights_turnoff'
-  alias: 'Turn off external lights at midnight'
-  trigger:
-    - platform: time
-      at: '00:00:00'
-  action:
-    - service: homeassistant.turn_off
-      entity_id: group.lights_external
-
-# Play an alarm message is a leak is detected in the laudry
-- id: 'waterflood_laundry_alarm'
-  alias: 'Play an alarm message on all the speakers if a leak is detected'
-  trigger:
-    platform: state
-    entity_id: input_boolean.waterflood_laundry
+  - platform: state
+    entity_id:
+    - binary_sensor.0x84fd27fffea4c4d6_occupancy
+    from: 'off'
     to: 'on'
+  condition:
+  - condition: time
+    after: 06:00:00
+    before: '23:00:00'
   action:
-    - service: script.alexa_announce
-      data:
-        message: "Attenzione! Attenzione! La lavanderia si sta allagando!"
-    - service: notify.home_tg
-      data:
-        message: "🚨 Possibile allagamento in lavanderia!!"
-
-# Turn on/off Do Not Disturb Mode
-- id: 'do_not_disturb_off'
-  alias: 'Turn off do not disturb mode'
+  - service: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      device_id: b84ccae1e95ab6a73e02cf1a72687d38
+  mode: single
+- id: '1711629795805'
+  alias: Webhook - Commuta luci taverna
+  description: ''
   trigger:
-    - platform: time
-      at: '08:00:00'
+  - platform: webhook
+    allowed_methods:
+    - POST
+    - PUT
+    local_only: true
+    webhook_id: -f2zbAQ98Ppm1v2ouhxLmWHOM
+  condition: []
   action:
-    - service: homeassistant.turn_off
-      entity_id: input_boolean.do_not_disturb
-
-- id: 'do_not_disturb_on'
-  alias: 'Turn on do not disturb mode'
-  trigger:
-    - platform: time
-      at: '23:00:00'
-  action:
-    - service: homeassistant.turn_on
-      entity_id: input_boolean.do_not_disturb
+  - service: light.toggle
+    target:
+      device_id:
+      - b84ccae1e95ab6a73e02cf1a72687d38
+      - 534e95a35133cad223a5e36741f238b1
+    data: {}
+  mode: single

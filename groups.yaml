@@ -1,66 +1,3 @@
-forecast:
-  name: Previsioni meteo
-  entities:
-    - sensor.forecast_today_summary
-    - sensor.forecast_temperatures
-    - sensor.dark_sky_temperature
-    - sensor.dark_sky_humidity
-    - sensor.dark_sky_precip_probability
-
-devices:
-  name: Dispositivi
-  entities:
-    - device_tracker.iphoneandrea
-    - device_tracker.ipadandrea
-    - device_tracker.iphoneerica
-    - device_tracker.ipaderica
-
-sonoff:
-  name: Sonoff
-  entities:
-    - switch.sonoff_10001f9bcf
-    - switch.sonoff_10004cf9ff
-    - switch.sonoff_10004cfa12
-
-home_recycling:
-  name: Raccolta differenziata
-  entities:
-    - sensor.home_recycling_date
-    - sensor.home_recycling_types
-
-media_players:
-  name: Media
-  icon: mdi:play-network
-  entities:
-    - group.tv_cucina
-    - group.tv_sala
-    - media_player.echo_dot_cameretta
-    - media_player.echo_soggiorno
-    - media_player.echo_dot_taverna
-
-tv_cucina:
-  name: TV Cucina
-  entities:
-    - script.tv_cucina_power_on
-    - script.tv_cucina_power_off
-    - script.tv_cucina_volume_up
-    - script.tv_cucina_volume_down
-    - script.tv_cucina_mute
-    - script.tv_cucina_channel_up
-    - script.tv_cucina_channel_down
-    - script.tv_cucina_change_source
-
-tv_sala:
-  name: TV Sala
-  entities:
-    - script.tv_sala_power_on
-    - script.tv_sala_power_off
-    - script.tv_sala_volume_up
-    - script.tv_sala_volume_down
-    - script.tv_sala_mute
-    - script.tv_sala_channel_up
-    - script.tv_sala_channel_down
-
 lights_external:
   name: Luci esterne
   entities:
@@ -72,3 +9,10 @@ lights_basement:
   entities:
     - light.basement_office
     - light.basement_kitchen
+
+media_players:
+  name: Media
+  icon: mdi:play-network
+  entities:
+    - media_player.echo_soggiorno
+    - media_player.echo_dot_taverna
