@@ -53,8 +53,8 @@ def download_new_issue(issue_number):
         file_name = create_filename(issue_number)
         file_url = create_pdf_url(issue_number)
         if file_url is None:
-        	_LOGGER.error("Unable to create pdf Url")
-        	return False
+            _LOGGER.error("Unable to create pdf Url")
+            return False
         output_path = "%s/%s" % (OUTPUT_PATH, file_name)
         response = requests.get(file_url)
         if response.status_code == requests.codes.ok:
@@ -80,18 +80,18 @@ def create_filename(issue_number):
 
 
 def create_pdf_url(issue_number):
-	base_url = MAGPI_ISSUES_URL % issue_number
-	page = requests.get(base_url)
+    base_url = MAGPI_ISSUES_URL % issue_number
+    page = requests.get(base_url)
+    
+    soup = BeautifulSoup(page.content, 'html.parser')
+    tags = soup.find_all('a', { 'class':"c-link"})
+    if len(tags) > 0:
+        # extract direct url from `a` tag with `c-link` class
+        tag = tags[0]
+        pdf_url = tag['href']
+        return MAGPI_URL + pdf_url
 
-	soup = BeautifulSoup(page.content, 'html.parser')
-	tags = soup.find_all('a', { 'class':"c-link"})
-	if len(tags) > 0:
-		# extract direct url from `a` tag with `c-link` class
-		tag = tags[0]
-		pdf_url = tag['href']
-		return MAGPI_URL + pdf_url
-	
-	return None
+    return None
 
 
 def downloader(hass):
