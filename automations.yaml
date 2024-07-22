@@ -42,18 +42,6 @@
   action:
   - service: homeassistant.turn_off
     entity_id: group.lights_external
-- id: mqtt_enable_discovery
-  alias: Abilita il discovery MQTT per dispositivi con fw Tasmota
-  trigger:
-  - platform: homeassistant
-    event: start
-  - platform: time
-    at: 01:00
-  action:
-  - service: mqtt.publish
-    data:
-      topic: tasmotas/cmnd/SetOption19
-      payload: '1'
 - id: washing_machine_finished
   alias: Alexa comunica che l'asciugatrice ha terminato
   trigger:
