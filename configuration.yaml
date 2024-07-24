@@ -14,9 +14,18 @@ http:
     - 172.21.0.0/24
     - 172.22.0.0/24
 
+# Enables Telegram Bot
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_key
+    allowed_chat_ids:
+      - !secret telegram_chat_andrea
+      - !secret telegram_chat_home
+
 automation: !include automations.yaml
 binary_sensor: !include binary_sensors.yaml
 group: !include groups.yaml
+notify: !include notifications.yaml
 sensor: !include sensors.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml

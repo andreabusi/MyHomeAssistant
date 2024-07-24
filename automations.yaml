@@ -108,7 +108,7 @@
     entity_id: sensor.home_recycling
     state: 'on'
   action:
-  - service: notify.home_tg
+  - service: notify.telegram_home
     data_template:
       message: "La spazzatura in ritiro domani è:{{'\\n'}} {%- for collection in state_attr(\"sensor.home_recycling\",
         \"collections_icons\") -%}\n  {{- collection }}{{'\\n'}}\n{%- endfor %}\n"

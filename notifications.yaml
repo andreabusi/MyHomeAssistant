@@ -1,9 +1,9 @@
 # Notification channels
 
-- name: ANDREA_TG
+- name: telegram_andrea
   platform: telegram
   chat_id: !secret telegram_chat_andrea
 
-- name: HOME_TG
+- name: telegram_home
   platform: telegram
   chat_id: !secret telegram_chat_home
