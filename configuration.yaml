@@ -14,6 +14,20 @@ http:
     - 172.21.0.0/24
     - 172.22.0.0/24
 
+api:
+
+# Enable Alexa integration
+alexa:
+  smart_home:
+    filter:
+      include_entities:
+        light.ikea_bulb_02
+    entity_config:
+      light.ikea_bulb_02:
+        name: Laboratorio
+        description: Lampada laboratorio
+
+
 # Enables Telegram Bot
 telegram_bot:
   - platform: polling
