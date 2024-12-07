@@ -28,6 +28,9 @@ from alexapy import (
 )
 from homeassistant import config_entries
 from homeassistant.components.http.view import HomeAssistantView
+from homeassistant.components.persistent_notification import (
+    async_dismiss as async_dismiss_persistent_notification,
+)
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_URL
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult, UnknownFlow
@@ -59,6 +62,7 @@ from .const import (
     DATA_ALEXAMEDIA,
     DEFAULT_DEBUG,
     DEFAULT_EXTENDED_ENTITY_DISCOVERY,
+    DEFAULT_HASS_URL,
     DEFAULT_PUBLIC_URL,
     DEFAULT_QUEUE_DELAY,
     DEFAULT_SCAN_INTERVAL,
@@ -80,9 +84,13 @@ def configured_instances(hass):
 
 
 @callback
-def in_progess_instances(hass):
-    """Return a set of in progress Alexa Media flows."""
-    return {entry["flow_id"] for entry in hass.config_entries.flow.async_progress()}
+def in_progress_instances(hass):
+    """Return a set of in-progress Alexa Media flows."""
+    return {
+        entry["flow_id"]
+        for entry in hass.config_entries.flow.async_progress()
+        if entry["handler"] == DOMAIN  # Ensure only Alexa Media flows are included
+    }
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -124,6 +132,7 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                 (vol.Required(CONF_PASSWORD), str),
                 (vol.Optional(CONF_OTPSECRET), str),
                 (vol.Optional(CONF_SECURITYCODE), str),
+                (vol.Optional(CONF_PUBLIC_URL), str),
                 (vol.Optional(CONF_INCLUDE_DEVICES, default=""), str),
                 (vol.Optional(CONF_EXCLUDE_DEVICES, default=""), str),
                 (vol.Optional(CONF_SCAN_INTERVAL, default=60), int),
@@ -145,12 +154,23 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
 
     async def async_step_user(self, user_input=None):
         # pylint: disable=too-many-branches
+
         """Provide a proxy for login."""
         self._save_user_input_to_config(user_input=user_input)
+        """ Internal URL for proxy authentication """
         try:
-            hass_url: str = get_url(self.hass, prefer_external=True)
+            hass_url: str = get_url(self.hass, allow_external=False)
         except NoURLAvailableError:
-            hass_url = ""
+            hass_url = DEFAULT_HASS_URL
+
+        """ External URL for cloud connected services """
+        try:
+            url: str = get_url(self.hass, allow_internal=False)
+        except NoURLAvailableError:
+            DEFAULT_PUBLIC_URL = ""
+        else:
+            DEFAULT_PUBLIC_URL = url if url.endswith("/") else url + "/"
+
         self.proxy_schema = OrderedDict(
             [
                 (
@@ -179,6 +199,13 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                     vol.Optional(
                         CONF_HASS_URL,
                         default=self.config.get(CONF_HASS_URL, hass_url),
+                    ),
+                    str,
+                ),
+                (
+                    vol.Optional(
+                        CONF_PUBLIC_URL,
+                        default=self.config.get(CONF_PUBLIC_URL, DEFAULT_PUBLIC_URL),
                     ),
                     str,
                 ),
@@ -624,8 +651,9 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                     "alexa_media_relogin_success",
                     event_data={"email": hide_email(email), "url": login.url},
                 )
-                self.hass.components.persistent_notification.async_dismiss(
-                    f"alexa_media_{slugify(email)}{slugify(login.url[7:])}"
+                async_dismiss_persistent_notification(
+                    self.hass,
+                    notification_id=f"alexa_media_{slugify(email)}{slugify(login.url[7:])}",
                 )
                 if not self.hass.data[DATA_ALEXAMEDIA]["accounts"].get(
                     self.config[CONF_EMAIL]
@@ -677,8 +705,9 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
         if login.status and (login.status.get("login_failed")):
             _LOGGER.debug("Login failed: %s", login.status.get("login_failed"))
             await login.close()
-            self.hass.components.persistent_notification.async_dismiss(
-                f"alexa_media_{slugify(email)}{slugify(login.url[7:])}"
+            async_dismiss_persistent_notification(
+                self.hass,
+                notification_id=f"alexa_media_{slugify(email)}{slugify(login.url[7:])}",
             )
             return self.async_abort(reason="login_failed")
         new_schema = self._update_schema_defaults()
@@ -720,8 +749,8 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
         """
         if user_input is None:
             return
-        if CONF_URL in user_input:
-            self.config[CONF_URL] = user_input[CONF_URL]
+        if CONF_HASS_URL in user_input:
+            self.config[CONF_HASS_URL] = user_input[CONF_HASS_URL]
         self.securitycode = user_input.get(CONF_SECURITYCODE)
         if self.securitycode is not None:
             self.config[CONF_SECURITYCODE] = self.securitycode
@@ -738,8 +767,12 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
             self.config[CONF_EMAIL] = user_input[CONF_EMAIL]
         if CONF_PASSWORD in user_input:
             self.config[CONF_PASSWORD] = user_input[CONF_PASSWORD]
-        if CONF_HASS_URL in user_input:
-            self.config[CONF_HASS_URL] = user_input[CONF_HASS_URL]
+        if CONF_URL in user_input:
+            self.config[CONF_URL] = user_input[CONF_URL]
+        if CONF_PUBLIC_URL in user_input:
+            if not user_input[CONF_PUBLIC_URL].endswith("/"):
+                user_input[CONF_PUBLIC_URL] = user_input[CONF_PUBLIC_URL] + "/"
+            self.config[CONF_PUBLIC_URL] = user_input[CONF_PUBLIC_URL]
         if CONF_SCAN_INTERVAL in user_input:
             self.config[CONF_SCAN_INTERVAL] = (
                 user_input[CONF_SCAN_INTERVAL]
@@ -789,8 +822,11 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                     default=self.securitycode if self.securitycode else "",
                 ): str,
                 vol.Required(
-                    CONF_OTPSECRET,
-                    default=self.config.get(CONF_OTPSECRET, ""),
+                    CONF_OTPSECRET, default=self.config.get(CONF_OTPSECRET, "")
+                ): str,
+                vol.Optional(
+                    CONF_PUBLIC_URL,
+                    default=self.config.get(CONF_PUBLIC_URL, DEFAULT_PUBLIC_URL),
                 ): str,
                 vol.Optional(
                     CONF_INCLUDE_DEVICES,
@@ -804,8 +840,7 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                     CONF_SCAN_INTERVAL, default=self.config.get(CONF_SCAN_INTERVAL, 60)
                 ): int,
                 vol.Optional(
-                    CONF_QUEUE_DELAY,
-                    default=self.config.get(CONF_QUEUE_DELAY, 1.5),
+                    CONF_QUEUE_DELAY, default=self.config.get(CONF_QUEUE_DELAY, 1.5)
                 ): float,
                 vol.Optional(
                     CONF_EXTENDED_ENTITY_DISCOVERY,
@@ -815,7 +850,7 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                     ),
                 ): bool,
                 vol.Optional(
-                    CONF_DEBUG, default=bool(self.config.get(CONF_DEBUG, False))
+                    CONF_DEBUG, default=self.config.get(CONF_DEBUG, False)
                 ): bool,
             },
         )
@@ -845,6 +880,15 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
         self.options_schema = OrderedDict(
             [
+                (
+                    vol.Optional(
+                        CONF_PUBLIC_URL,
+                        default=self.config_entry.data.get(
+                            CONF_PUBLIC_URL, DEFAULT_PUBLIC_URL
+                        ),
+                    ),
+                    str,
+                ),
                 (
                     vol.Optional(
                         CONF_INCLUDE_DEVICES,
@@ -911,6 +955,10 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 user_input[CONF_OTPSECRET] = self.config_entry.data[CONF_OTPSECRET]
             if CONF_OAUTH in self.config_entry.data:
                 user_input[CONF_OAUTH] = self.config_entry.data[CONF_OAUTH]
+            """Ensure public_url ends with trailing slash"""
+            if CONF_PUBLIC_URL in self.config_entry.data:
+                if not user_input[CONF_PUBLIC_URL].endswith("/"):
+                    user_input[CONF_PUBLIC_URL] = user_input[CONF_PUBLIC_URL] + "/"
 
             self.hass.config_entries.async_update_entry(
                 self.config_entry, data=user_input, options=self.config_entry.options
