@@ -2,7 +2,7 @@ lights_external:
   name: Luci esterne
   entities:
     - light.garden
-    - switch.sonoff_10001f9bcf
+    - switch.sonoff_10004cfa12
 
 lights_basement:
   name: Luci taverna

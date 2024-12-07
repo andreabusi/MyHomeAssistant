@@ -87,7 +87,7 @@
   condition: []
   action:
   - service: homeassistant.turn_off
-    entity_id: switch.sonoff_10004cfa12
+    entity_id: switch.sonoff_10001f9bcf
 - id: magpi_downloader_check
   alias: Scarica l'ultimo numero di MagPi
   initial_state: true
