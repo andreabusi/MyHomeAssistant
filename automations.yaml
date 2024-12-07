@@ -140,11 +140,31 @@
     subtype: 'on'
   condition: []
   action:
-  - service: light.toggle
-    metadata: {}
-    data: {}
-    target:
-      entity_id: light.basement_office
+  - if:
+    - condition: or
+      conditions:
+      - condition: state
+        entity_id: light.basement_kitchen
+        state: 'on'
+      - condition: state
+        entity_id: light.basement_office
+        state: 'on'
+    then:
+    - service: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - light.basement_office
+        - light.basement_kitchen
+    else:
+    - service: light.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - light.basement_office
+        - light.basement_kitchen
   mode: single
 - id: '1708633047656'
   alias: Accendi taverna automaticamente
