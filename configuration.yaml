@@ -21,7 +21,8 @@ alexa:
   smart_home:
     filter:
       include_entities:
-        light.ikea_bulb_02
+        - light.ikea_bulb_02
+        - script.routine_buonanotte
     entity_config:
       light.ikea_bulb_02:
         name: Laboratorio
