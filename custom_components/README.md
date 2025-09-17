@@ -20,6 +20,14 @@ Home Assistant custom component for control Sonoff devices with eWeLink (origina
 * Installed version: 3.9.3
 * Updated on: 17/09/2025
 
+### `Dreame vacuum`
+
+Complete app replacement with Home Assistant for Dreame robot vacuums.
+
+* [GitHub repo](https://github.com/Tasshack/dreame-vacuum)
+* Installed version: 2.0.0b20
+* Updated on: 17/09/2025
+
 ## Self made
 
 ### `magpi_download`
