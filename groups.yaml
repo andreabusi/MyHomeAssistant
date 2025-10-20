@@ -16,3 +16,10 @@ media_players:
   entities:
     - media_player.echo_soggiorno
     - media_player.echo_dot_taverna
+
+family:
+  name: Famiglia
+  icon: mdi:account-group
+  entities:
+    - person.andrea
+    - person.erica
