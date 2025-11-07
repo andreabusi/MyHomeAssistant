@@ -99,25 +99,30 @@
   - service: magpi_downloader.downloader
 - id: home_recycling_notify
   alias: Raccolta differenziata, notifica serale
-  initial_state: true
-  trigger:
+  triggers:
   - at: '20:00'
-    platform: time
-  condition:
-    condition: state
+    trigger: time
+  conditions:
+  - condition: state
     entity_id: sensor.home_recycling
     state: 'on'
-  action:
-  - service: notify.telegram_home
-    data_template:
-      message: "La spazzatura in ritiro domani è:{{'\\n'}} {%- for collection in state_attr(\"sensor.home_recycling\",
-        \"collections_icons\") -%}\n  {{- collection }}{{'\\n'}}\n{%- endfor %}\n"
-  - service: script.alexa_announce
-    data_template:
+  actions:
+  - action: notify.send_message
+    metadata: {}
+    data:
+      message: "La spazzatura in ritiro domani è (2):{{'\\n'}} \n{%- for collection
+        in state_attr(\"sensor.home_recycling\", \"collections_icons\") -%}\n  {{-
+        collection }}{{'\\n'}}\n{%- endfor %}"
+    target:
+      entity_id: notify.telegram_bot_458417471_220682073
+  - data_template:
       message: 'La spazzatura in ritiro domani è {{ state_attr("sensor.home_recycling",
         "collections")|join(" e ") }}
 
         '
+    action: script.alexa_announce
+    enabled: true
+  initial_state: true
 - id: home_recycling_set_states
   alias: Raccolta differenziata, popolamento stati
   initial_state: true
@@ -132,14 +137,14 @@
 - id: '1708550800368'
   alias: Gestisci luci taverna con bottone Ikea
   description: ''
-  trigger:
-  - platform: device
-    domain: mqtt
+  triggers:
+  - domain: mqtt
     device_id: 16cbd8bc6ea2fb612a2cce8906b08ff6
     type: action
     subtype: 'on'
-  condition: []
-  action:
+    trigger: device
+  conditions: []
+  actions:
   - if:
     - condition: or
       conditions:
@@ -150,21 +155,21 @@
         entity_id: light.basement_office
         state: 'on'
     then:
-    - service: light.turn_off
-      metadata: {}
+    - metadata: {}
       data: {}
       target:
         entity_id:
         - light.basement_office
         - light.basement_kitchen
+      action: light.turn_off
     else:
-    - service: light.turn_on
-      metadata: {}
+    - metadata: {}
       data: {}
       target:
         entity_id:
         - light.basement_office
         - light.basement_kitchen
+      action: light.turn_on
   mode: single
 - id: '1708633047656'
   alias: Accendi taverna automaticamente
@@ -213,4 +218,220 @@
       - b84ccae1e95ab6a73e02cf1a72687d38
       - 534e95a35133cad223a5e36741f238b1
     data: {}
+  mode: single
+- id: '1755088566747'
+  alias: Riavvia monitor Xiaomi con bottone Ikea
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: a6b85b9b53854135d9ea0b5edcf85121
+    type: action
+    subtype: 'on'
+    trigger: device
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.gosund_presa03
+    enabled: true
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+    enabled: true
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.gosund_presa03
+    enabled: true
+  mode: single
+- id: '1755850802621'
+  alias: Invia notifica se sensore allagamento lavanderia si attiva
+  description: ''
+  triggers:
+  - type: turned_on
+    device_id: bd3d0aa5bd6bc635ab08a85ada2c964d
+    entity_id: d280b25cb08c33031b647b43b9be29e4
+    domain: switch
+    trigger: device
+  conditions: []
+  actions:
+  - action: notify.mobile_app_iphone_di_andrea
+    metadata: {}
+    data:
+      message: "Possibile allagamento in lavanderia! Controllare al più presto! \U0001F6A8"
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  - action: notify.telegram_home
+    metadata: {}
+    data:
+      data:
+        action: notify.telegram_home
+      message: "Possibile allagamento in lavanderia! Controllare al più presto! \U0001F6A8"
+  mode: single
+- id: '1760201522852'
+  alias: L'etichetta Tag 2a62e2f0-be45-409e-bf88-02bed6919d9d è scansionata
+  description: ''
+  triggers:
+  - trigger: tag
+    tag_id: 2a62e2f0-be45-409e-bf88-02bed6919d9d
+  - trigger: event
+    event_type: nfc_sala_01
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      device_id: 38cfc963721e2e20dcd70bb580b1f1d1
+  mode: single
+- id: '1760383864033'
+  alias: Invia notifica se sensore allagamento cucina si attiva
+  description: ''
+  triggers:
+  - type: moist
+    device_id: 00826ad02bc2656fabcd9b15aa2f2bb1
+    entity_id: 1d99147a6754e36c218a76dcd7e35fc8
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - action: notify.mobile_app_iphone_di_andrea
+    metadata: {}
+    data:
+      message: "Possibile allagamento in cucina! Controllare al più presto! \U0001F6A8"
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  - action: notify.telegram_home
+    metadata: {}
+    data:
+      data:
+        action: notify.telegram_home
+      message: "Possibile allagamento in cucina! Controllare al più presto! \U0001F6A8"
+  mode: single
+- id: '1760961627883'
+  alias: Attiva sorveglianza quando famiglia è fuori casa
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - group.family
+    from: home
+    to: not_home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - action: telegram_bot.send_message
+    metadata: {}
+    data:
+      config_entry_id: 01K0Z0WP75BTYWCM596FYMGB7F
+      message: "Sorveglianza attivata \U0001F46E‍♂️"
+  - action: input_boolean.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - input_boolean.sorveglianza
+  mode: single
+- id: '1760981206070'
+  alias: TEST | Invia notifica quando torniamo a casa
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - group.family
+    from: not_home
+    to: home
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - action: telegram_bot.send_message
+    metadata: {}
+    data:
+      config_entry_id: 01K0Z0WP75BTYWCM596FYMGB7F
+      message: "Siamo tornati a casa \U0001F3E1"
+  mode: single
+- id: '1761025277304'
+  alias: Attiva rilevamento telecamere quando si attiva la sorveglianza
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.sorveglianza
+    to: 'on'
+    from: 'off'
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: a647ad497b00e65a01f6e756122f5fe5
+    entity_id: 40e6a305f39b5d99cb17be8a30003a4e
+    domain: switch
+  - type: turn_on
+    device_id: 347d265a98cff057015c0e37949d1a27
+    entity_id: 5c8d44ca63d450b01f18481ed9c614d9
+    domain: switch
+  mode: single
+- id: '1761057267827'
+  alias: Disattiva rilevamento telecamere quando si disattiva la sorveglianza
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.sorveglianza
+    from: 'on'
+    to: 'off'
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: a647ad497b00e65a01f6e756122f5fe5
+    entity_id: 40e6a305f39b5d99cb17be8a30003a4e
+    domain: switch
+  - type: turn_off
+    device_id: 347d265a98cff057015c0e37949d1a27
+    entity_id: 5c8d44ca63d450b01f18481ed9c614d9
+    domain: switch
+  mode: single
+- id: '1761057649889'
+  alias: Disattiva sorveglianza quando qualcuno è in casa
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - group.family
+    from: not_home
+    to: home
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  conditions: []
+  actions:
+  - action: telegram_bot.send_message
+    metadata: {}
+    data:
+      config_entry_id: 01K0Z0WP75BTYWCM596FYMGB7F
+      message: "Qualcuno è tornato a casa, sorveglianza spenta ⛓️‍\U0001F4A5"
+  - action: input_boolean.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.sorveglianza
   mode: single
