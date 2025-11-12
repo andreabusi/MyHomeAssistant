@@ -1,32 +1,27 @@
 # Custom Components
 
-These are the custom components actually installed on HA:
+These are the custom components actually installed on HA.
 
-## Third party components
+## HACS
 
 ### `alexa_media`
 
 Control Amazon Alexa devices in HomeAssistant using the unofficial Alexa API.
 
 * [GitHub repo](https://github.com/custom-components/alexa_media_player)
-* Installed version: 5.7.7
-* Updated on: 17/09/2025
 
 ### `SonoffLAN`
 
 Home Assistant custom component for control Sonoff devices with eWeLink (original) firmware over LAN and/or Cloud.
 
 * [GitHub repo](https://github.com/AlexxIT/SonoffLAN)
-* Installed version: 3.9.3
-* Updated on: 17/09/2025
 
 ### `Dreame vacuum`
 
 Complete app replacement with Home Assistant for Dreame robot vacuums.
 
 * [GitHub repo](https://github.com/Tasshack/dreame-vacuum)
-* Installed version: 2.0.0b20
-* Updated on: 17/09/2025
+* Version: 2.0.0b20
 
 ## Self made
 
