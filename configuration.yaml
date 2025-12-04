@@ -28,6 +28,9 @@ alexa:
         name: Laboratorio
         description: Lampada laboratorio
 
+# IFTTT
+ifttt:
+  key: c3plX61dRkjsx3TDieSg4l
 
 automation: !include automations.yaml
 group: !include groups.yaml
