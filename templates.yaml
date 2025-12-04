@@ -1,0 +1,12 @@
+- binary_sensor:
+  - delay_off: 0:05:00
+    default_entity_id: binary_sensor.dryer_machine_status
+    state: '{{ states("sensor.gosund_presa01_energy_power")|float(default=0) > 6.1 }}'
+    name: dryer_machine_status
+    unique_id: 95bfeb31-1e7d-442a-853e-0e540142e798
+- binary_sensor:
+  - delay_off: 0:05:00
+    default_entity_id: binary_sensor.washing_machine_status
+    state: '{{ states("sensor.gosund_presa02_energy_power")|float(default=0) > 3.0 }}'
+    name: washing_machine_status
+    unique_id: 3fd5a6c4-a2c9-4ca0-aa7c-fcf782c42713
