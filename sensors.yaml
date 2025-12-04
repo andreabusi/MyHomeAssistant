@@ -13,9 +13,3 @@
       value_template: >-
         {{ state_attr("sensor.home_recycling", "pickup_date") }}
 
-- platform: template
-  sensors:
-    mi_b_582d343415fe:
-      unit_of_measurement: "%"
-      value_template: "{{ state_attr('sensor.mi_h_582d343415fe', 'battery_level') }}"
-      device_class: battery
