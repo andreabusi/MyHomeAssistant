@@ -1,8 +1,9 @@
 lights_external:
   name: Luci esterne
   entities:
-    - light.garden
-    - switch.sonoff_10004cfa12
+    - input_boolean.luce_giardino
+    - input_boolean.luce_esterno_ingresso
+    - input_boolean.luce_esterno_taverna
 
 lights_basement:
   name: Luci taverna
