@@ -1,36 +1,131 @@
-# Alexa, announce a generic messag on media players
-alexa_announce:
-  alias: "Annuncia un messaggio sugli speaker Alexa"
+routine_buonanotte:
   sequence:
-    - alias: "Controlla modalità non disturbare"
-      condition: state
-      entity_id: input_boolean.do_not_disturb
-      state: 'off'
-    - service: notify.alexa_media
-      data_template:
-        message: "{{ message }}"
+  - type: turn_off
+    device_id: 38cfc963721e2e20dcd70bb580b1f1d1
+    entity_id: 9170b357c2b88bf596a0422c7b39e2e3
+    domain: light
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id:
+      - light.basement_office
+      - light.basement_kitchen
+    data: {}
+  - action: switch.turn_off
+    metadata: {}
+    target:
+      entity_id: switch.sonoff_10001f9bcf
+    data: {}
+  alias: Routine Buonanotte
+  description: ''
+  icon: mdi:weather-night
+announce_on_alexa_speaker:
+  sequence:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_boolean.do_not_disturb
+        state:
+        - 'on'
+      - condition: and
+        conditions:
+        - condition: template
+          value_template: '{{ not (is_critical | default(false)) }}'
+      sequence:
+      - action: notify.pushover
+        metadata: {}
         data:
-          type: announce
-          method: spoken
-        target: 
-          - media_player.echo_soggiorno
-          - media_player.echo_dot_taverna
-
-play_spotify_playlist:
+          message: "\U0001F515 {{ message }}"
+          title: Notifica di Alexa
+    - conditions:
+      - condition: template
+        value_template: '{{ sound_name is defined and sound_name is not none and sound_name
+          | length > 0 }}'
+      sequence:
+      - action: media_player.play_media
+        data:
+          media:
+            media_content_id: chiedi a Mia Lista riproduci {{ sound_name }}
+            media_content_type: custom
+            metadata: {}
+        target:
+          entity_id: group.media_players
+    - conditions: []
+      sequence:
+      - action: notify.alexa_media
+        metadata: {}
+        data:
+          target: media_player.echo_soggiorno
+          data:
+            type: announce
+          message: '{{ message }}'
+    enabled: true
+  fields:
+    message:
+      selector:
+        text:
+      name: Messaggio
+      description: Messaggio da annunciare sugli speaker
+      required: true
+    sound_name:
+      selector:
+        text:
+      name: Suono
+      description: Suono da riprodurre sugli speaker
+    is_critical:
+      selector:
+        boolean:
+      name: Critico
+      description: Permette di bypassare la modalità non disturbare
+  alias: Annuncia su speaker Alexa
+  description: ''
+manage_gewiss_via_ifttt:
   sequence:
-  - service: media_player.select_source
+  - if:
+    - condition: template
+      value_template: '{{ is_on }}'
+    then:
+    - action: input_boolean.turn_on
+      metadata: {}
+      target:
+        entity_id: '{{ entita_stato_luce }}'
+      data: {}
+    else:
+    - action: input_boolean.turn_off
+      metadata: {}
+      target:
+        entity_id: '{{ entita_stato_luce }}'
+      data: {}
+  - action: ifttt.trigger
+    metadata: {}
     data:
-      source: Echo Dot Taverna
-    target:
-      entity_id: media_player.spotify_andrea_busi
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 5
-      milliseconds: 0
-  - service: media_player.play_media
-    target:
-      entity_id: media_player.spotify_andrea_busi
-    data:
-      media_content_id: "https://open.spotify.com/playlist/5xddIVAtLrZKtt4YGLM1SQ?si=YcvRqaKNTxOi043Qn4LYkg"
-      media_content_type: playlist
+      event: '{{ ifttt_event_name }}'
+  fields:
+    entita_stato_luce:
+      selector:
+        entity:
+          multiple: false
+          include_entities:
+          - input_boolean.luce_cucina_principale
+          - input_boolean.luce_cucina_centrale
+          - input_boolean.luce_sala
+          - input_boolean.luce_giardino
+          - input_boolean.luce_esterno_ingresso
+          - input_boolean.luce_esterno_taverna
+          - input_boolean.luce_scale
+      required: true
+      name: Entità stato luce
+      description: Entità con lo stato della luce Gewiss
+    ifttt_event_name:
+      selector:
+        text:
+      description: Nome dell'evento per il webhook di IFTTT
+      name: Nome Evento IFTTT
+      required: true
+    is_on:
+      selector:
+        boolean:
+      name: Accendi luce
+      required: true
+  alias: Accendi/spegni luce Gewiss tramite IFTTT
+  description: ''

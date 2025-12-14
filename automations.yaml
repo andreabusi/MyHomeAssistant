@@ -43,25 +43,33 @@
   - service: homeassistant.turn_off
     entity_id: group.lights_external
 - id: washing_machine_finished
-  alias: Alexa comunica che l'asciugatrice ha terminato
-  trigger:
-    platform: state
-    entity_id: binary_sensor.washing_machine
-    to: 'off'
-  action:
-  - service: script.alexa_announce
-    data:
-      message: La lavatrice ha finito.
-- id: dryer_machine_finished
   alias: Alexa comunica che la lavatrice ha terminato
-  trigger:
-    platform: state
-    entity_id: binary_sensor.dryer_machine
-    to: 'off'
-  action:
-  - service: script.alexa_announce
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.washing_machine_status
+    to:
+    - 'off'
+    trigger: state
+  actions:
+  - action: script.announce_on_alexa_speaker
+    metadata: {}
     data:
-      message: L'asciugatrice ha finito.
+      message: La lavatrice ha finito
+- id: dryer_machine_finished
+  alias: Alexa comunica che l'asciugatrice ha terminato
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.dryer_machine_status
+    to:
+    - 'off'
+    trigger: state
+  actions:
+  - action: script.announce_on_alexa_speaker
+    metadata: {}
+    data:
+      message: L'asciugatrice ha finito
 - id: do_not_disturb_off
   alias: Disattiva la modalità non disturbare
   trigger:
@@ -99,6 +107,7 @@
   - service: magpi_downloader.downloader
 - id: home_recycling_notify
   alias: Raccolta differenziata, notifica serale
+  description: ''
   triggers:
   - at: '20:00'
     trigger: time
@@ -110,18 +119,16 @@
   - action: notify.send_message
     metadata: {}
     data:
-      message: "La spazzatura in ritiro domani è (2):{{'\\n'}} \n{%- for collection
-        in state_attr(\"sensor.home_recycling\", \"collections_icons\") -%}\n  {{-
-        collection }}{{'\\n'}}\n{%- endfor %}"
+      message: "La spazzatura in ritiro domani è:{{'\\n'}} \n{%- for collection in
+        state_attr(\"sensor.home_recycling\", \"collections_icons\") -%}\n  {{- collection
+        }}{{'\\n'}}\n{%- endfor %}"
     target:
       entity_id: notify.telegram_bot_458417471_220682073
-  - data_template:
-      message: 'La spazzatura in ritiro domani è {{ state_attr("sensor.home_recycling",
-        "collections")|join(" e ") }}
-
-        '
-    action: script.alexa_announce
-    enabled: true
+  - action: script.announce_on_alexa_speaker
+    metadata: {}
+    data:
+      message: La spazzatura in ritiro domani è {{ state_attr("sensor.home_recycling",     "collections")|join("
+        e ") }}
   initial_state: true
 - id: home_recycling_set_states
   alias: Raccolta differenziata, popolamento stati
@@ -171,53 +178,24 @@
         - light.basement_kitchen
       action: light.turn_on
   mode: single
-- id: '1708633047656'
-  alias: Accendi taverna automaticamente
-  description: ''
-  use_blueprint:
-    path: homeassistant/motion_light.yaml
-    input:
-      motion_entity: binary_sensor.0x84fd27fffea4c4d6_occupancy
-      light_target:
-        device_id: b84ccae1e95ab6a73e02cf1a72687d38
-- id: '1709057496134'
-  alias: Accendi luce taverna con sensore di movimento
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.0x84fd27fffea4c4d6_occupancy
-    from: 'off'
-    to: 'on'
-  condition:
-  - condition: time
-    after: 06:00:00
-    before: '23:00:00'
-  action:
-  - service: light.turn_on
-    metadata: {}
-    data: {}
-    target:
-      device_id: b84ccae1e95ab6a73e02cf1a72687d38
-  mode: single
 - id: '1711629795805'
   alias: Webhook - Commuta luci taverna
   description: ''
-  trigger:
-  - platform: webhook
-    allowed_methods:
+  triggers:
+  - allowed_methods:
     - POST
     - PUT
     local_only: true
     webhook_id: -f2zbAQ98Ppm1v2ouhxLmWHOM
-  condition: []
-  action:
-  - service: light.toggle
-    target:
+    trigger: webhook
+  conditions: []
+  actions:
+  - target:
       device_id:
       - b84ccae1e95ab6a73e02cf1a72687d38
-      - 534e95a35133cad223a5e36741f238b1
+      - 01ac9c45cde95c0a84b096976f8aec91
     data: {}
+    action: light.toggle
   mode: single
 - id: '1755088566747'
   alias: Riavvia monitor Xiaomi con bottone Ikea
@@ -277,22 +255,6 @@
         action: notify.telegram_home
       message: "Possibile allagamento in lavanderia! Controllare al più presto! \U0001F6A8"
   mode: single
-- id: '1760201522852'
-  alias: L'etichetta Tag 2a62e2f0-be45-409e-bf88-02bed6919d9d è scansionata
-  description: ''
-  triggers:
-  - trigger: tag
-    tag_id: 2a62e2f0-be45-409e-bf88-02bed6919d9d
-  - trigger: event
-    event_type: nfc_sala_01
-  conditions: []
-  actions:
-  - action: light.turn_on
-    metadata: {}
-    data: {}
-    target:
-      device_id: 38cfc963721e2e20dcd70bb580b1f1d1
-  mode: single
 - id: '1760383864033'
   alias: Invia notifica se sensore allagamento cucina si attiva
   description: ''
@@ -321,117 +283,209 @@
         action: notify.telegram_home
       message: "Possibile allagamento in cucina! Controllare al più presto! \U0001F6A8"
   mode: single
-- id: '1760961627883'
-  alias: Attiva sorveglianza quando famiglia è fuori casa
+- id: '1762786134926'
+  alias: Gestione azioni in base a stato modalità sorveglianza
+  description: Gestisce le azioni da eseguire quando la modalità sorveglianza viene
+    attivata o disattivata
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.sorveglianza
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.sorveglianza
+      state:
+      - 'on'
+    then:
+    - type: turn_on
+      device_id: a647ad497b00e65a01f6e756122f5fe5
+      entity_id: 40e6a305f39b5d99cb17be8a30003a4e
+      domain: switch
+    - type: turn_on
+      device_id: 347d265a98cff057015c0e37949d1a27
+      entity_id: 5c8d44ca63d450b01f18481ed9c614d9
+      domain: switch
+    - action: notify.send_message
+      metadata: {}
+      data:
+        message: "Sorveglianza attivata \U0001F46E‍♂️"
+      target:
+        entity_id: notify.telegram_bot_458417471_220682073
+    else:
+    - type: turn_off
+      device_id: a647ad497b00e65a01f6e756122f5fe5
+      entity_id: 40e6a305f39b5d99cb17be8a30003a4e
+      domain: switch
+    - type: turn_off
+      device_id: 347d265a98cff057015c0e37949d1a27
+      entity_id: 5c8d44ca63d450b01f18481ed9c614d9
+      domain: switch
+    - action: notify.send_message
+      metadata: {}
+      data:
+        message: "Qualcuno è tornato a casa, sorveglianza spenta ⛓️‍\U0001F4A5"
+      target:
+        entity_id: notify.telegram_bot_458417471_220682073
+  mode: single
+- id: '1762786839718'
+  alias: Attiva/disattiva sorveglianza in base a presenza Famiglia
   description: ''
   triggers:
   - trigger: state
     entity_id:
     - group.family
-    from: home
-    to: not_home
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
   conditions: []
   actions:
-  - action: telegram_bot.send_message
-    metadata: {}
-    data:
-      config_entry_id: 01K0Z0WP75BTYWCM596FYMGB7F
-      message: "Sorveglianza attivata \U0001F46E‍♂️"
-  - action: input_boolean.turn_on
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: group.family
+        state:
+        - home
+      sequence:
+      - action: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.sorveglianza
+    - conditions:
+      - condition: state
+        entity_id: group.family
+        state:
+        - not_home
+      sequence:
+      - action: input_boolean.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.sorveglianza
+  mode: single
+- id: '1764340481059'
+  alias: '[DEV] Luce al rientro a casa'
+  description: ''
+  triggers:
+  - type: occupied
+    device_id: 24b6e150640624e1a17db8ee394431e2
+    entity_id: c674340b319fd44a5d56768736c51aeb
+    domain: binary_sensor
+    trigger: device
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.famiglia_tornata_a_casa_da_meno_di_5_minuti
+    state:
+    - 'on'
+  actions:
+  - action: light.turn_on
     metadata: {}
     data: {}
     target:
-      entity_id:
-      - input_boolean.sorveglianza
-  mode: single
-- id: '1760981206070'
-  alias: TEST | Invia notifica quando torniamo a casa
-  description: ''
-  triggers:
-  - trigger: state
-    entity_id:
-    - group.family
-    from: not_home
-    to: home
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
-  conditions: []
-  actions:
-  - action: telegram_bot.send_message
-    metadata: {}
-    data:
-      config_entry_id: 01K0Z0WP75BTYWCM596FYMGB7F
-      message: "Siamo tornati a casa \U0001F3E1"
-  mode: single
-- id: '1761025277304'
-  alias: Attiva rilevamento telecamere quando si attiva la sorveglianza
-  description: ''
-  triggers:
-  - trigger: state
-    entity_id:
-    - input_boolean.sorveglianza
-    to: 'on'
-    from: 'off'
-  conditions: []
-  actions:
-  - type: turn_on
-    device_id: a647ad497b00e65a01f6e756122f5fe5
-    entity_id: 40e6a305f39b5d99cb17be8a30003a4e
-    domain: switch
-  - type: turn_on
-    device_id: 347d265a98cff057015c0e37949d1a27
-    entity_id: 5c8d44ca63d450b01f18481ed9c614d9
-    domain: switch
-  mode: single
-- id: '1761057267827'
-  alias: Disattiva rilevamento telecamere quando si disattiva la sorveglianza
-  description: ''
-  triggers:
-  - trigger: state
-    entity_id:
-    - input_boolean.sorveglianza
-    from: 'on'
-    to: 'off'
-  conditions: []
-  actions:
-  - type: turn_off
-    device_id: a647ad497b00e65a01f6e756122f5fe5
-    entity_id: 40e6a305f39b5d99cb17be8a30003a4e
-    domain: switch
-  - type: turn_off
-    device_id: 347d265a98cff057015c0e37949d1a27
-    entity_id: 5c8d44ca63d450b01f18481ed9c614d9
-    domain: switch
-  mode: single
-- id: '1761057649889'
-  alias: Disattiva sorveglianza quando qualcuno è in casa
-  description: ''
-  triggers:
-  - trigger: state
-    entity_id:
-    - group.family
-    from: not_home
-    to: home
-    for:
+      device_id: 82380364bf3b9e7485f2cc9a0dbede4e
+  - wait_for_trigger:
+    - type: not_occupied
+      device_id: 24b6e150640624e1a17db8ee394431e2
+      entity_id: c674340b319fd44a5d56768736c51aeb
+      domain: binary_sensor
+      trigger: device
+    timeout:
       hours: 0
       minutes: 2
       seconds: 0
-  conditions: []
-  actions:
-  - action: telegram_bot.send_message
-    metadata: {}
-    data:
-      config_entry_id: 01K0Z0WP75BTYWCM596FYMGB7F
-      message: "Qualcuno è tornato a casa, sorveglianza spenta ⛓️‍\U0001F4A5"
-  - action: input_boolean.turn_off
+      milliseconds: 0
+  - action: light.turn_off
     metadata: {}
     data: {}
     target:
-      entity_id: input_boolean.sorveglianza
+      device_id: 82380364bf3b9e7485f2cc9a0dbede4e
+  mode: single
+- id: '1764770292151'
+  alias: Scene Switch - 1 accendi albero
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: 58492f2ed7cd23aa0e97ef2227171152
+    type: action
+    subtype: 1_single
+    trigger: device
+  conditions: []
+  actions:
+  - action: switch.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_10001f9bcf
+  mode: single
+- id: '1764778073979'
+  alias: Scene Switch - 2 auguri buon natale
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: 58492f2ed7cd23aa0e97ef2227171152
+    type: action
+    subtype: 2_single
+    trigger: device
+  conditions: []
+  actions:
+  - action: script.announce_on_alexa_speaker
+    metadata: {}
+    data:
+      sound_name: auguri_buon_natale
+  mode: single
+- id: '1764868228630'
+  alias: Scene switch - 3 Max Verstappen
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: 58492f2ed7cd23aa0e97ef2227171152
+    type: action
+    subtype: 3_single
+    trigger: device
+  conditions: []
+  actions:
+  - action: script.announce_on_alexa_speaker
+    metadata: {}
+    data:
+      sound_name: max-verstappen-tututututu
+  mode: single
+- id: '1764880120243'
+  alias: IFTTT -> Aggiorna stato luci Gewiss
+  description: ''
+  triggers:
+  - trigger: event
+    event_type: ifttt_webhook_received
+    event_data:
+      action: gewiss_event
+  conditions: []
+  actions:
+  - action: script.turn_on
+    metadata: {}
+    target:
+      entity_id: script.spegni_automazioni_da_hass_a_ifttt_gewiss_smart_home
+    data: {}
+    enabled: false
+  - if:
+    - condition: template
+      value_template: '{{ trigger.event.data.value == "True" }}'
+    then:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: '{{ trigger.event.data.entity_id }}'
+      data: {}
+    else:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: '{{ trigger.event.data.entity_id }}'
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+    enabled: false
+  - action: script.turn_on
+    metadata: {}
+    target:
+      entity_id: script.attiva_automazioni_da_hass_a_ifttt_gewiss_smart_home
+    data: {}
+    enabled: false
   mode: single
