@@ -1,16 +1,3 @@
-lights_external:
-  name: Luci esterne
-  entities:
-    - input_boolean.luce_giardino
-    - input_boolean.luce_esterno_ingresso
-    - input_boolean.luce_esterno_taverna
-
-lights_basement:
-  name: Luci taverna
-  entities:
-    - light.basement_office
-    - light.basement_kitchen
-
 media_players:
   name: Media
   icon: mdi:play-network
