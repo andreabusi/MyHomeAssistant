@@ -28,6 +28,18 @@ alexa:
         name: Laboratorio
         description: Lampada laboratorio
 
+# Enable HomeKit integration
+homekit:
+  filter:
+    include_domains:
+      - light
+    exclude_entities:
+      - light.background_color
+      - light.text_color
+      - light.luce_scale
+      - light.all_externals
+      - light.all_basement
+
 # IFTTT
 ifttt:
   key: c3plX61dRkjsx3TDieSg4l
