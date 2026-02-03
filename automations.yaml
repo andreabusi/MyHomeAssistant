@@ -27,21 +27,25 @@
         Assistant!
 - id: external_lights_turnon
   alias: Accendi luci esterne dopo il tramonto
-  trigger:
-  - platform: sun
-    event: sunset
+  triggers:
+  - event: sunset
     offset: 00:00:00
-  action:
-  - service: homeassistant.turn_on
-    entity_id: group.lights_external
+    trigger: sun
+  actions:
+  - action: light.turn_on
+    target:
+      entity_id: light.all_externals
+    data: {}
 - id: external_lights_turnoff
   alias: Spegni luci esterne a mezzanotte
-  trigger:
-  - platform: time
-    at: 00:00:00
-  action:
-  - service: homeassistant.turn_off
-    entity_id: group.lights_external
+  triggers:
+  - at: 01:00:00
+    trigger: time
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id: light.all_externals
+    data: {}
 - id: washing_machine_finished
   alias: Alexa comunica che la lavatrice ha terminato
   description: ''
@@ -356,19 +360,39 @@
         state:
         - not_home
       sequence:
-      - action: input_boolean.turn_on
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_boolean.sorveglianza
+      - if:
+        - condition: state
+          entity_id: binary_sensor.dreame_l10s_working
+          state:
+          - 'on'
+        then:
+        - wait_for_trigger:
+          - trigger: state
+            entity_id:
+            - binary_sensor.dreame_l10s_working
+            to:
+            - 'off'
+            - unavailable
+            - unknown
+        - action: input_boolean.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: input_boolean.sorveglianza
+        else:
+        - action: input_boolean.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: input_boolean.sorveglianza
   mode: single
 - id: '1764340481059'
   alias: '[DEV] Luce al rientro a casa'
   description: ''
   triggers:
   - type: occupied
-    device_id: 24b6e150640624e1a17db8ee394431e2
-    entity_id: c674340b319fd44a5d56768736c51aeb
+    device_id: 51fdf9d7f75309911e49e8195ef3fde7
+    entity_id: 90c76d2d86a6c174d35859ae83a900bb
     domain: binary_sensor
     trigger: device
   conditions:
@@ -384,8 +408,8 @@
       device_id: 82380364bf3b9e7485f2cc9a0dbede4e
   - wait_for_trigger:
     - type: not_occupied
-      device_id: 24b6e150640624e1a17db8ee394431e2
-      entity_id: c674340b319fd44a5d56768736c51aeb
+      device_id: 51fdf9d7f75309911e49e8195ef3fde7
+      entity_id: 90c76d2d86a6c174d35859ae83a900bb
       domain: binary_sensor
       trigger: device
     timeout:
@@ -488,4 +512,131 @@
       entity_id: script.attiva_automazioni_da_hass_a_ifttt_gewiss_smart_home
     data: {}
     enabled: false
+  mode: single
+- id: '1767001743267'
+  alias: Disattiva sorveglianza se robottino sta pulendo
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.dreame_l10s_working
+    to:
+    - 'on'
+  conditions:
+  - condition: state
+    entity_id: input_boolean.sorveglianza
+    state:
+    - 'on'
+    enabled: true
+  actions:
+  - action: input_boolean.turn_off
+    metadata: {}
+    target:
+      entity_id: input_boolean.sorveglianza
+    data: {}
+  - wait_for_trigger:
+    - trigger: state
+      entity_id:
+      - binary_sensor.dreame_l10s_working
+      to:
+      - 'off'
+  - action: automation.trigger
+    metadata: {}
+    target:
+      entity_id: automation.attiva_disattiva_sorveglianza_in_base_a_presenza_famiglia
+    data:
+      skip_condition: true
+  mode: single
+- id: '1767113588965'
+  alias: IFTTT -> Scenario Gewiss eseguito
+  description: ''
+  triggers:
+  - trigger: event
+    event_type: ifttt_webhook_received
+    event_data:
+      action: gewiss_scenario
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == "buonanotte" }}'
+      sequence:
+      - action: light.toggle
+        metadata: {}
+        target:
+          entity_id: light.basement_kitchen
+        data: {}
+        enabled: false
+      - action: script.routine_buonanotte
+        metadata: {}
+        data: {}
+  mode: single
+- id: '1768082766773'
+  alias: Routine mattutina
+  description: ''
+  triggers:
+  - type: opened
+    device_id: b53d62ce6d33dbaebadc5a7938462820
+    entity_id: ac422f948e349e4c7f25d46698d3a12e
+    domain: binary_sensor
+    trigger: device
+  conditions:
+  - condition: time
+    after: 06:00:00
+    before: '10:00:00'
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+  - condition: state
+    entity_id: input_boolean.scenario_mattutino_eseguito
+    state:
+    - 'off'
+  actions:
+  - action: input_boolean.turn_on
+    metadata: {}
+    target:
+      entity_id: input_boolean.scenario_mattutino_eseguito
+    data: {}
+  - parallel:
+    - sequence:
+      - action: light.turn_on
+        metadata: {}
+        target:
+          entity_id: light.lampada_sala
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 2
+          seconds: 0
+          milliseconds: 0
+      - action: light.turn_off
+        metadata: {}
+        target:
+          entity_id: light.lampada_sala
+        data: {}
+    - action: light.turn_on
+      metadata: {}
+      target:
+        entity_id: light.luce_cucina_centrale
+      data: {}
+  mode: single
+- id: '1768121296235'
+  alias: Routine mattutina - reset
+  description: ''
+  triggers:
+  - trigger: time
+    at: 01:00:00
+  conditions: []
+  actions:
+  - action: input_boolean.turn_off
+    metadata: {}
+    target:
+      entity_id: input_boolean.scenario_mattutino_eseguito
+    data: {}
   mode: single

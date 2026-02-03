@@ -4,6 +4,7 @@ routine_buonanotte:
     device_id: 38cfc963721e2e20dcd70bb580b1f1d1
     entity_id: 9170b357c2b88bf596a0422c7b39e2e3
     domain: light
+    enabled: false
   - action: light.turn_off
     metadata: {}
     target:
@@ -11,10 +12,31 @@ routine_buonanotte:
       - light.basement_office
       - light.basement_kitchen
     data: {}
+    enabled: false
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id: light.all_basement
+    data: {}
   - action: switch.turn_off
     metadata: {}
     target:
       entity_id: switch.sonoff_10001f9bcf
+    data: {}
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.lampada_sala
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id: light.lampada_sala
     data: {}
   alias: Routine Buonanotte
   description: ''
@@ -90,12 +112,14 @@ manage_gewiss_via_ifttt:
       target:
         entity_id: '{{ entita_stato_luce }}'
       data: {}
+      enabled: false
     else:
     - action: input_boolean.turn_off
       metadata: {}
       target:
         entity_id: '{{ entita_stato_luce }}'
       data: {}
+      enabled: false
   - action: ifttt.trigger
     metadata: {}
     data:
@@ -128,4 +152,23 @@ manage_gewiss_via_ifttt:
       name: Accendi luce
       required: true
   alias: Accendi/spegni luce Gewiss tramite IFTTT
+  description: ''
+  mode: parallel
+  max: 10
+routine_serale:
+  sequence:
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id:
+      - light.luce_cucina_centrale
+      - light.luce_cucina_principale
+      - light.luce_sala
+    data: {}
+  - action: scene.turn_on
+    metadata: {}
+    target:
+      entity_id: scene.accendi_lampada
+    data: {}
+  alias: Routine serale
   description: ''
