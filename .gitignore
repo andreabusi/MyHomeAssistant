@@ -7,8 +7,7 @@
 !www
 !www/*
 !www/icons/*
-!alfredpi_backup
-!alfredpi_backup/*
+!pyscript
 !*.py
 !*.json
 !*.png
