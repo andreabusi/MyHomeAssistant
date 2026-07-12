@@ -201,36 +201,6 @@
     data: {}
     action: light.toggle
   mode: single
-- id: '1755088566747'
-  alias: Riavvia monitor Xiaomi con bottone Ikea
-  description: ''
-  triggers:
-  - domain: mqtt
-    device_id: a6b85b9b53854135d9ea0b5edcf85121
-    type: action
-    subtype: 'on'
-    trigger: device
-  conditions: []
-  actions:
-  - action: switch.turn_off
-    metadata: {}
-    data: {}
-    target:
-      entity_id: switch.gosund_presa03
-    enabled: true
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 15
-      milliseconds: 0
-    enabled: true
-  - action: switch.turn_on
-    metadata: {}
-    data: {}
-    target:
-      entity_id: switch.gosund_presa03
-    enabled: true
-  mode: single
 - id: '1755850802621'
   alias: Invia notifica se sensore allagamento lavanderia si attiva
   description: ''
@@ -386,45 +356,8 @@
           target:
             entity_id: input_boolean.sorveglianza
   mode: single
-- id: '1764340481059'
-  alias: '[DEV] Luce al rientro a casa'
-  description: ''
-  triggers:
-  - type: occupied
-    device_id: 51fdf9d7f75309911e49e8195ef3fde7
-    entity_id: 90c76d2d86a6c174d35859ae83a900bb
-    domain: binary_sensor
-    trigger: device
-  conditions:
-  - condition: state
-    entity_id: binary_sensor.famiglia_tornata_a_casa_da_meno_di_5_minuti
-    state:
-    - 'on'
-  actions:
-  - action: light.turn_on
-    metadata: {}
-    data: {}
-    target:
-      device_id: 82380364bf3b9e7485f2cc9a0dbede4e
-  - wait_for_trigger:
-    - type: not_occupied
-      device_id: 51fdf9d7f75309911e49e8195ef3fde7
-      entity_id: 90c76d2d86a6c174d35859ae83a900bb
-      domain: binary_sensor
-      trigger: device
-    timeout:
-      hours: 0
-      minutes: 2
-      seconds: 0
-      milliseconds: 0
-  - action: light.turn_off
-    metadata: {}
-    data: {}
-    target:
-      device_id: 82380364bf3b9e7485f2cc9a0dbede4e
-  mode: single
 - id: '1764770292151'
-  alias: Scene Switch - 1 accendi albero
+  alias: 'Scene Switch - #1 relax serale'
   description: ''
   triggers:
   - domain: mqtt
@@ -434,14 +367,14 @@
     trigger: device
   conditions: []
   actions:
-  - action: switch.toggle
+  - action: script.turn_on
     metadata: {}
-    data: {}
     target:
-      entity_id: switch.sonoff_10001f9bcf
+      entity_id: script.routine_serale
+    data: {}
   mode: single
 - id: '1764778073979'
-  alias: Scene Switch - 2 auguri buon natale
+  alias: 'Scene Switch - #2 spegni luce sala'
   description: ''
   triggers:
   - domain: mqtt
@@ -451,10 +384,13 @@
     trigger: device
   conditions: []
   actions:
-  - action: script.announce_on_alexa_speaker
+  - action: light.turn_off
     metadata: {}
-    data:
-      sound_name: auguri_buon_natale
+    target:
+      entity_id:
+      - light.lampada_sala_bianco
+      - light.lampada_sala_rgb
+    data: {}
   mode: single
 - id: '1764868228630'
   alias: Scene switch - 3 Max Verstappen
@@ -482,12 +418,6 @@
       action: gewiss_event
   conditions: []
   actions:
-  - action: script.turn_on
-    metadata: {}
-    target:
-      entity_id: script.spegni_automazioni_da_hass_a_ifttt_gewiss_smart_home
-    data: {}
-    enabled: false
   - if:
     - condition: template
       value_template: '{{ trigger.event.data.value == "True" }}'
@@ -500,18 +430,7 @@
     - action: input_boolean.turn_off
       target:
         entity_id: '{{ trigger.event.data.entity_id }}'
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 2
-      milliseconds: 0
-    enabled: false
-  - action: script.turn_on
-    metadata: {}
-    target:
-      entity_id: script.attiva_automazioni_da_hass_a_ifttt_gewiss_smart_home
-    data: {}
-    enabled: false
+      data: {}
   mode: single
 - id: '1767001743267'
   alias: Disattiva sorveglianza se robottino sta pulendo
@@ -608,7 +527,8 @@
       - action: light.turn_on
         metadata: {}
         target:
-          entity_id: light.lampada_sala
+          entity_id:
+          - light.lampada_sala_rgb
         data: {}
       - delay:
           hours: 0
@@ -618,7 +538,8 @@
       - action: light.turn_off
         metadata: {}
         target:
-          entity_id: light.lampada_sala
+          entity_id:
+          - light.lampada_sala_rgb
         data: {}
     - action: light.turn_on
       metadata: {}
@@ -639,4 +560,191 @@
     target:
       entity_id: input_boolean.scenario_mattutino_eseguito
     data: {}
+  mode: single
+- id: '1770567849446'
+  alias: Gestione monitor scrivania con bottone Ikea
+  description: ''
+  triggers:
+  - domain: mqtt
+    device_id: 59388ceebde7ef7b3050a85ad1bec5a0
+    type: action
+    subtype: 1_short_release
+    trigger: device
+    id: bottone_1_short
+  - domain: mqtt
+    device_id: 59388ceebde7ef7b3050a85ad1bec5a0
+    type: action
+    subtype: 1_double_press
+    trigger: device
+    id: bottone_1_double
+  - domain: mqtt
+    device_id: 59388ceebde7ef7b3050a85ad1bec5a0
+    type: action
+    subtype: 2_short_release
+    trigger: device
+    id: bottone_2_short
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - bottone_1_short
+      sequence:
+      - action: switch.toggle
+        metadata: {}
+        target:
+          entity_id: switch.gosund_presa03
+        data: {}
+    - conditions:
+      - condition: trigger
+        id:
+        - bottone_1_double
+      sequence:
+      - action: script.riavvia_monitor_xiaomi
+        metadata: {}
+        data: {}
+    - conditions:
+      - condition: trigger
+        id:
+        - bottone_2_short
+      sequence:
+      - action: switch.toggle
+        metadata: {}
+        target:
+          entity_id: switch.gosund_presa04
+        data: {}
+  mode: single
+- id: '1772637095187'
+  alias: Striscia led mobile taverna con bandiera sessione corrente F1
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.f1_track_status
+    to:
+    - YELLOW
+    id: yellow_flag
+  - trigger: state
+    entity_id:
+    - sensor.f1_track_status
+    to:
+    - RED
+    id: red_flag
+  - trigger: state
+    entity_id:
+    - sensor.f1_track_status
+    to:
+    - SC
+    id: safety_car
+  - trigger: state
+    entity_id:
+    - sensor.f1_track_status
+    to:
+    - CLEAR
+    id: track_clear
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - yellow_flag
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        target:
+          entity_id: light.tuya_led_strip_01
+        data:
+          rgb_color:
+          - 255
+          - 205
+          - 55
+          effect: blink
+    - conditions:
+      - condition: trigger
+        id:
+        - red_flag
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        target:
+          entity_id: light.tuya_led_strip_01
+        data:
+          rgb_color:
+          - 255
+          - 56
+          - 56
+          effect: blink
+    - conditions:
+      - condition: trigger
+        id:
+        - safety_car
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        target:
+          entity_id: light.tuya_led_strip_01
+        data:
+          rgb_color:
+          - 247
+          - 133
+          - 2
+          effect: blink
+    - conditions:
+      - condition: trigger
+        id:
+        - track_clear
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        target:
+          entity_id: light.tuya_led_strip_01
+        data: {}
+  mode: single
+- id: '1777373781958'
+  alias: Spegni monitor alle 20
+  description: ''
+  triggers:
+  - trigger: time
+    at: '20:00:00'
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.spegnimento_automatico_monitor
+      state:
+      - 'on'
+    then:
+    - type: turn_off
+      device_id: 53ff0d0db69686db047718c7309b7e56
+      entity_id: a2bc38a8c4607ef027299cc4ce6e620a
+      domain: switch
+    - type: turn_off
+      device_id: f36f83b64ab3fffd8343db6574f0ae0a
+      entity_id: 9ce5b75c69c071e6db2bbdc9578aff17
+      domain: switch
+  mode: single
+- id: '1783859538273'
+  alias: Accendi luce sala quando ritorniamo a casa salendo dalle scale
+  description: Se sono appena rientrato, il movimento sulle scale accende la lampada
+    RGB della sala; si spegne dopo 3 minuti.
+  triggers:
+  - entity_id: binary_sensor.ikea_motion_02_occupancy
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.famiglia_tornata_a_casa_da_meno_di_5_minuti
+    state: 'on'
+  - condition: time
+    after: '20:00:00'
+  actions:
+  - target:
+      entity_id: light.lampada_sala_rgb
+    action: light.turn_on
+  - delay: 00:03:00
+  - target:
+      entity_id: light.lampada_sala_rgb
+    action: light.turn_off
   mode: single

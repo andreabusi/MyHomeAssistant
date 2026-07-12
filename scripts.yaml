@@ -1,18 +1,5 @@
 routine_buonanotte:
   sequence:
-  - type: turn_off
-    device_id: 38cfc963721e2e20dcd70bb580b1f1d1
-    entity_id: 9170b357c2b88bf596a0422c7b39e2e3
-    domain: light
-    enabled: false
-  - action: light.turn_off
-    metadata: {}
-    target:
-      entity_id:
-      - light.basement_office
-      - light.basement_kitchen
-    data: {}
-    enabled: false
   - action: light.turn_off
     metadata: {}
     target:
@@ -26,17 +13,20 @@ routine_buonanotte:
   - action: light.turn_on
     metadata: {}
     target:
-      entity_id: light.lampada_sala
+      entity_id:
+      - light.lampada_sala_rgb
     data: {}
   - delay:
       hours: 0
       minutes: 0
-      seconds: 10
+      seconds: 7
       milliseconds: 0
   - action: light.turn_off
     metadata: {}
     target:
-      entity_id: light.lampada_sala
+      entity_id:
+      - light.lampada_sala_bianco
+      - light.lampada_sala_rgb
     data: {}
   alias: Routine Buonanotte
   description: ''
@@ -77,7 +67,9 @@ announce_on_alexa_speaker:
       - action: notify.alexa_media
         metadata: {}
         data:
-          target: media_player.echo_soggiorno
+          target:
+          - media_player.echo_soggiorno
+          - media_player.echo_dot_taverna
           data:
             type: announce
           message: '{{ message }}'
@@ -165,10 +157,36 @@ routine_serale:
       - light.luce_cucina_principale
       - light.luce_sala
     data: {}
+    enabled: true
   - action: scene.turn_on
     metadata: {}
     target:
       entity_id: scene.accendi_lampada
     data: {}
-  alias: Routine serale
+  - action: media_player.turn_on
+    metadata: {}
+    target:
+      entity_id: media_player.tv_sala
+    data: {}
+    enabled: true
+  alias: Relax serale
+  description: ''
+riavvia_monitor_xiaomi:
+  sequence:
+  - action: switch.turn_off
+    metadata: {}
+    target:
+      entity_id: switch.gosund_presa03
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - action: switch.turn_on
+    metadata: {}
+    target:
+      entity_id: switch.gosund_presa03
+    data: {}
+  alias: Riavvia monitor Xiaomi
   description: ''
