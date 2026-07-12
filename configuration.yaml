@@ -44,6 +44,10 @@ homekit:
 ifttt:
   key: c3plX61dRkjsx3TDieSg4l
 
+# Enable pyscript custom integration
+pyscript:
+  allow_all_imports: true
+
 automation: !include automations.yaml
 group: !include groups.yaml
 notify: !include notifications.yaml

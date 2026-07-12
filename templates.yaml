@@ -10,3 +10,65 @@
     state: '{{ states("sensor.gosund_presa02_energy_power")|float(default=0) > 3.0 }}'
     name: washing_machine_status
     unique_id: 3fd5a6c4-a2c9-4ca0-aa7c-fcf782c42713
+- light:
+  - name: "Lampada sala - RGB"
+    unique_id: xmcosy_ring_rgb
+    state: "{{ is_state('switch.lampada_sala_localtuya_power', 'on') and is_state('pyscript.xmcosy_rgb_on', 'on') }}"
+    level: "{{ (states('pyscript.xmcosy_rgb_bright')|int(0) * 255 / 1000)|round(0)|int }}"
+    hs: "{{ (states('pyscript.xmcosy_hue')|int(0), states('pyscript.xmcosy_sat')|int(0) / 10) }}"
+    turn_on:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: rgb
+          power: true
+    turn_off:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: rgb
+          power: false
+    set_level:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: rgb
+          power: true
+          brightness: "{{ (brightness * 1000 / 255)|round(0)|int }}"
+    set_hs:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: rgb
+          power: true
+          hue: "{{ h|round(0)|int }}"
+          sat: "{{ (s * 10)|round(0)|int }}"
+- light:
+  - name: "Lampada sala - Bianco"
+    unique_id: xmcosy_ring_white
+    state: "{{ is_state('switch.lampada_sala_localtuya_power', 'on') and is_state('pyscript.xmcosy_white_on', 'on') }}"
+    level: "{{ (states('pyscript.xmcosy_white_bright')|int(0) * 255 / 1000)|round(0)|int }}"
+    temperature: >
+      {% set wt = states('pyscript.xmcosy_white_temp')|int(0) %}
+      {% set k = 2700 + wt * 3.7 %}
+      {{ (1000000 / k)|round(0)|int }}
+    min_mireds: 156
+    max_mireds: 370
+    turn_on:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: white
+          power: true
+    turn_off:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: white
+          power: false
+    set_level:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: white
+          power: true
+          brightness: "{{ (brightness * 1000 / 255)|round(0)|int }}"
+    set_temperature:
+      - action: pyscript.xmcosy_set
+        data:
+          ring: white
+          power: true
+          color_temp: "{{ ((color_temp_kelvin - 2700) / 3.7)|round(0)|int }}"
