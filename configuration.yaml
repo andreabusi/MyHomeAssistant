@@ -21,12 +21,16 @@ alexa:
   smart_home:
     filter:
       include_entities:
-        - light.ikea_bulb_02
+        - light.lampada_sala_rgb
+        - light.lampada_sala_bianco
         - script.routine_buonanotte
     entity_config:
-      light.ikea_bulb_02:
-        name: Laboratorio
-        description: Lampada laboratorio
+      light.lampada_sala_rgb:
+        name: Prisma
+        description: Lampada prisma sala
+      light.lampada_sala_bianco:
+        name: Piantana
+        description: Lampada piantana sala
 
 # Enable HomeKit integration
 homekit:
