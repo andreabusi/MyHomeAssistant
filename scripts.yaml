@@ -158,10 +158,10 @@ routine_serale:
       - light.luce_sala
     data: {}
     enabled: true
-  - action: scene.turn_on
+  - action: light.turn_on
     metadata: {}
     target:
-      entity_id: scene.accendi_lampada
+      entity_id: light.lampada_sala_rgb
     data: {}
   - action: media_player.turn_on
     metadata: {}

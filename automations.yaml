@@ -274,12 +274,12 @@
       - 'on'
     then:
     - type: turn_on
-      device_id: a647ad497b00e65a01f6e756122f5fe5
-      entity_id: 40e6a305f39b5d99cb17be8a30003a4e
-      domain: switch
-    - type: turn_on
       device_id: 347d265a98cff057015c0e37949d1a27
       entity_id: 5c8d44ca63d450b01f18481ed9c614d9
+      domain: switch
+    - type: turn_on
+      device_id: a2bf4959008ef09b7ca86ce1f2b27339
+      entity_id: 28341fd8a1e99ed583943c495487840a
       domain: switch
     - action: notify.send_message
       metadata: {}
@@ -289,12 +289,12 @@
         entity_id: notify.telegram_bot_458417471_220682073
     else:
     - type: turn_off
-      device_id: a647ad497b00e65a01f6e756122f5fe5
-      entity_id: 40e6a305f39b5d99cb17be8a30003a4e
-      domain: switch
-    - type: turn_off
       device_id: 347d265a98cff057015c0e37949d1a27
       entity_id: 5c8d44ca63d450b01f18481ed9c614d9
+      domain: switch
+    - type: turn_off
+      device_id: a2bf4959008ef09b7ca86ce1f2b27339
+      entity_id: 28341fd8a1e99ed583943c495487840a
       domain: switch
     - action: notify.send_message
       metadata: {}
@@ -614,6 +614,7 @@
         target:
           entity_id: switch.gosund_presa04
         data: {}
+    enabled: true
   mode: single
 - id: '1772637095187'
   alias: Striscia led mobile taverna con bandiera sessione corrente F1
@@ -739,6 +740,7 @@
     state: 'on'
   - condition: time
     after: '20:00:00'
+    before: 06:00:00
   actions:
   - target:
       entity_id: light.lampada_sala_rgb
