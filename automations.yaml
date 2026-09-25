@@ -1,30 +1,30 @@
 - id: ha_startup
   alias: HomeAssistant, notifica servizio avviato
-  initial_state: true
-  trigger:
+  triggers:
   - event: start
-    platform: homeassistant
-  condition: []
-  action:
-  - service: notify.pushover
-    data:
+    trigger: homeassistant
+  conditions: []
+  actions:
+  - data:
       title: Home Assistant
       message: Home Assistant è stato avviato con successo!
+    action: notify.pushover
+  initial_state: true
 - id: ha_update_available
   alias: HomeAssistant, notifica aggiornamento disponibile
-  initial_state: true
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.docker_hub_update_available
+  triggers:
+  - entity_id: binary_sensor.docker_hub_update_available
     from: 'off'
     to: 'on'
-  condition: []
-  action:
-  - service: notify.pushover
-    data:
+    trigger: state
+  conditions: []
+  actions:
+  - data:
       title: Home Assistant
       message: È disponibile la versione {{ states('sensor.docker_hub') }} di Home
         Assistant!
+    action: notify.pushover
+  initial_state: true
 - id: external_lights_turnon
   alias: Accendi luci esterne dopo il tramonto
   triggers:
@@ -39,7 +39,7 @@
 - id: external_lights_turnoff
   alias: Spegni luci esterne a mezzanotte
   triggers:
-  - at: 01:00:00
+  - at: 00:00:00
     trigger: time
   actions:
   - action: light.turn_off
@@ -74,46 +74,30 @@
     metadata: {}
     data:
       message: L'asciugatrice ha finito
-- id: do_not_disturb_off
-  alias: Disattiva la modalità non disturbare
-  trigger:
-  - platform: time
-    at: 08:00:00
-  action:
-  - service: homeassistant.turn_off
-    entity_id: input_boolean.do_not_disturb
-- id: do_not_disturb_on
-  alias: Attiva la modalità non disturbare
-  trigger:
-  - platform: time
-    at: '23:00:00'
-  action:
-  - service: homeassistant.turn_on
-    entity_id: input_boolean.do_not_disturb
 - id: christmas_tree_auto_turnoff
   alias: Spegni albero di Natale alle 01:00
+  triggers:
+  - at: 01:00:00
+    trigger: time
+  conditions: []
+  actions:
+  - entity_id: switch.sonoff_10001f9bcf
+    action: homeassistant.turn_off
   initial_state: true
-  trigger:
-  - platform: time
-    at: 01:00:00
-  condition: []
-  action:
-  - service: homeassistant.turn_off
-    entity_id: switch.sonoff_10001f9bcf
 - id: magpi_downloader_check
   alias: Scarica l'ultimo numero di MagPi
+  triggers:
+  - at: 08:00:00
+    trigger: time
+  conditions: []
+  actions:
+  - action: magpi_downloader.downloader
   initial_state: true
-  trigger:
-  - at: 08:00
-    platform: time
-  condition: []
-  action:
-  - service: magpi_downloader.downloader
 - id: home_recycling_notify
   alias: Raccolta differenziata, notifica serale
   description: ''
   triggers:
-  - at: '20:00'
+  - at: '20:00:00'
     trigger: time
   conditions:
   - condition: state
@@ -136,15 +120,15 @@
   initial_state: true
 - id: home_recycling_set_states
   alias: Raccolta differenziata, popolamento stati
+  triggers:
+  - at: 07:00:00
+    trigger: time
+  - event: start
+    trigger: homeassistant
+  conditions: []
+  actions:
+  - action: home_recycling.collections_state
   initial_state: true
-  trigger:
-  - platform: time
-    at: 07:00
-  - platform: homeassistant
-    event: start
-  condition: []
-  action:
-  - service: home_recycling.collections_state
 - id: '1708550800368'
   alias: Gestisci luci taverna con bottone Ikea
   description: ''
@@ -182,34 +166,13 @@
         - light.basement_kitchen
       action: light.turn_on
   mode: single
-- id: '1711629795805'
-  alias: Webhook - Commuta luci taverna
-  description: ''
-  triggers:
-  - allowed_methods:
-    - POST
-    - PUT
-    local_only: true
-    webhook_id: -f2zbAQ98Ppm1v2ouhxLmWHOM
-    trigger: webhook
-  conditions: []
-  actions:
-  - target:
-      device_id:
-      - b84ccae1e95ab6a73e02cf1a72687d38
-      - 01ac9c45cde95c0a84b096976f8aec91
-    data: {}
-    action: light.toggle
-  mode: single
 - id: '1755850802621'
   alias: Invia notifica se sensore allagamento lavanderia si attiva
   description: ''
   triggers:
-  - type: turned_on
-    device_id: bd3d0aa5bd6bc635ab08a85ada2c964d
-    entity_id: d280b25cb08c33031b647b43b9be29e4
-    domain: switch
-    trigger: device
+  - trigger: state
+    entity_id: switch.ying_biao_13aji_liang_f1s302_uk_vdevo_socket_1
+    to: 'on'
   conditions: []
   actions:
   - action: notify.mobile_app_iphone_di_andrea
@@ -233,11 +196,9 @@
   alias: Invia notifica se sensore allagamento cucina si attiva
   description: ''
   triggers:
-  - type: moist
-    device_id: 00826ad02bc2656fabcd9b15aa2f2bb1
-    entity_id: 1d99147a6754e36c218a76dcd7e35fc8
-    domain: binary_sensor
-    trigger: device
+  - trigger: state
+    entity_id: binary_sensor.tuya_flood_detector_01_water_leak
+    to: 'on'
   conditions: []
   actions:
   - action: notify.mobile_app_iphone_di_andrea
@@ -493,73 +454,30 @@
   mode: single
 - id: '1768082766773'
   alias: Routine mattutina
-  description: ''
   triggers:
-  - type: opened
-    device_id: b53d62ce6d33dbaebadc5a7938462820
-    entity_id: ac422f948e349e4c7f25d46698d3a12e
-    domain: binary_sensor
-    trigger: device
+  - trigger: state
+    entity_id: binary_sensor.ikea_contact_01_contact
+    to: 'on'
   conditions:
   - condition: time
-    after: 06:00:00
-    before: '10:00:00'
-    weekday:
-    - mon
-    - tue
-    - wed
-    - thu
-    - fri
-    - sat
-    - sun
-  - condition: state
-    entity_id: input_boolean.scenario_mattutino_eseguito
-    state:
-    - 'off'
+    after: 05:00:00
+    before: 09:00:00
+  - condition: template
+    value_template: "{{ this.attributes.last_triggered is none\n   or as_local(this.attributes.last_triggered).date()
+      < now().date() }}\n"
   actions:
-  - action: input_boolean.turn_on
-    metadata: {}
-    target:
-      entity_id: input_boolean.scenario_mattutino_eseguito
-    data: {}
   - parallel:
     - sequence:
       - action: light.turn_on
-        metadata: {}
         target:
-          entity_id:
-          - light.lampada_sala_rgb
-        data: {}
-      - delay:
-          hours: 0
-          minutes: 2
-          seconds: 0
-          milliseconds: 0
+          entity_id: light.lampada_sala_rgb
+      - delay: 00:02:00
       - action: light.turn_off
-        metadata: {}
         target:
-          entity_id:
-          - light.lampada_sala_rgb
-        data: {}
+          entity_id: light.lampada_sala_rgb
     - action: light.turn_on
-      metadata: {}
       target:
         entity_id: light.luce_cucina_centrale
-      data: {}
-  mode: single
-- id: '1768121296235'
-  alias: Routine mattutina - reset
-  description: ''
-  triggers:
-  - trigger: time
-    at: 01:00:00
-  conditions: []
-  actions:
-  - action: input_boolean.turn_off
-    metadata: {}
-    target:
-      entity_id: input_boolean.scenario_mattutino_eseguito
-    data: {}
   mode: single
 - id: '1770567849446'
   alias: Gestione monitor scrivania con bottone Ikea
@@ -731,22 +649,36 @@
   description: Se sono appena rientrato, il movimento sulle scale accende la lampada
     RGB della sala; si spegne dopo 3 minuti.
   triggers:
-  - entity_id: binary_sensor.ikea_motion_02_occupancy
+  - trigger: state
+    entity_id: binary_sensor.ikea_motion_02_occupancy
     to: 'on'
-    trigger: state
   conditions:
   - condition: state
     entity_id: binary_sensor.famiglia_tornata_a_casa_da_meno_di_5_minuti
     state: 'on'
-  - condition: time
-    after: '20:00:00'
-    before: 06:00:00
+  - condition: sun
+    after: sunset
+    after_offset: -00:30:00
+    before: sunrise
   actions:
-  - target:
+  - action: light.turn_on
+    target:
       entity_id: light.lampada_sala_rgb
-    action: light.turn_on
   - delay: 00:03:00
-  - target:
+  - action: light.turn_off
+    target:
       entity_id: light.lampada_sala_rgb
-    action: light.turn_off
+  mode: single
+- id: '1790275924083'
+  alias: Sincronizza Non disturbare con calendarizzazione
+  description: Accende/spegne input_boolean.do_not_disturb seguendo schedule.non_disturbare
+  triggers:
+  - trigger: state
+    entity_id: schedule.non_disturbare
+  - trigger: homeassistant
+    event: start
+  actions:
+  - action: input_boolean.turn_{{ states('schedule.non_disturbare') }}
+    target:
+      entity_id: input_boolean.do_not_disturb
   mode: single
