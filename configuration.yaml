@@ -24,6 +24,7 @@ alexa:
         - light.lampada_sala_rgb
         - light.lampada_sala_bianco
         - script.routine_buonanotte
+        - light.ikea_bulb_03
     entity_config:
       light.lampada_sala_rgb:
         name: Prisma
@@ -31,6 +32,9 @@ alexa:
       light.lampada_sala_bianco:
         name: Piantana
         description: Lampada piantana sala
+      light.ikea_bulb_03:
+        name: Luce Sala Giochi
+        description: Lampada sala giochi
 
 # Enable HomeKit integration
 homekit:
