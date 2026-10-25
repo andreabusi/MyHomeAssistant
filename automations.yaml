@@ -446,20 +446,10 @@
     value_template: "{{ this.attributes.last_triggered is none\n   or as_local(this.attributes.last_triggered).date()
       < now().date() }}\n"
   actions:
-  - parallel:
-    - sequence:
-      - action: light.turn_on
-        target:
-          entity_id: light.lampada_sala_rgb
-      - delay: 00:02:00
-      - action: light.turn_off
-        target:
-          entity_id: light.lampada_sala_rgb
-    - action: light.turn_on
-      target:
-        entity_id: light.luce_cucina_centrale
-      data: {}
-      enabled: true
+  - action: light.turn_on
+    target:
+      entity_id: light.luce_cucina_centrale
+    data: {}
   mode: single
 - id: '1770567849446'
   alias: Gestione monitor scrivania con bottone Ikea
@@ -628,8 +618,8 @@
   mode: single
 - id: '1783859538273'
   alias: Accendi luce sala quando ritorniamo a casa salendo dalle scale
-  description: Se sono appena rientrato, il movimento sulle scale accende la lampada
-    RGB della sala; si spegne dopo 3 minuti.
+  description: Se sono appena rientrato, il movimento sulle scale accende di blu la
+    lampada RGB della sala; si spegne dopo 3 minuti.
   triggers:
   - trigger: state
     entity_id: binary_sensor.ikea_motion_02_occupancy
@@ -646,6 +636,10 @@
   - action: light.turn_on
     target:
       entity_id: light.lampada_sala_rgb
+    data:
+      hs_color:
+      - 240
+      - 100
   - delay: 00:03:00
   - action: light.turn_off
     target:

@@ -15,7 +15,10 @@ routine_buonanotte:
     target:
       entity_id:
       - light.lampada_sala_rgb
-    data: {}
+    data:
+      hs_color:
+      - 120
+      - 100
   - delay:
       hours: 0
       minutes: 0
@@ -162,7 +165,10 @@ routine_serale:
     metadata: {}
     target:
       entity_id: light.lampada_sala_rgb
-    data: {}
+    data:
+      hs_color:
+      - 240
+      - 100
   - action: media_player.turn_on
     metadata: {}
     target:

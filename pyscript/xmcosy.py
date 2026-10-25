@@ -1,13 +1,38 @@
 import base64
 import struct
 
-# --- CONFIGURA QUESTI DUE VALORI ---
+# --- CONFIGURA QUESTI VALORI ---
 DEVICE_ID = "bfc77ffe2caf9ac5a5dmnr"          # Tuya device id della lampada
 DP51_SENSOR = "sensor.lampada_sala_localtuya_dp51"   # entita' sensor di Local Tuya che espone il DP 51
+POWER_SWITCH = "switch.lampada_sala_localtuya_power"  # entita' switch di Local Tuya che espone il DP 20
 # ------------------------------------
 
 DP_RAW = 51       # datapoint con lo stato dei due ring (base64)
 DP_POWER = 20     # on/off generale
+
+# stati pyscript che espongono i campi decodificati, letti dalle template light
+STATES = {
+    "rgb_on": "pyscript.xmcosy_rgb_on",
+    "white_on": "pyscript.xmcosy_white_on",
+    "hue": "pyscript.xmcosy_hue",
+    "sat": "pyscript.xmcosy_sat",
+    "rgb_bright": "pyscript.xmcosy_rgb_bright",
+    "white_bright": "pyscript.xmcosy_white_bright",
+    "white_temp": "pyscript.xmcosy_white_temp",
+}
+
+# valori usati solo se non esiste ancora nessuno stato noto
+DEFAULTS = {"rgb_on": False, "white_on": False, "hue": 240, "sat": 1000,
+            "rgb_bright": 1000, "white_bright": 1000, "white_temp": 0}
+
+
+def _as_state(v):
+    return ("on" if v else "off") if isinstance(v, bool) else v
+
+
+# l'ultimo stato noto deve sopravvivere ai riavvii: e' il fallback quando DP51 non e' leggibile
+for _key, _entity in STATES.items():
+    state.persist(_entity, default_value=_as_state(DEFAULTS[_key]))
 
 
 def _clamp(v, lo, hi):
@@ -42,14 +67,24 @@ def _encode(d):
 
 
 def _publish(d):
-    # espone i campi decodificati come stati pyscript, letti dalle template light
-    state.set("pyscript.xmcosy_rgb_on", "on" if d["rgb_on"] else "off")
-    state.set("pyscript.xmcosy_white_on", "on" if d["white_on"] else "off")
-    state.set("pyscript.xmcosy_hue", d["hue"])
-    state.set("pyscript.xmcosy_sat", d["sat"])
-    state.set("pyscript.xmcosy_rgb_bright", d["rgb_bright"])
-    state.set("pyscript.xmcosy_white_bright", d["white_bright"])
-    state.set("pyscript.xmcosy_white_temp", d["white_temp"])
+    for key, entity in STATES.items():
+        state.set(entity, _as_state(d[key]))
+
+
+def _last_known():
+    # ricostruisce lo stato dagli ultimi valori pubblicati
+    d = {}
+    for key, entity in STATES.items():
+        try:
+            v = state.get(entity)
+            d[key] = (v == "on") if isinstance(DEFAULTS[key], bool) else int(v)
+        except Exception:
+            d[key] = DEFAULTS[key]
+    # a lampada spenta nessun ring e' acceso, qualunque cosa dica l'ultimo stato
+    if state.get(POWER_SWITCH) == "off":
+        d["rgb_on"] = False
+        d["white_on"] = False
+    return d
 
 
 @state_trigger(DP51_SENSOR)
@@ -77,9 +112,10 @@ def xmcosy_set(ring=None, power=None, hue=None, sat=None, brightness=None, color
     try:
         d = _decode(cur)
     except Exception:
-        # fallback se non abbiamo ancora ricevuto un valore valido
-        d = {"rgb_on": False, "white_on": False, "hue": 0, "sat": 1000,
-             "rgb_bright": 1000, "white_bright": 1000, "white_temp": 0}
+        # dopo una riconnessione LocalTuya non rilegge il DP51, che resta unavailable fino al
+        # prossimo comando: si riparte dall'ultimo stato noto invece che da valori fissi
+        log.warning(f"xmcosy_set: DP51 non leggibile ({cur!r}), uso l'ultimo stato noto")
+        d = _last_known()
 
     if ring == "rgb":
         if power is not None:
