@@ -5,25 +5,34 @@
     trigger: homeassistant
   conditions: []
   actions:
-  - data:
-      title: Home Assistant
-      message: Home Assistant è stato avviato con successo!
-    action: notify.pushover
+  - action: script.notifica
+    data:
+      tipo: tecnico
+      messaggio: Home Assistant è stato avviato con successo!
   initial_state: true
 - id: ha_update_available
   alias: HomeAssistant, notifica aggiornamento disponibile
   triggers:
-  - entity_id: binary_sensor.docker_hub_update_available
-    from: 'off'
-    to: 'on'
-    trigger: state
-  conditions: []
+  - trigger: state
+    entity_id: sensor.docker_hub
+    not_from:
+    - unavailable
+    - unknown
+    not_to:
+    - unavailable
+    - unknown
+  conditions:
+  - condition: template
+    value_template: '{{ trigger.from_state is not none and trigger.to_state is not
+      none }}'
+  - condition: state
+    entity_id: binary_sensor.docker_hub_update_available
+    state: 'on'
   actions:
-  - data:
-      title: Home Assistant
-      message: È disponibile la versione {{ states('sensor.docker_hub') }} di Home
-        Assistant!
-    action: notify.pushover
+  - action: script.notifica
+    data:
+      tipo: tecnico
+      messaggio: È disponibile la versione {{ trigger.to_state.state }} di Home Assistant!
   initial_state: true
 - id: external_lights_turnon
   alias: Accendi luci esterne dopo il tramonto
@@ -56,10 +65,11 @@
     - 'off'
     trigger: state
   actions:
-  - action: script.announce_on_alexa_speaker
+  - action: script.notifica
     metadata: {}
     data:
-      message: La lavatrice ha finito
+      tipo: annuncio
+      messaggio: La lavatrice ha finito
 - id: dryer_machine_finished
   alias: Alexa comunica che l'asciugatrice ha terminato
   description: ''
@@ -70,10 +80,11 @@
     - 'off'
     trigger: state
   actions:
-  - action: script.announce_on_alexa_speaker
+  - action: script.notifica
     metadata: {}
     data:
-      message: L'asciugatrice ha finito
+      tipo: annuncio
+      messaggio: L'asciugatrice ha finito
 - id: christmas_tree_auto_turnoff
   alias: Spegni albero di Natale alle 01:00
   triggers:
@@ -104,19 +115,12 @@
     entity_id: sensor.home_recycling
     state: 'on'
   actions:
-  - action: notify.send_message
-    metadata: {}
+  - action: script.notifica
     data:
-      message: "La spazzatura in ritiro domani è:{{'\\n'}} \n{%- for collection in
-        state_attr(\"sensor.home_recycling\", \"collections_icons\") -%}\n  {{- collection
-        }}{{'\\n'}}\n{%- endfor %}"
-    target:
-      entity_id: notify.telegram_bot_458417471_220682073
-  - action: script.announce_on_alexa_speaker
-    metadata: {}
-    data:
-      message: La spazzatura in ritiro domani è {{ state_attr("sensor.home_recycling",     "collections")|join("
-        e ") }}
+      tipo: annuncio
+      messaggio: "La spazzatura in ritiro domani è:{{'\\n'}} \n{%- for collection
+        in state_attr(\"sensor.home_recycling\", \"collections_icons\") -%}\n  {{-
+        collection }}{{'\\n'}}\n{%- endfor %}"
   initial_state: true
 - id: home_recycling_set_states
   alias: Raccolta differenziata, popolamento stati
@@ -175,22 +179,11 @@
     to: 'on'
   conditions: []
   actions:
-  - action: notify.mobile_app_iphone_di_andrea
+  - action: script.notifica
     metadata: {}
     data:
-      message: "Possibile allagamento in lavanderia! Controllare al più presto! \U0001F6A8"
-      data:
-        push:
-          sound:
-            name: default
-            critical: 1
-            volume: 1
-  - action: notify.telegram_home
-    metadata: {}
-    data:
-      data:
-        action: notify.telegram_home
-      message: "Possibile allagamento in lavanderia! Controllare al più presto! \U0001F6A8"
+      tipo: critico
+      messaggio: 'Possibile allagamento in lavanderia! Controllare al più presto! '
   mode: single
 - id: '1760383864033'
   alias: Invia notifica se sensore allagamento cucina si attiva
@@ -201,22 +194,11 @@
     to: 'on'
   conditions: []
   actions:
-  - action: notify.mobile_app_iphone_di_andrea
+  - action: script.notifica
     metadata: {}
     data:
-      message: "Possibile allagamento in cucina! Controllare al più presto! \U0001F6A8"
-      data:
-        push:
-          sound:
-            name: default
-            critical: 1
-            volume: 1
-  - action: notify.telegram_home
-    metadata: {}
-    data:
-      data:
-        action: notify.telegram_home
-      message: "Possibile allagamento in cucina! Controllare al più presto! \U0001F6A8"
+      tipo: critico
+      messaggio: Possibile allagamento in cucina! Controllare al più presto!
   mode: single
 - id: '1762786134926'
   alias: Gestione azioni in base a stato modalità sorveglianza
@@ -242,12 +224,11 @@
       device_id: a2bf4959008ef09b7ca86ce1f2b27339
       entity_id: 28341fd8a1e99ed583943c495487840a
       domain: switch
-    - action: notify.send_message
+    - action: script.notifica
       metadata: {}
       data:
-        message: "Sorveglianza attivata \U0001F46E‍♂️"
-      target:
-        entity_id: notify.telegram_bot_458417471_220682073
+        messaggio: "Sorveglianza attivata \U0001F46E‍♂️"
+        tipo: casa
     else:
     - type: turn_off
       device_id: 347d265a98cff057015c0e37949d1a27
@@ -257,12 +238,11 @@
       device_id: a2bf4959008ef09b7ca86ce1f2b27339
       entity_id: 28341fd8a1e99ed583943c495487840a
       domain: switch
-    - action: notify.send_message
+    - action: script.notifica
       metadata: {}
       data:
-        message: "Qualcuno è tornato a casa, sorveglianza spenta ⛓️‍\U0001F4A5"
-      target:
-        entity_id: notify.telegram_bot_458417471_220682073
+        messaggio: "Qualcuno è tornato a casa, sorveglianza spenta ⛓️‍\U0001F4A5"
+        tipo: casa
   mode: single
 - id: '1762786839718'
   alias: Attiva/disattiva sorveglianza in base a presenza Famiglia
@@ -478,6 +458,8 @@
     - action: light.turn_on
       target:
         entity_id: light.luce_cucina_centrale
+      data: {}
+      enabled: true
   mode: single
 - id: '1770567849446'
   alias: Gestione monitor scrivania con bottone Ikea
@@ -682,3 +664,127 @@
     target:
       entity_id: input_boolean.do_not_disturb
   mode: single
+- id: '1790280106233'
+  alias: Controllo batterie dispositivi Zigbee
+  triggers:
+  - trigger: time
+    at: '10:00:00'
+    weekday:
+    - sat
+  conditions:
+  - condition: template
+    value_template: '{{ scariche | count > 0 or offline | count > 0 }}'
+  actions:
+  - action: script.notifica
+    data:
+      tipo: tecnico
+      titolo: Stato batterie
+      messaggio: "{%- set blocchi = [] -%} {%- if scariche | count > 0 -%}\n  {%-
+        set blocchi = blocchi + ['Scariche\\n• ' ~ scariche | join('\\n• ')] -%}\n{%-
+        endif -%} {%- if offline | count > 0 -%}\n  {%- set blocchi = blocchi + ['Offline\\n•
+        ' ~ offline | join('\\n• ')] -%}\n{%- endif -%} {{ blocchi | join('\\n\\n')
+        }}"
+  mode: single
+  variables:
+    soglia: 10
+    esclusi: '{{ label_entities(''no_controllo_batteria'') }}'
+    batterie: "{{ states.sensor\n   | selectattr('entity_id', 'in', integration_entities('mqtt'))\n
+      \  | selectattr('attributes.device_class', 'defined')\n   | selectattr('attributes.device_class',
+      'eq', 'battery')\n   | map(attribute='entity_id')\n   | reject('in', esclusi)\n
+      \  | list }}\n"
+    scariche: "{% set ns = namespace(l=[]) %} {% for e in batterie if states(e) |
+      is_number and states(e) | float <= soglia %}\n  {% set nome = device_attr(e,
+      'name_by_user') or device_attr(e, 'name') %}\n  {% set ns.l = ns.l + [nome ~
+      ' (' ~ states(e) ~ '%)'] %}\n{% endfor %} {{ ns.l }}\n"
+    offline: "{% set ns = namespace(l=[]) %} {% for e in batterie if states(e) ==
+      'unavailable' %}\n  {% set ns.l = ns.l + [device_attr(e, 'name_by_user') or
+      device_attr(e, 'name')] %}\n{% endfor %} {{ ns.l }}\n"
+- id: '1790329333871'
+  alias: Uscita di casa - Notifica luci accese
+  description: Quando l'ultimo esce, avvisa di luci interne accese e chiede se spegnere.
+  triggers:
+  - trigger: state
+    entity_id: group.family
+    from: home
+    to: not_home
+  conditions:
+  - condition: template
+    value_template: '{{ accese | count > 0 or porta_aperta }}'
+  actions:
+  - variables:
+      azione_spegni: LUCI_SPEGNI_{{ context.id }}
+      azione_lascia: LUCI_LASCIA_{{ context.id }}
+  - repeat:
+      for_each: '{{ telefoni }}'
+      sequence:
+      - action: '{{ repeat.item }}'
+        continue_on_error: true
+        data:
+          title: "\U0001F3E0 Siete usciti"
+          message: "{%- set r = [] -%} {%- if accese | count > 0 -%}\n  {%- set r
+            = r + ['\U0001F4A1 Luci accese: ' ~ nomi | join(', ')] -%}\n{%- endif
+            -%} {%- if porta_aperta -%}\n  {%- set r = r + ['\U0001F6AA La porta del
+            corridoio è aperta'] -%}\n{%- endif -%} {{ r | join('\\n') }}"
+          data:
+            tag: uscita_casa
+            actions: "{% if accese | count > 0 %} [{\"action\": \"{{ azione_spegni
+              }}\", \"title\": \"Spegni tutto\"},\n {\"action\": \"{{ azione_lascia
+              }}\", \"title\": \"Lascia accese\"}]\n{% else %}[]{% endif %}"
+  - if:
+    - condition: template
+      value_template: '{{ accese | count > 0 }}'
+    then:
+    - wait_for_trigger:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: '{{ azione_spegni }}'
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: '{{ azione_lascia }}'
+      timeout: 00:30:00
+      continue_on_timeout: true
+    - if:
+      - condition: template
+        value_template: "{{ wait.trigger is not none\n   and wait.trigger.event.data.action
+          == azione_spegni\n   and is_state('group.family', 'not_home') }}"
+      then:
+      - action: light.turn_off
+        target:
+          entity_id: '{{ accese }}'
+    - repeat:
+        for_each: '{{ telefoni }}'
+        sequence:
+        - action: '{{ repeat.item }}'
+          continue_on_error: true
+          data:
+            message: clear_notification
+            data:
+              tag: uscita_casa
+  mode: single
+  variables:
+    accese: "{{ expand('light.all_ground_floor', 'light.all_basement')\n   | selectattr('state',
+      'eq', 'on')\n   | map(attribute='entity_id')\n   | list }}"
+    nomi: '{{ accese | map(''state_attr'', ''friendly_name'') | list }}'
+    porta_aperta: '{{ is_state(''binary_sensor.ikea_contact_01_contact'', ''on'')
+      }}'
+    telefoni:
+    - notify.mobile_app_iphone_17_di_andrea
+    - notify.mobile_app_iphone_di_erica
+- id: '1791976257106'
+  alias: Gewiss -> Scenario Buonanotte eseguito
+  description: Quando lo scenario Gewiss "Buonanotte" viene eseguito (app, placca,
+    regole dell'hub o HA) lancia la Routine Buonanotte.
+  triggers:
+  - trigger: scene.activated
+    target:
+      entity_id: scene.buonanotte
+    options: {}
+  conditions: []
+  actions:
+  - action: script.routine_buonanotte
+    metadata: {}
+    data: {}
+  mode: single
+  max_exceeded: silent

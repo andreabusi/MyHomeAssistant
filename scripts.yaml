@@ -190,3 +190,116 @@ riavvia_monitor_xiaomi:
     data: {}
   alias: Riavvia monitor Xiaomi
   description: ''
+notifica:
+  alias: Notifica
+  description: "Punto unico per l'invio delle notifiche. \ntecnico = Telegram personale\ncasa
+    = gruppo Telegram A&E Home\nannuncio = Alexa (o Telegram)\ncritico = tutti i canali"
+  mode: parallel
+  max: 10
+  fields:
+    tipo:
+      name: Tipo
+      required: true
+      selector:
+        select:
+          options:
+          - tecnico
+          - casa
+          - annuncio
+          - critico
+    messaggio:
+      name: Messaggio
+      required: true
+      selector:
+        text:
+          multiline: true
+    titolo:
+      name: Titolo
+      required: false
+      selector:
+        text:
+  variables:
+    telegram_tecnico: notify.telegram_bot_458417471_38061565
+    telegram_casa: notify.telegram_bot_458417471_220682073
+    push_critico:
+    - notify.mobile_app_iphone_17_di_andrea
+    - notify.mobile_app_iphone_di_erica
+    speaker_annunci:
+    - media_player.echo_soggiorno
+    - media_player.echo_dot_taverna
+    testo: '{% set t = titolo | default('''') %}{{ (t ~ ''\n'') if t else '''' }}{{
+      messaggio }}'
+  sequence:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ tipo == ''tecnico'' }}'
+      sequence:
+      - action: notify.send_message
+        target:
+          entity_id: '{{ telegram_tecnico }}'
+        data:
+          message: "\U0001F6E0️ {{ testo }}"
+    - conditions:
+      - condition: template
+        value_template: '{{ tipo == ''casa'' }}'
+      sequence:
+      - action: notify.send_message
+        target:
+          entity_id: '{{ telegram_casa }}'
+        data:
+          message: '{{ testo }}'
+    - conditions:
+      - condition: template
+        value_template: '{{ tipo == ''annuncio'' }}'
+      sequence:
+      - if:
+        - condition: state
+          entity_id: input_boolean.do_not_disturb
+          state: 'on'
+        then:
+        - action: notify.send_message
+          target:
+            entity_id: '{{ telegram_casa }}'
+          data:
+            message: "\U0001F515 {{ testo }}"
+        else:
+        - action: notify.alexa_media
+          data:
+            target: '{{ speaker_annunci }}'
+            message: '{{ messaggio }}'
+            data:
+              type: announce
+    - conditions:
+      - condition: template
+        value_template: '{{ tipo == ''critico'' }}'
+      sequence:
+      - parallel:
+        - repeat:
+            for_each: '{{ push_critico }}'
+            sequence:
+            - action: '{{ repeat.item }}'
+              continue_on_error: true
+              data:
+                title: "{{ titolo | default('\U0001F6A8 Allarme casa') }}"
+                message: '{{ messaggio }}'
+                data:
+                  push:
+                    interruption-level: critical
+                    sound:
+                      name: default
+                      critical: 1
+                      volume: 1
+        - action: notify.send_message
+          continue_on_error: true
+          target:
+            entity_id: '{{ telegram_casa }}'
+          data:
+            message: "\U0001F6A8 {{ testo }}"
+        - action: notify.alexa_media
+          continue_on_error: true
+          data:
+            target: '{{ speaker_annunci }}'
+            message: '{{ messaggio }}'
+            data:
+              type: announce
