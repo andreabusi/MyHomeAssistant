@@ -1,5 +1,6 @@
 import base64
 import struct
+from datetime import datetime, timezone
 
 # --- CONFIGURA QUESTI VALORI ---
 DEVICE_ID = "bfc77ffe2caf9ac5a5dmnr"          # Tuya device id della lampada
@@ -30,7 +31,8 @@ def _as_state(v):
     return ("on" if v else "off") if isinstance(v, bool) else v
 
 
-# l'ultimo stato noto deve sopravvivere ai riavvii: e' il fallback quando DP51 non e' leggibile
+# gli stati pyscript sono lo stato di riferimento dei comandi e devono sopravvivere ai riavvii:
+# dopo un riavvio LocalTuya non rilegge il DP51, che resta unavailable fino al prossimo comando
 for _key, _entity in STATES.items():
     state.persist(_entity, default_value=_as_state(DEFAULTS[_key]))
 
@@ -71,7 +73,20 @@ def _publish(d):
         state.set(entity, _as_state(d[key]))
 
 
-def _last_known():
+# (valore, istante) dell'ultimo DP20 inviato
+_power_sent = None
+
+
+def _power_off():
+    # lo switch si aggiorna solo quando la lampada conferma: fino ad allora vale l'ultimo comando
+    # inviato, altrimenti un secondo comando ravvicinato vedrebbe ancora lo stato precedente
+    sw = state.get(POWER_SWITCH)
+    if _power_sent is not None and _power_sent[1] > sw.last_changed:
+        return not _power_sent[0]
+    return sw == "off"
+
+
+def _current():
     # ricostruisce lo stato dagli ultimi valori pubblicati
     d = {}
     for key, entity in STATES.items():
@@ -81,20 +96,34 @@ def _last_known():
         except Exception:
             d[key] = DEFAULTS[key]
     # a lampada spenta nessun ring e' acceso, qualunque cosa dica l'ultimo stato
-    if state.get(POWER_SWITCH) == "off":
+    if _power_off():
         d["rgb_on"] = False
         d["white_on"] = False
     return d
 
 
-@state_trigger(DP51_SENSOR)
-def xmcosy_on_dp51_change(value=None):
+def _sync_from_dp51(value):
     if value in (None, "unknown", "unavailable", ""):
         return
     try:
         _publish(_decode(value))
     except Exception as e:
         log.warning(f"xmcosy: decode DP51 fallita ({value!r}): {e}")
+
+
+@state_trigger(DP51_SENSOR)
+def xmcosy_on_dp51_change(value=None):
+    _sync_from_dp51(value)
+
+
+@time_trigger("startup")
+def xmcosy_sync_on_startup():
+    # dopo un reload di pyscript il DP51 e' gia' leggibile: recupera eventuali cambi arrivati
+    # mentre pyscript era fermo (dopo un riavvio di HA e' unavailable e restano gli stati salvati)
+    try:
+        _sync_from_dp51(state.get(DP51_SENSOR))
+    except NameError:
+        pass
 
 
 @service
@@ -108,14 +137,12 @@ def xmcosy_set(ring=None, power=None, hue=None, sat=None, brightness=None, color
     brightness: 0-1000
     color_temp: 0-1000    (solo white, 0=caldo 1000=freddo)
     """
-    cur = state.get(DP51_SENSOR)
-    try:
-        d = _decode(cur)
-    except Exception:
-        # dopo una riconnessione LocalTuya non rilegge il DP51, che resta unavailable fino al
-        # prossimo comando: si riparte dall'ultimo stato noto invece che da valori fissi
-        log.warning(f"xmcosy_set: DP51 non leggibile ({cur!r}), uso l'ultimo stato noto")
-        d = _last_known()
+    global _power_sent
+
+    # si parte dagli stati pyscript e non dal sensore DP51: quello si aggiorna solo quando la
+    # lampada conferma, e un secondo comando ravvicinato (light.turn_off sui due ring, che HA
+    # esegue in parallelo) ripartirebbe dal valore vecchio annullando il primo
+    d = _current()
 
     if ring == "rgb":
         if power is not None:
@@ -137,12 +164,13 @@ def xmcosy_set(ring=None, power=None, hue=None, sat=None, brightness=None, color
         log.warning(f"xmcosy_set: ring non valido {ring!r}")
         return
 
-    new = _encode(d)
-    localtuya.set_dp(device_id=DEVICE_ID, dp=DP_RAW, value=new)
-
     # gestione on/off generale: spento solo se entrambi i ring sono spenti
     any_on = d["rgb_on"] or d["white_on"]
-    localtuya.set_dp(device_id=DEVICE_ID, dp=DP_POWER, value=any_on)
 
-    # aggiorna subito gli stati (senza aspettare il push)
+    # stato aggiornato prima di inviare i comandi: fino al primo set_dp non si cede il controllo,
+    # quindi un comando concorrente vede gia' questo stato
     _publish(d)
+    _power_sent = (any_on, datetime.now(timezone.utc))
+
+    localtuya.set_dp(device_id=DEVICE_ID, dp=DP_RAW, value=_encode(d))
+    localtuya.set_dp(device_id=DEVICE_ID, dp=DP_POWER, value=any_on)
