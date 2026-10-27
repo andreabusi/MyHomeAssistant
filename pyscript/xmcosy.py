@@ -36,7 +36,7 @@ def _as_state(v):
 
 
 # gli stati pyscript sono lo stato di riferimento dei comandi e devono sopravvivere ai riavvii:
-# dopo un riavvio LocalTuya non rilegge il DP51, che resta unavailable fino al prossimo comando
+# dopo un riavvio il DP51 resta unknown finche' la lampada non risponde a xmcosy_request_dp51
 for _key, _entity in STATES.items():
     state.persist(_entity, default_value=_as_state(DEFAULTS[_key]))
 
@@ -123,18 +123,28 @@ def xmcosy_on_dp51_change(value=None):
     _sync_from_dp51(value)
 
 
+@state_trigger(f"{DP51_SENSOR} in ['unknown', 'unavailable'] and {POWER_SWITCH} in ['on', 'off']",
+               state_check_now=True, state_hold=1)
+def xmcosy_request_dp51():
+    # dopo un riavvio o una riconnessione la lampada non manda il DP51 finche' non glielo si
+    # chiede: la risposta arriva a xmcosy_on_dp51_change e riallinea gli stati. state_hold: durante
+    # un reload di LocalTuya il DP51 diventa unavailable qualche ms prima dello switch, e la
+    # richiesta partirebbe con la lampada scollegata
+    localtuya.update_dps(device_id=DEVICE_ID, dps=[DP_RAW])
+
+
 def _send(seq, d):
-    # due coppie DP51/DP20 ravvicinate (light.turn_off sui due ring) la lampada non le regge: spegne
-    # i ring ma resta alimentata, o non esegue niente. Si lasciano arrivare i comandi ravvicinati,
-    # si invia solo l'ultimo stato e lo si ripete finche' la lampada non lo conferma
+    # comandi ravvicinati (light.turn_off sui due ring) la lampada non li regge: spegne i ring ma
+    # resta alimentata, o non esegue niente. Si lasciano arrivare i comandi ravvicinati, si invia
+    # solo l'ultimo stato, con DP51 e DP20 in un unico comando, e lo si ripete finche' la lampada
+    # non lo conferma
     task.sleep(SEND_DELAY)
     if seq != _send_seq:
         return
     any_on = d["rgb_on"] or d["white_on"]
     expected = "on" if any_on else "off"
     for attempt in range(1, SEND_ATTEMPTS + 1):
-        localtuya.set_dp(device_id=DEVICE_ID, dp=DP_RAW, value=_encode(d))
-        localtuya.set_dp(device_id=DEVICE_ID, dp=DP_POWER, value=any_on)
+        localtuya.set_dp(device_id=DEVICE_ID, value={str(DP_RAW): _encode(d), str(DP_POWER): any_on})
         # state_hold: lo switch deve restare nello stato atteso, non solo passarci
         res = task.wait_until(state_trigger=f"{POWER_SWITCH} == '{expected}'",
                               state_hold=1, timeout=CONFIRM_TIMEOUT)
@@ -147,7 +157,7 @@ def _send(seq, d):
 @time_trigger("startup")
 def xmcosy_sync_on_startup():
     # dopo un reload di pyscript il DP51 e' gia' leggibile: recupera eventuali cambi arrivati
-    # mentre pyscript era fermo (dopo un riavvio di HA e' unavailable e restano gli stati salvati)
+    # mentre pyscript era fermo (dopo un riavvio di HA e' unknown e lo chiede xmcosy_request_dp51)
     try:
         _sync_from_dp51(state.get(DP51_SENSOR))
     except NameError:
