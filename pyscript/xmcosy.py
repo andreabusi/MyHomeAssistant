@@ -11,6 +11,10 @@ POWER_SWITCH = "switch.lampada_sala_localtuya_power"  # entita' switch di Local 
 DP_RAW = 51       # datapoint con lo stato dei due ring (base64)
 DP_POWER = 20     # on/off generale
 
+SEND_DELAY = 0.3      # s: i comandi che arrivano entro questo intervallo partono come un solo invio
+CONFIRM_TIMEOUT = 4   # s: attesa della conferma della lampada prima di ripetere l'invio
+SEND_ATTEMPTS = 3
+
 # stati pyscript che espongono i campi decodificati, letti dalle template light
 STATES = {
     "rgb_on": "pyscript.xmcosy_rgb_on",
@@ -76,6 +80,9 @@ def _publish(d):
 # (valore, istante) dell'ultimo DP20 inviato
 _power_sent = None
 
+# numero dell'ultimo stato pubblicato: un invio superato da uno piu' recente non parte
+_send_seq = 0
+
 
 def _power_off():
     # lo switch si aggiorna solo quando la lampada conferma: fino ad allora vale l'ultimo comando
@@ -116,6 +123,27 @@ def xmcosy_on_dp51_change(value=None):
     _sync_from_dp51(value)
 
 
+def _send(seq, d):
+    # due coppie DP51/DP20 ravvicinate (light.turn_off sui due ring) la lampada non le regge: spegne
+    # i ring ma resta alimentata, o non esegue niente. Si lasciano arrivare i comandi ravvicinati,
+    # si invia solo l'ultimo stato e lo si ripete finche' la lampada non lo conferma
+    task.sleep(SEND_DELAY)
+    if seq != _send_seq:
+        return
+    any_on = d["rgb_on"] or d["white_on"]
+    expected = "on" if any_on else "off"
+    for attempt in range(1, SEND_ATTEMPTS + 1):
+        localtuya.set_dp(device_id=DEVICE_ID, dp=DP_RAW, value=_encode(d))
+        localtuya.set_dp(device_id=DEVICE_ID, dp=DP_POWER, value=any_on)
+        # state_hold: lo switch deve restare nello stato atteso, non solo passarci
+        res = task.wait_until(state_trigger=f"{POWER_SWITCH} == '{expected}'",
+                              state_hold=1, timeout=CONFIRM_TIMEOUT)
+        if res["trigger_type"] != "timeout" or seq != _send_seq:
+            return
+        log.warning(f"xmcosy: la lampada non ha confermato DP20={any_on} "
+                    f"(invio {attempt}/{SEND_ATTEMPTS})")
+
+
 @time_trigger("startup")
 def xmcosy_sync_on_startup():
     # dopo un reload di pyscript il DP51 e' gia' leggibile: recupera eventuali cambi arrivati
@@ -137,7 +165,7 @@ def xmcosy_set(ring=None, power=None, hue=None, sat=None, brightness=None, color
     brightness: 0-1000
     color_temp: 0-1000    (solo white, 0=caldo 1000=freddo)
     """
-    global _power_sent
+    global _power_sent, _send_seq
 
     # si parte dagli stati pyscript e non dal sensore DP51: quello si aggiorna solo quando la
     # lampada conferma, e un secondo comando ravvicinato (light.turn_off sui due ring, che HA
@@ -167,10 +195,9 @@ def xmcosy_set(ring=None, power=None, hue=None, sat=None, brightness=None, color
     # gestione on/off generale: spento solo se entrambi i ring sono spenti
     any_on = d["rgb_on"] or d["white_on"]
 
-    # stato aggiornato prima di inviare i comandi: fino al primo set_dp non si cede il controllo,
-    # quindi un comando concorrente vede gia' questo stato
+    # stato aggiornato subito, senza cedere il controllo: un comando concorrente lo vede gia'
     _publish(d)
     _power_sent = (any_on, datetime.now(timezone.utc))
 
-    localtuya.set_dp(device_id=DEVICE_ID, dp=DP_RAW, value=_encode(d))
-    localtuya.set_dp(device_id=DEVICE_ID, dp=DP_POWER, value=any_on)
+    _send_seq += 1
+    task.create(_send, _send_seq, d)
