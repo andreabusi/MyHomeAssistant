@@ -607,14 +607,18 @@
       state:
       - 'on'
     then:
-    - type: turn_off
-      device_id: 53ff0d0db69686db047718c7309b7e56
-      entity_id: a2bc38a8c4607ef027299cc4ce6e620a
-      domain: switch
-    - type: turn_off
-      device_id: f36f83b64ab3fffd8343db6574f0ae0a
-      entity_id: 9ce5b75c69c071e6db2bbdc9578aff17
-      domain: switch
+    - action: switch.turn_off
+      metadata: {}
+      target:
+        entity_id: switch.gosund_presa03
+      data: {}
+      continue_on_error: true
+    - action: switch.turn_off
+      metadata: {}
+      target:
+        entity_id: switch.gosund_presa04
+      data: {}
+      continue_on_error: true
   mode: single
 - id: '1783859538273'
   alias: Accendi luce sala quando ritorniamo a casa salendo dalle scale
