@@ -132,6 +132,7 @@
   conditions: []
   actions:
   - action: home_recycling.collections_state
+    data: {}
   initial_state: true
 - id: '1708550800368'
   alias: Gestisci luci taverna con bottone Ikea
@@ -221,8 +222,8 @@
       entity_id: 5c8d44ca63d450b01f18481ed9c614d9
       domain: switch
     - type: turn_on
-      device_id: a2bf4959008ef09b7ca86ce1f2b27339
-      entity_id: 28341fd8a1e99ed583943c495487840a
+      device_id: 9e7297377bb0060b376c32d6a39c77a0
+      entity_id: d50af3b688493f32eb0ef2798cb51f45
       domain: switch
     - action: script.notifica
       metadata: {}
@@ -235,8 +236,8 @@
       entity_id: 5c8d44ca63d450b01f18481ed9c614d9
       domain: switch
     - type: turn_off
-      device_id: a2bf4959008ef09b7ca86ce1f2b27339
-      entity_id: 28341fd8a1e99ed583943c495487840a
+      device_id: 9e7297377bb0060b376c32d6a39c77a0
+      entity_id: d50af3b688493f32eb0ef2798cb51f45
       domain: switch
     - action: script.notifica
       metadata: {}
