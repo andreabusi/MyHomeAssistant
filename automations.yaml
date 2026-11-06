@@ -492,8 +492,10 @@
         id:
         - bottone_1_double
       sequence:
-      - action: script.riavvia_monitor_xiaomi
+      - action: script.turn_on
         metadata: {}
+        target:
+          entity_id: script.riavvia_monitor_xiaomi
         data: {}
     - conditions:
       - condition: trigger
