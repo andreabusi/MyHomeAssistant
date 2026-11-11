@@ -42,8 +42,6 @@ homekit:
     include_domains:
       - light
     exclude_entities:
-      - light.background_color
-      - light.text_color
       - light.luce_scale
       - light.all_externals
       - light.all_basement
