@@ -174,7 +174,12 @@ routine_serale:
     target:
       entity_id: media_player.tv_sala
     data: {}
-    enabled: true
+    enabled: false
+  - action: button.press
+    metadata: {}
+    target:
+      entity_id: button.wake_on_lan_d8_e0_e1_c6_74_56
+    data: {}
   alias: Relax serale
   description: ''
 riavvia_monitor_xiaomi:
